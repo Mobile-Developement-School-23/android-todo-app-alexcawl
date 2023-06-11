@@ -1,8 +1,7 @@
 package org.alexcawl.todoapp.recycle_view
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import org.alexcawl.todoapp.databinding.ViewTodoItemBinding
+import org.alexcawl.todoapp.databinding.LayoutTodoItemBinding
 
-class TodoItemViewHolder(val binding: ViewTodoItemBinding) : RecyclerView.ViewHolder(binding.root) {
+class TodoItemViewHolder(val binding: LayoutTodoItemBinding) : RecyclerView.ViewHolder(binding.root) {
 }

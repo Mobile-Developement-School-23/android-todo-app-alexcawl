@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.alexcawl.todoapp.data.TodoItem
-import org.alexcawl.todoapp.databinding.ViewTodoItemBinding
+import org.alexcawl.todoapp.databinding.LayoutTodoItemBinding
 import java.time.LocalDateTime
 
 class TodoItemAdapter : RecyclerView.Adapter<TodoItemViewHolder>() {
@@ -16,7 +16,7 @@ class TodoItemAdapter : RecyclerView.Adapter<TodoItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ViewTodoItemBinding.inflate(inflater, parent, false)
+        val binding = LayoutTodoItemBinding.inflate(inflater, parent, false)
         return TodoItemViewHolder(binding)
     }
 
