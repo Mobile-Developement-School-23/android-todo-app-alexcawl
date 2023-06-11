@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/destination_todo_show">
+
+    <fragment
+        android:id="@+id/destination_todo_show"
+        android:name="org.alexcawl.todoapp.fragment.TodoShowFragment"
+        android:label="@string/your_goals"
+        tools:layout="@layout/fragment_todo_show">
+        <action
+            android:id="@+id/action_todoShow_to_todoAdd"
+            app:destination="@id/destination_todo_add" />
+    </fragment>
+    <fragment
+        android:id="@+id/destination_todo_add"
+        android:name="org.alexcawl.todoapp.fragment.TodoAddFragment"
+        android:label="@string/add_goal"
+        tools:layout="@layout/fragment_todo_add">
+        <action
+            android:id="@+id/action_todoAdd_to_todoShow"
+            app:destination="@id/destination_todo_show" />
+    </fragment>
+</navigation>

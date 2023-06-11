@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">YandexToDoApplication</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_business">Add business</string>
+    <string name="your_goals">Your goals</string>
+    <string name="add_goal">Add goal</string>
 </resources>
