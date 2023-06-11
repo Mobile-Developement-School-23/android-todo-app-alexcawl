@@ -18,9 +18,5 @@
         android:id="@+id/destination_todo_add"
         android:name="org.alexcawl.todoapp.fragment.TodoAddFragment"
         android:label="@string/add_goal"
-        tools:layout="@layout/fragment_todo_add">
-        <action
-            android:id="@+id/action_todoAdd_to_todoShow"
-            app:destination="@id/destination_todo_show" />
-    </fragment>
+        tools:layout="@layout/fragment_todo_add" />
 </navigation>
