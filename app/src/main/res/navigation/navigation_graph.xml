@@ -7,16 +7,16 @@
 
     <fragment
         android:id="@+id/destination_todo_show"
-        android:name="org.alexcawl.todoapp.fragment.TodoShowFragment"
+        android:name="org.alexcawl.todoapp.fragment.ItemShowFragment"
         android:label="@string/your_goals"
-        tools:layout="@layout/fragment_todo_show">
+        tools:layout="@layout/fragment_item_show">
         <action
             android:id="@+id/action_todoShow_to_todoAdd"
             app:destination="@id/destination_todo_add" />
     </fragment>
     <fragment
         android:id="@+id/destination_todo_add"
-        android:name="org.alexcawl.todoapp.fragment.TodoAddFragment"
+        android:name="org.alexcawl.todoapp.fragment.ItemEditFragment"
         android:label="@string/add_goal"
-        tools:layout="@layout/fragment_todo_add" />
+        tools:layout="@layout/fragment_item_edit" />
 </navigation>
