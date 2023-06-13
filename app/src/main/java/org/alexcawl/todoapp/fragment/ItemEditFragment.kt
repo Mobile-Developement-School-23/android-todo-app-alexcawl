@@ -1,7 +1,6 @@
 package org.alexcawl.todoapp.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,19 +46,18 @@ class ItemEditFragment : Fragment() {
     }
 
     private fun retrieveStartData(args: Bundle?) {
-        val identifier: String? = args?.getString(model.ID_NAME)
+        val identifier: String? = args?.getString(ItemViewModel.ID_NAME)
         itemParamState = when (identifier) {
             null -> Pair(-1, null)
             else -> {
-                val position = model.todoItems.value?.
-                    indexOfFirst { it.identifier == identifier } ?: -1
+                val position = model.items.value?.indexOfFirst { it.identifier == identifier } ?: -1
                 when (position) {
                     -1 -> Pair(position, null)
-                    else -> Pair(position, model.todoItems.value?.get(position))
+                    else -> Pair(position, model.items.value?.get(position))
                 }
             }
         }
-        itemDataState = when(val item = itemParamState.second) {
+        itemDataState = when (val item = itemParamState.second) {
             null -> TodoItem.createEmpty(model.getRandomID(), LocalDateTime.now())
             else -> TodoItem.of(item)
         }
@@ -106,7 +104,7 @@ class ItemEditFragment : Fragment() {
                 false -> View.GONE
             }
             // TODO сохранение дедлайна и синхронизация с календарем
-            itemDataState.deadline = when(isChecked) {
+            itemDataState.deadline = when (isChecked) {
                 true -> itemParamState.second?.deadline
                 false -> null
             }
@@ -118,8 +116,8 @@ class ItemEditFragment : Fragment() {
 
         binding.buttonItemAdd.setOnClickListener {
             when (itemParamState.first == -1) {
-                false -> model.todoItems[itemParamState.first] = itemDataState
-                true -> model.todoItems.add(itemDataState)
+                false -> model.items[itemParamState.first] = itemDataState
+                true -> model.items.add(itemDataState)
             }
             navigationController.navigateUp()
         }

@@ -43,7 +43,7 @@ class ItemShowFragment : Fragment() {
         }
 
         val manager = LinearLayoutManager(context) // LayoutManager
-        val adapter = ItemAdapter(itemViewModel.todoItems.value!!) {
+        val adapter = ItemAdapter(itemViewModel.items.value!!) {
             navigationController.navigate(
                 R.id.action_todoShow_to_todoAdd,
                 bundleOf("identifier" to it.identifier)
