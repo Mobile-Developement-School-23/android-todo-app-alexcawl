@@ -17,6 +17,30 @@ data class TodoItem(
             NORMAL,
             HIGH
         }
+
+        fun of(value: TodoItem): TodoItem {
+            return TodoItem(
+                value.identifier,
+                value.text,
+                value.priority,
+                value.isDone,
+                value.creationTime,
+                value.modifyingTime,
+                value.deadline
+            )
+        }
+
+        fun createEmpty(identifier: String, creationTime: LocalDateTime): TodoItem {
+            return TodoItem(
+                identifier,
+                "",
+                Priority.NORMAL,
+                false,
+                creationTime,
+                null,
+                null
+            )
+        }
     }
 
     constructor(

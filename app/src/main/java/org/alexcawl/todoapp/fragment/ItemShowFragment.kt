@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -43,9 +44,10 @@ class ItemShowFragment : Fragment() {
 
         val manager = LinearLayoutManager(context) // LayoutManager
         val adapter = ItemAdapter(itemViewModel.todoItems.value!!) {
-            val bundle = Bundle()
-            bundle.putString("identifier", it.identifier)
-            navigationController.navigate(R.id.action_todoShow_to_todoAdd, bundle)
+            navigationController.navigate(
+                R.id.action_todoShow_to_todoAdd,
+                bundleOf("identifier" to it.identifier)
+            )
         }
         binding.recyclerView.layoutManager = manager
         binding.recyclerView.adapter = adapter
