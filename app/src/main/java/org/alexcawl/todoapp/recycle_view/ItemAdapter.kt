@@ -24,8 +24,29 @@ class ItemAdapter(
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = list[position]
         val context = holder.itemView.context
+
         with(holder.binding) {
+            /*
+            * Checkbox
+            * */
+            this.statusCheckbox.isChecked = item.isDone
+            when (item.isDone) {
+                true -> this.contentTextview.apply {
+                    paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                }
+                false -> this.contentTextview.apply {
+                    paintFlags = paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                }
+            }
+
+            /*
+            * Text
+            * */
             this.contentTextview.text = item.text
+
+            /*
+            * Deadline
+            * */
             this.deadlineTextview.visibility = when (item.deadline) {
                 null -> View.GONE
                 else -> {
@@ -33,6 +54,10 @@ class ItemAdapter(
                     View.VISIBLE
                 }
             }
+
+            /*
+            * Icon
+            * */
             this.priorityIcon.setImageIcon(
                 when (item.priority) {
                     TodoItem.Companion.Priority.LOW -> Icon.createWithResource(
@@ -46,9 +71,12 @@ class ItemAdapter(
                     )
                 }
             )
-            this.checkButton.setOnClickListener {
-                this.swipeableLayout.close(true)
-                this.statusCheckbox.isChecked = !this.statusCheckbox.isChecked
+
+            /*
+            * CheckBox
+            * */
+            this.statusCheckbox.setOnClickListener {
+                item.isDone = this.statusCheckbox.isChecked
                 when (this.statusCheckbox.isChecked) {
                     true -> this.contentTextview.apply {
                         paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
@@ -58,10 +86,35 @@ class ItemAdapter(
                     }
                 }
             }
+
+            /*
+            * Check Button
+            * */
+            this.checkButton.setOnClickListener {
+                this.swipeableLayout.close(true)
+                this.statusCheckbox.isChecked = !this.statusCheckbox.isChecked
+                item.isDone = this.statusCheckbox.isChecked
+                when (this.statusCheckbox.isChecked) {
+                    true -> this.contentTextview.apply {
+                        paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    }
+                    false -> this.contentTextview.apply {
+                        paintFlags = paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                    }
+                }
+            }
+
+            /*
+            * Edit Button
+            * */
             this.editButton.setOnClickListener {
                 this.swipeableLayout.close(true)
                 onEditClicked(item)
             }
+
+            /*
+            * Edit Button
+            * */
             this.deleteButton.setOnClickListener {
                 this.swipeableLayout.close(true)
                 removeItemAt(position)

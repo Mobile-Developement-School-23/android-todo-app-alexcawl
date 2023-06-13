@@ -39,13 +39,13 @@ class ItemShowFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.fab.setOnClickListener {
-            navigationController.navigate(R.id.action_todoShow_to_todoAdd)
+            navigationController.navigate(R.id.action_taskShow_to_taskAdd)
         }
 
         val manager = LinearLayoutManager(context) // LayoutManager
         val adapter = ItemAdapter(itemViewModel.items.value!!) {
             navigationController.navigate(
-                R.id.action_todoShow_to_todoAdd,
+                R.id.action_taskShow_to_taskEdit,
                 bundleOf("identifier" to it.identifier)
             )
         }

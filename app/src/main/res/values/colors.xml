@@ -5,6 +5,26 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
+
+    <!-- Surface colors -->
+    <!-- White color variations -->
     <color name="white">#FFFFFFFF</color>
+    <color name="gray_1">#F0F0F0</color>
+    <color name="gray_2">#FFD1D1D6</color>
+    <color name="gray_3">#FFD1D1D6</color>
+    <color name="gray_4">#FF8E8E93</color>
+    <color name="gray_5">#FF5C5C5C</color>
+
+    <!-- Black color variations -->
+    <color name="gray_6">#FF48484A</color>
+    <color name="gray_7">#FF3C3C3F</color>
+    <color name="gray_8">#FF252528</color>
+    <color name="gray_9">#FF2E2E2E</color>
+    <color name="gray_10">#FF161618</color>
+    <color name="black">#FF000000</color>
+
+    <!-- Status colors -->
+    <color name="red">#FFFF3B30</color>
+    <color name="green">#FF34C759</color>
+    <color name="blue">#FF007AFF</color>
 </resources>

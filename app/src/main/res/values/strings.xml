@@ -3,7 +3,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_business">Add business</string>
     <string name="your_goals">Your goals</string>
-    <string name="add_goal">Add goal</string>
+    <string name="add_task">Add goal</string>
     <string name="low">Low</string>
     <string name="normal">Normal</string>
     <string name="high">High</string>
@@ -15,4 +15,11 @@
     <string name="type">Type</string>
     <string name="deadline">Deadline</string>
     <string name="todo">TODO</string>
+    <string name="created">Created</string>
+    <string name="modified">Modified</string>
+    <string name="task_is_done">task is done</string>
+    <string name="priority">Priority</string>
+    <string name="delete">Delete</string>
+    <string name="save">Save</string>
+    <string name="edit_task">Edit task</string>
 </resources>

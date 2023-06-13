@@ -3,20 +3,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
-    app:startDestination="@id/destination_todo_show">
+    app:startDestination="@id/itemShowFragment">
 
     <fragment
-        android:id="@+id/destination_todo_show"
+        android:id="@+id/itemShowFragment"
         android:name="org.alexcawl.todoapp.fragment.ItemShowFragment"
         android:label="@string/your_goals"
         tools:layout="@layout/fragment_item_show">
+
         <action
-            android:id="@+id/action_todoShow_to_todoAdd"
-            app:destination="@id/destination_todo_add" />
+            android:id="@+id/action_taskShow_to_taskAdd"
+            app:destination="@id/itemAddFragment" />
+        <action
+            android:id="@+id/action_taskShow_to_taskEdit"
+            app:destination="@id/itemEditFragment" />
     </fragment>
+
     <fragment
-        android:id="@+id/destination_todo_add"
+        android:id="@+id/itemAddFragment"
+        android:name="org.alexcawl.todoapp.fragment.ItemAddFragment"
+        android:label="@string/add_task"
+        tools:layout="@layout/fragment_item_add" />
+
+    <fragment
+        android:id="@+id/itemEditFragment"
         android:name="org.alexcawl.todoapp.fragment.ItemEditFragment"
-        android:label="@string/add_goal"
-        tools:layout="@layout/fragment_item_edit" />
+        android:label="@string/edit_task">
+
+        <argument
+            android:name="identifier"
+            app:argType="string" />
+    </fragment>
 </navigation>
