@@ -21,7 +21,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:background="@color/purple_200"
+            android:background="@color/green"
             android:contentDescription="@string/todo"
             android:src="@drawable/baseline_check_box_24"
             app:tint="@color/white" />
@@ -32,9 +32,9 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:background="@color/purple_200"
+            android:background="@color/blue"
             android:contentDescription="@string/todo"
-            android:src="@drawable/baseline_square_24"
+            android:src="@drawable/baseline_edit_24"
             app:tint="@color/white" />
 
         <ImageButton
@@ -43,7 +43,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:background="@color/purple_200"
+            android:background="@color/red"
             android:contentDescription="@string/todo"
             android:src="@drawable/baseline_delete_24"
             app:tint="@color/white" />
@@ -53,14 +53,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="10dp"
         android:weightSum="10">
-
-        <CheckBox
-            android:id="@+id/status_checkbox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -68,28 +64,34 @@
             android:layout_weight="8"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/content_textview"
+            <CheckBox
+                android:id="@+id/task_checkbox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="3"
-                android:text="@string/description"
+                android:paddingHorizontal="5dp"
+                android:textColor="@color/gray_8"
+                android:gravity="start|center_vertical"
                 android:textSize="25sp" />
 
             <TextView
-                android:id="@+id/deadline_textview"
-                android:layout_width="wrap_content"
+                android:id="@+id/task_deadline"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/datetime"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:drawablePadding="10dp"
+                android:paddingHorizontal="5dp"
+                app:drawableStartCompat="@drawable/baseline_calendar_month_24"
+                app:drawableTint="@color/gray_6"
+                android:textColor="@color/gray_6"/>
         </LinearLayout>
 
         <ImageView
             android:id="@+id/priority_icon"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
             android:contentDescription="@string/type"
             app:srcCompat="@drawable/baseline_square_24" />
     </LinearLayout>

@@ -29,12 +29,12 @@ class ItemAdapter(
             /*
             * Checkbox
             * */
-            this.statusCheckbox.isChecked = item.isDone
+            this.taskCheckbox.isChecked = item.isDone
             when (item.isDone) {
-                true -> this.contentTextview.apply {
+                true -> this.taskCheckbox.apply {
                     paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 }
-                false -> this.contentTextview.apply {
+                false -> this.taskCheckbox.apply {
                     paintFlags = paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
                 }
             }
@@ -42,15 +42,15 @@ class ItemAdapter(
             /*
             * Text
             * */
-            this.contentTextview.text = item.text
+            this.taskCheckbox.text = item.text
 
             /*
             * Deadline
             * */
-            this.deadlineTextview.visibility = when (item.deadline) {
+            this.taskDeadline.visibility = when (item.deadline) {
                 null -> View.GONE
                 else -> {
-                    this.deadlineTextview.text = item.deadline.toString()
+                    this.taskDeadline.text = item.deadline.toString()
                     View.VISIBLE
                 }
             }
@@ -75,13 +75,13 @@ class ItemAdapter(
             /*
             * CheckBox
             * */
-            this.statusCheckbox.setOnClickListener {
-                item.isDone = this.statusCheckbox.isChecked
-                when (this.statusCheckbox.isChecked) {
-                    true -> this.contentTextview.apply {
+            this.taskCheckbox.setOnClickListener {
+                item.isDone = this.taskCheckbox.isChecked
+                when (this.taskCheckbox.isChecked) {
+                    true -> this.taskCheckbox.apply {
                         paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     }
-                    false -> this.contentTextview.apply {
+                    false -> this.taskCheckbox.apply {
                         paintFlags = paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
                     }
                 }
@@ -92,13 +92,13 @@ class ItemAdapter(
             * */
             this.checkButton.setOnClickListener {
                 this.swipeableLayout.close(true)
-                this.statusCheckbox.isChecked = !this.statusCheckbox.isChecked
-                item.isDone = this.statusCheckbox.isChecked
-                when (this.statusCheckbox.isChecked) {
-                    true -> this.contentTextview.apply {
+                this.taskCheckbox.isChecked = !this.taskCheckbox.isChecked
+                item.isDone = this.taskCheckbox.isChecked
+                when (this.taskCheckbox.isChecked) {
+                    true -> this.taskCheckbox.apply {
                         paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     }
-                    false -> this.contentTextview.apply {
+                    false -> this.taskCheckbox.apply {
                         paintFlags = paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
                     }
                 }

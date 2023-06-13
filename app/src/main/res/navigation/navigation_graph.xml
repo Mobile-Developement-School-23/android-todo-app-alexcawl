@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/itemShowFragment"
         android:name="org.alexcawl.todoapp.fragment.ItemShowFragment"
-        android:label="@string/your_goals"
+        android:label="@string/your_tasks"
         tools:layout="@layout/fragment_item_show">
 
         <action
