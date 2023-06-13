@@ -65,19 +65,20 @@ class ItemAddFragment : Fragment() {
         /*
         * Content TextView
         * */
-        binding.edittextItemContent.addTextChangedListener {
+        binding.taskContentTextview.addTextChangedListener {
             taskAddState.text = it.toString()
         }
 
         /*
         * Deadline Switch
         * */
-        binding.switchItemDeadline.setOnCheckedChangeListener { _, isChecked ->
+        binding.taskDeadlineSwitch.setOnCheckedChangeListener { _, isChecked ->
             taskAddState.deadline = when(isChecked) {
                 false -> null
                 true -> deadlineTimeState
             }
-            binding.calendarItemDeadline.visibility = when(isChecked) {
+            binding.taskDeadlineTextview.text = (taskAddState.deadline ?: "").toString()
+            binding.calendarView.visibility = when(isChecked) {
                 true -> View.VISIBLE
                 false -> View.GONE
             }
@@ -86,15 +87,17 @@ class ItemAddFragment : Fragment() {
         /*
         * Deadline CalendarView
         * */
-        binding.calendarItemDeadline.setOnDateChangeListener { _, year, month, dayOfMonth ->
+        binding.calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             deadlineTimeState = LocalDateTime.of(year, month, dayOfMonth, 0, 0)
             taskAddState.deadline = deadlineTimeState
+            binding.taskDeadlineTextview.text = (taskAddState.deadline ?: "").toString()
         }
+        binding.calendarView.visibility = View.GONE
 
         /*
         * Add Button
         * */
-        binding.buttonItemAdd.setOnClickListener {
+        binding.buttonAdd.setOnClickListener {
             model.items.add(taskAddState)
             navigationController.navigateUp()
         }
