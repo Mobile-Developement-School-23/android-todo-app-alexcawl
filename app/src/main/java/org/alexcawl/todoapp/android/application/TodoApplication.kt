@@ -6,5 +6,7 @@ import org.alexcawl.todoapp.service.ConverterService
 class TodoApplication : Application() {
     val converterService: ConverterService = ConverterService.getInstance()
 
-
+    companion object {
+        const val IDENTIFIER: String = "identifier"
+    }
 }

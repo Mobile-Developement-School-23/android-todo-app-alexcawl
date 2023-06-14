@@ -34,17 +34,21 @@ class ItemTouchHelperCallback(
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
         when (i) {
-            ItemTouchHelper.LEFT -> touchHelperAdapter.onItemRemove(viewHolder.adapterPosition)
-            ItemTouchHelper.RIGHT -> touchHelperAdapter.onItemCheck(viewHolder.adapterPosition)
+            ItemTouchHelper.START -> touchHelperAdapter.onItemRemove(viewHolder.adapterPosition)
+            else -> touchHelperAdapter.onItemCheck(viewHolder.adapterPosition)
         }
     }
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-            val itemViewHolder = viewHolder as ItemTouchHelperViewHolder
-            itemViewHolder.onItemSelected()
+            val itemViewHolder = viewHolder as ItemTouchHelperViewHolder?
+            itemViewHolder?.onItemSelected()
         }
         super.onSelectedChanged(viewHolder, actionState)
+    }
+
+    override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float {
+        return 0.7f
     }
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {

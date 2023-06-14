@@ -10,13 +10,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import org.alexcawl.todoapp.R
+import org.alexcawl.todoapp.android.application.TodoApplication
+import org.alexcawl.todoapp.android.model.ItemViewModel
+import org.alexcawl.todoapp.android.spinner_view.SpinnerListener
 import org.alexcawl.todoapp.data.TodoItem
 import org.alexcawl.todoapp.databinding.FragmentItemEditBinding
 import org.alexcawl.todoapp.extensions.removeAt
 import org.alexcawl.todoapp.extensions.set
-import org.alexcawl.todoapp.android.model.ItemViewModel
-import org.alexcawl.todoapp.android.spinner_view.SpinnerListener
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -43,8 +43,7 @@ class ItemEditFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentItemEditBinding.inflate(layoutInflater)
         return binding.root
@@ -57,9 +56,12 @@ class ItemEditFragment : Fragment() {
 
     @Throws(IllegalStateException::class)
     private fun initiateTaskEditState(args: Bundle?): Pair<Int, TodoItem> {
-        val identifier: String = args?.getString(ItemViewModel.ID_NAME) ?: throw IllegalStateException()
-        val position: Int = model.items.value?.indexOfFirst { it.identifier == identifier } ?: throw IllegalStateException()
-        val task: TodoItem = model.items.value?.get(position) ?: throw IllegalStateException()
+        val identifier: String = args?.getString(TodoApplication.IDENTIFIER)
+            ?: throw IllegalStateException()
+        val position: Int = model.items.value?.indexOfFirst { it.identifier == identifier }
+            ?: throw IllegalStateException()
+        val task: TodoItem = model.items.value?.get(position)
+            ?: throw IllegalStateException()
         return Pair(position, TodoItem.of(task))
     }
 
@@ -83,7 +85,7 @@ class ItemEditFragment : Fragment() {
         * Priority Spinner TODO
         * */
         binding.priority.taskPrioritySpinner.setSelection(
-            when(task.priority) {
+            when (task.priority) {
                 TodoItem.Companion.Priority.NORMAL -> 0
                 TodoItem.Companion.Priority.LOW -> 1
                 TodoItem.Companion.Priority.HIGH -> 2
@@ -114,13 +116,16 @@ class ItemEditFragment : Fragment() {
         /*
         * Deadline CalendarView
         * */
-        binding.deadline.taskDeadlineCalendarview.visibility = when(binding.deadline.taskDeadlineSwitch.isChecked) {
-            true -> View.VISIBLE
-            false -> View.GONE
-        }
-        binding.deadline.taskDeadlineCalendarview.date = when(deadlineTimeState) {
-            null -> ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault()).toInstant().toEpochMilli()
-            else -> ZonedDateTime.of(deadlineTimeState, ZoneId.systemDefault()).toInstant().toEpochMilli()
+        binding.deadline.taskDeadlineCalendarview.visibility =
+            when (binding.deadline.taskDeadlineSwitch.isChecked) {
+                true -> View.VISIBLE
+                false -> View.GONE
+            }
+        binding.deadline.taskDeadlineCalendarview.date = when (deadlineTimeState) {
+            null -> ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault()).toInstant()
+                .toEpochMilli()
+            else -> ZonedDateTime.of(deadlineTimeState, ZoneId.systemDefault()).toInstant()
+                .toEpochMilli()
         }
     }
 
@@ -145,15 +150,14 @@ class ItemEditFragment : Fragment() {
         /*
         * Priority Spinner TODO
         * */
-        binding.priority.taskPrioritySpinner.onItemSelectedListener = SpinnerListener(
-            onItemSelected = { position: Int ->
+        binding.priority.taskPrioritySpinner.onItemSelectedListener =
+            SpinnerListener(onItemSelected = { position: Int ->
                 task.priority = when (position) {
                     0 -> TodoItem.Companion.Priority.NORMAL
                     1 -> TodoItem.Companion.Priority.LOW
                     else -> TodoItem.Companion.Priority.HIGH
                 }
-            }
-        )
+            })
 
         /*
         * Content TextView
@@ -166,12 +170,12 @@ class ItemEditFragment : Fragment() {
         * Deadline Switch
         * */
         binding.deadline.taskDeadlineSwitch.setOnCheckedChangeListener { _, isChecked ->
-            task.deadline = when(isChecked) {
+            task.deadline = when (isChecked) {
                 false -> null
                 true -> deadlineTimeState
             }
             binding.deadline.taskDeadlineTextview.text = (task.deadline ?: "").toString()
-            binding.deadline.taskDeadlineCalendarview.visibility = when(isChecked) {
+            binding.deadline.taskDeadlineCalendarview.visibility = when (isChecked) {
                 true -> View.VISIBLE
                 false -> View.GONE
             }

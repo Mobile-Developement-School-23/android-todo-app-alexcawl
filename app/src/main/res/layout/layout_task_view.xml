@@ -3,26 +3,53 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="10dp"
     android:background="@color/gray_1"
-    android:gravity="center" >
+    android:gravity="start"
+    android:orientation="horizontal"
+    android:padding="10dp">
 
     <CheckBox
-        android:id="@+id/task_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawablePadding="10dp"
-        android:ellipsize="end"
-        android:maxLines="3" />
+        android:id="@+id/task_checkbox"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:background="@drawable/shape_rounded_corners"
+        android:backgroundTint="@color/white"
+        android:buttonTint="@color/green"
+        android:gravity="center" />
 
-    <TextView
-        android:id="@+id/task_deadline"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:drawablePadding="10dp"
-        android:text=""
-        app:drawableStartCompat="@drawable/baseline_edit_calendar_24"
-        app:drawableTint="@color/blue" />
+        android:layout_weight="8"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/task_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:padding="10dp"
+            android:drawablePadding="10dp"
+            android:gravity="start|center_vertical"
+            android:textColor="@color/gray_10"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/task_deadline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="10dp"
+            android:padding="10dp"
+            android:textColor="@color/gray_8"
+            android:textSize="15sp"
+            android:gravity="center_vertical"
+            android:textStyle="normal"
+            app:drawableStartCompat="@drawable/baseline_edit_calendar_24"
+            app:drawableTint="@color/blue" />
+    </LinearLayout>
+
 </LinearLayout>
 

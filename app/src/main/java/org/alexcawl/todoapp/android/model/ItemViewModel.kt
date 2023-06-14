@@ -11,6 +11,5 @@ class ItemViewModel : ViewModel() {
     fun getRandomID(): String = LocalDateTime.now().toString()
 
     companion object {
-        const val ID_NAME: String = "identifier"
     }
 }
