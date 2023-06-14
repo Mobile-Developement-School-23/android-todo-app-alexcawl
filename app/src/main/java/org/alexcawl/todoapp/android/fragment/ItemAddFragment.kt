@@ -100,7 +100,7 @@ class ItemAddFragment : Fragment() {
         * Add Button
         * */
         binding.buttonAdd.setOnClickListener {
-            model.items.add(taskAddState)
+            model.todoItems.add(taskAddState)
             navigationController.navigateUp()
         }
     }

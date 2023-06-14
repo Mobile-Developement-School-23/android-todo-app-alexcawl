@@ -1,7 +1,6 @@
 package org.alexcawl.todoapp.android.recycler_view
 
 import android.graphics.Paint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,7 +57,7 @@ class ItemAdapter(
             * */
             this.taskContent.setCompoundDrawablesWithIntrinsicBounds(
                 when (item.priority) {
-                    TodoItem.Companion.Priority.LOW -> R.drawable.baseline_low_priority_24
+                    TodoItem.Companion.Priority.LOW -> R.drawable.baseline_arrow_downward_24
                     TodoItem.Companion.Priority.HIGH -> R.drawable.baseline_priority_high_24
                     else -> 0
                 }, 0, 0, 0

@@ -58,9 +58,9 @@ class ItemEditFragment : Fragment() {
     private fun initiateTaskEditState(args: Bundle?): Pair<Int, TodoItem> {
         val identifier: String = args?.getString(TodoApplication.IDENTIFIER)
             ?: throw IllegalStateException()
-        val position: Int = model.items.value?.indexOfFirst { it.identifier == identifier }
+        val position: Int = model.todoItems.value?.indexOfFirst { it.identifier == identifier }
             ?: throw IllegalStateException()
-        val task: TodoItem = model.items.value?.get(position)
+        val task: TodoItem = model.todoItems.value?.get(position)
             ?: throw IllegalStateException()
         return Pair(position, TodoItem.of(task))
     }
@@ -194,7 +194,7 @@ class ItemEditFragment : Fragment() {
         * Delete Button
         * */
         binding.taskDeleteButton.setOnClickListener {
-            model.items.removeAt(taskEditState.first)
+            model.todoItems.removeAt(taskEditState.first)
             navigationController.navigateUp()
         }
 
@@ -203,7 +203,7 @@ class ItemEditFragment : Fragment() {
         * */
         binding.taskSaveButton.setOnClickListener {
             task.modifyingTime = LocalDateTime.now()
-            model.items[taskEditState.first] = task
+            model.todoItems[taskEditState.first] = task
             navigationController.navigateUp()
         }
     }
