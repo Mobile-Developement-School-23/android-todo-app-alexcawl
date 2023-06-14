@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import org.alexcawl.todoapp.android.application.TodoApplication
 import org.alexcawl.todoapp.android.model.ItemViewModel
 import org.alexcawl.todoapp.android.spinner_view.SpinnerListener
-import org.alexcawl.todoapp.data.TodoItem
+import org.alexcawl.todoapp.data.model.TodoItem
 import org.alexcawl.todoapp.databinding.FragmentItemEditBinding
 import org.alexcawl.todoapp.extensions.removeAt
 import org.alexcawl.todoapp.extensions.set

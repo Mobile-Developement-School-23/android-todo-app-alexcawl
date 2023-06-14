@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import org.alexcawl.todoapp.data.TodoItem
+import org.alexcawl.todoapp.data.model.TodoItem
 import org.alexcawl.todoapp.databinding.FragmentItemAddBinding
 import org.alexcawl.todoapp.extensions.add
 import org.alexcawl.todoapp.android.model.ItemViewModel

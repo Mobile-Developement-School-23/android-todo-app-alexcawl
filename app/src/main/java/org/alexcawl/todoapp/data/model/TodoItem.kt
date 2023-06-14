@@ -1,4 +1,4 @@
-package org.alexcawl.todoapp.data
+package org.alexcawl.todoapp.data.model
 
 import java.time.LocalDateTime
 

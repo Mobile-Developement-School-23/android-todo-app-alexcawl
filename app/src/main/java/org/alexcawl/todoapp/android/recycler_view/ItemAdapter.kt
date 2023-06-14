@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.alexcawl.todoapp.R
-import org.alexcawl.todoapp.data.TodoItem
+import org.alexcawl.todoapp.data.model.TodoItem
 import org.alexcawl.todoapp.databinding.LayoutTaskViewBinding
 import java.util.*
 
@@ -43,9 +43,8 @@ class ItemAdapter(
                 }
             }
 
-            this.root.setOnLongClickListener {
+            this.root.setOnClickListener {
                 onEditClicked(item)
-                true
             }
             /*
             * Text

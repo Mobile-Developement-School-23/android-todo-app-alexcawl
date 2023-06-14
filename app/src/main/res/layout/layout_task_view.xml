@@ -47,7 +47,7 @@
             android:textSize="15sp"
             android:gravity="center_vertical"
             android:textStyle="normal"
-            app:drawableStartCompat="@drawable/baseline_edit_calendar_24"
+            app:drawableStartCompat="@drawable/baseline_calendar_month_24"
             app:drawableTint="@color/blue" />
     </LinearLayout>
 
