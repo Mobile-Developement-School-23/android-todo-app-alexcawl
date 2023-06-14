@@ -1,99 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.apachat.swipereveallayout.core.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/swipeable_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:dragEdge="right"
-    app:mode="same_level">
+    android:orientation="horizontal"
+    android:padding="10dp"
+    android:background="@color/gray_1"
+    android:gravity="center" >
 
-    <!-- Your secondary layout here -->
-    <LinearLayout
-        android:id="@+id/delete_layout"
-        android:layout_width="210dp"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:weightSum="3">
-
-        <ImageButton
-            android:id="@+id/check_button"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:background="@color/green"
-            android:contentDescription="@string/todo"
-            android:src="@drawable/baseline_check_box_24"
-            app:tint="@color/white" />
-
-        <ImageButton
-            android:id="@+id/edit_button"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:background="@color/blue"
-            android:contentDescription="@string/todo"
-            android:src="@drawable/baseline_edit_24"
-            app:tint="@color/white" />
-
-        <ImageButton
-            android:id="@+id/delete_button"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:background="@color/red"
-            android:contentDescription="@string/todo"
-            android:src="@drawable/baseline_delete_24"
-            app:tint="@color/white" />
-    </LinearLayout>
-
-    <!-- Your main layout here -->
-    <LinearLayout
+    <CheckBox
+        android:id="@+id/task_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="10dp"
-        android:weightSum="10">
+        android:drawablePadding="10dp"
+        android:ellipsize="end"
+        android:maxLines="3" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="8"
-            android:orientation="vertical">
+    <TextView
+        android:id="@+id/task_deadline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawablePadding="10dp"
+        android:text=""
+        app:drawableStartCompat="@drawable/baseline_edit_calendar_24"
+        app:drawableTint="@color/blue" />
+</LinearLayout>
 
-            <CheckBox
-                android:id="@+id/task_checkbox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="3"
-                android:paddingHorizontal="5dp"
-                android:textColor="@color/gray_8"
-                android:gravity="start|center_vertical"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/task_deadline"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:drawablePadding="10dp"
-                android:paddingHorizontal="5dp"
-                app:drawableStartCompat="@drawable/baseline_calendar_month_24"
-                app:drawableTint="@color/gray_6"
-                android:textColor="@color/gray_6"/>
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/priority_icon"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:contentDescription="@string/type"
-            app:srcCompat="@drawable/baseline_square_24" />
-    </LinearLayout>
-
-</com.apachat.swipereveallayout.core.SwipeLayout>
