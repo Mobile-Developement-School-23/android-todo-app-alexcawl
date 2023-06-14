@@ -1,4 +1,4 @@
-package org.alexcawl.todoapp.activity
+package org.alexcawl.todoapp.android.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

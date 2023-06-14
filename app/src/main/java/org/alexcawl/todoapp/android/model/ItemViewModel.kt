@@ -1,4 +1,4 @@
-package org.alexcawl.todoapp.model
+package org.alexcawl.todoapp.android.model
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

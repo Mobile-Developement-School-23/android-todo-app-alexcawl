@@ -1,4 +1,4 @@
-package org.alexcawl.todoapp.fragment
+package org.alexcawl.todoapp.android.fragment
 
 import android.graphics.Paint
 import android.os.Bundle
@@ -15,8 +15,8 @@ import org.alexcawl.todoapp.data.TodoItem
 import org.alexcawl.todoapp.databinding.FragmentItemEditBinding
 import org.alexcawl.todoapp.extensions.removeAt
 import org.alexcawl.todoapp.extensions.set
-import org.alexcawl.todoapp.model.ItemViewModel
-import org.alexcawl.todoapp.spinner_view.SpinnerListener
+import org.alexcawl.todoapp.android.model.ItemViewModel
+import org.alexcawl.todoapp.android.spinner_view.SpinnerListener
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime

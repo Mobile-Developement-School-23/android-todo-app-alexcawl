@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/itemShowFragment"
-        android:name="org.alexcawl.todoapp.fragment.ItemShowFragment"
+        android:name="org.alexcawl.todoapp.android.fragment.ItemShowFragment"
         android:label="@string/your_tasks"
         tools:layout="@layout/fragment_item_show">
 
@@ -21,13 +21,13 @@
 
     <fragment
         android:id="@+id/itemAddFragment"
-        android:name="org.alexcawl.todoapp.fragment.ItemAddFragment"
+        android:name="org.alexcawl.todoapp.android.fragment.ItemAddFragment"
         android:label="@string/add_task"
         tools:layout="@layout/fragment_item_add" />
 
     <fragment
         android:id="@+id/itemEditFragment"
-        android:name="org.alexcawl.todoapp.fragment.ItemEditFragment"
+        android:name="org.alexcawl.todoapp.android.fragment.ItemEditFragment"
         android:label="@string/edit_task">
 
         <argument

@@ -1,4 +1,4 @@
-package org.alexcawl.todoapp.fragment
+package org.alexcawl.todoapp.android.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,8 +12,8 @@ import androidx.navigation.fragment.findNavController
 import org.alexcawl.todoapp.data.TodoItem
 import org.alexcawl.todoapp.databinding.FragmentItemAddBinding
 import org.alexcawl.todoapp.extensions.add
-import org.alexcawl.todoapp.model.ItemViewModel
-import org.alexcawl.todoapp.spinner_view.SpinnerListener
+import org.alexcawl.todoapp.android.model.ItemViewModel
+import org.alexcawl.todoapp.android.spinner_view.SpinnerListener
 import java.time.LocalDateTime
 
 class ItemAddFragment : Fragment() {

@@ -1,4 +1,4 @@
-package org.alexcawl.todoapp.fragment
+package org.alexcawl.todoapp.android.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,8 +12,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.FragmentItemShowBinding
-import org.alexcawl.todoapp.model.ItemViewModel
-import org.alexcawl.todoapp.recycler_view.ItemAdapter
+import org.alexcawl.todoapp.android.model.ItemViewModel
+import org.alexcawl.todoapp.android.recycler_view.ItemAdapter
 
 class ItemShowFragment : Fragment() {
     private val itemViewModel: ItemViewModel by lazy {

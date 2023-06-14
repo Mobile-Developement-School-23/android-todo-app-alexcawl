@@ -1,4 +1,4 @@
-package org.alexcawl.todoapp.spinner_view
+package org.alexcawl.todoapp.android.spinner_view
 
 import android.view.View
 import android.widget.AdapterView

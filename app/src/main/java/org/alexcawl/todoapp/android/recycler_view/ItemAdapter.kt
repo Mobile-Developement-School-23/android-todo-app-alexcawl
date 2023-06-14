@@ -1,4 +1,4 @@
-package org.alexcawl.todoapp.recycler_view
+package org.alexcawl.todoapp.android.recycler_view
 
 import android.graphics.Paint
 import android.graphics.drawable.Icon
