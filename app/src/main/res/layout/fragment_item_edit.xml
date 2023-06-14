@@ -8,123 +8,37 @@
     android:backgroundTint="@color/white"
     tools:context=".fragment.ItemEditFragment">
 
-    <LinearLayout
-        android:id="@+id/item_status_container"
+    <include
+        android:id="@+id/status"
+        layout="@layout/layout_task_status_setup_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
-        android:background="@drawable/shape_rounded_corners"
-        android:backgroundTint="@color/gray_1"
-        android:orientation="vertical"
-        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
-            android:weightSum="10">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:drawablePadding="10dp"
-                android:gravity="start|center_vertical"
-                android:text="@string/status"
-                android:textColor="@color/gray_6"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:drawableStartCompat="@drawable/baseline_check_box_24"
-                app:drawableTint="@color/green" />
-
-            <CheckBox
-                android:id="@+id/task_status_checkbox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="7"
-                android:gravity="center_vertical"
-                android:text="@string/task_is_done"
-                android:textColor="@color/gray_6"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
-            android:weightSum="10">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:drawablePadding="10dp"
-                android:gravity="start|center_vertical"
-                android:text="@string/priority"
-                android:textColor="@color/gray_6"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:drawableStartCompat="@drawable/baseline_priority_high_24"
-                app:drawableTint="@color/red" />
-
-            <RadioGroup
-                android:id="@+id/task_priority_radiobox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="7"
-                android:background="@drawable/shape_rounded_corners"
-                android:backgroundTint="@color/white"
-                android:orientation="horizontal"
-                android:paddingHorizontal="5dp">
-
-                <RadioButton
-                    android:id="@+id/radiobutton_item_priority_low"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/low" />
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
-
-                <RadioButton
-                    android:id="@+id/radiobutton_item_priority_normal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="@string/normal" />
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
-
-                <RadioButton
-                    android:id="@+id/radiobutton_item_priority_high"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/high" />
-            </RadioGroup>
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/item_time_container"
+    <include
+        android:id="@+id/priority"
+        layout="@layout/layout_task_priority_setup_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/status" />
+
+    <LinearLayout
+        android:id="@+id/task_date_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/shape_rounded_corners"
         android:backgroundTint="@color/gray_1"
         android:gravity="center_vertical"
@@ -134,7 +48,7 @@
         app:layout_constraintBottom_toTopOf="@+id/task_content_textview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_status_container">
+        app:layout_constraintTop_toBottomOf="@id/priority">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -208,78 +122,36 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:autofillHints=""
-        android:background="@drawable/selector_responsive_edit_text"
-        android:hint="@string/enter_text"
-        android:inputType="text"
-        android:padding="15dp"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:minLines="1"
-        android:gravity="start"
-        app:layout_constraintBottom_toTopOf="@id/task_deadline_container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/item_time_container" />
-
-    <LinearLayout
-        android:id="@+id/task_deadline_container"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/shape_rounded_corners"
-        android:backgroundTint="@color/gray_1"
-        android:orientation="horizontal"
-        android:padding="10dp"
-        android:weightSum="2"
-        app:layout_constraintBottom_toTopOf="@+id/calendar_view"
+        android:autofillHints=""
+        android:background="@drawable/selector_responsive_edit_text"
+        android:gravity="start"
+        android:hint="@string/enter_text"
+        android:inputType="text"
+        android:minLines="1"
+        android:padding="15dp"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/deadline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/task_content_textview">
+        app:layout_constraintTop_toBottomOf="@id/task_date_view" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/task_deadline_switch"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:drawablePadding="10dp"
-            android:gravity="start|center_vertical"
-            android:text="@string/deadline"
-            android:textColor="@color/gray_6"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:drawableStartCompat="@drawable/baseline_edit_calendar_24"
-            app:drawableTint="@color/blue" />
-
-        <TextView
-            android:id="@+id/task_deadline_textview"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:gravity="center_horizontal|center_vertical"
-            android:maxLines="1"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <CalendarView
-        android:id="@+id/calendar_view"
+    <include
+        android:id="@+id/deadline"
+        layout="@layout/layout_task_deadline_setup_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:animateLayoutChanges="true"
-        android:background="@color/gray_1"
-        app:layout_constraintBottom_toTopOf="@+id/task_delete_button"
+        app:layout_constraintBottom_toTopOf="@id/task_delete_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/task_content_textview" />
+
 
     <Button
         android:id="@+id/task_delete_button"

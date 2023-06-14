@@ -1,4 +1,4 @@
-package org.alexcawl.todoapp.recycle_view
+package org.alexcawl.todoapp.recycler_view
 
 import android.graphics.Paint
 import android.graphics.drawable.Icon
@@ -8,14 +8,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.data.TodoItem
-import org.alexcawl.todoapp.databinding.LayoutTodoItemBinding
+import org.alexcawl.todoapp.databinding.LayoutTaskViewBinding
 
 class ItemAdapter(
     private val list: MutableList<TodoItem>, private val onEditClicked: (TodoItem) -> Unit
 ) : RecyclerView.Adapter<ItemViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = LayoutTodoItemBinding.inflate(inflater, parent, false)
+        val binding = LayoutTaskViewBinding.inflate(inflater, parent, false)
         return ItemViewHolder(binding)
     }
 

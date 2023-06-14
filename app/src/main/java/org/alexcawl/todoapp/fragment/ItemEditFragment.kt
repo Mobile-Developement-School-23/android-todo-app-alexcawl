@@ -16,6 +16,7 @@ import org.alexcawl.todoapp.databinding.FragmentItemEditBinding
 import org.alexcawl.todoapp.extensions.removeAt
 import org.alexcawl.todoapp.extensions.set
 import org.alexcawl.todoapp.model.ItemViewModel
+import org.alexcawl.todoapp.spinner_view.SpinnerListener
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -68,24 +69,24 @@ class ItemEditFragment : Fragment() {
         /*
         * Status Checkbox
         * */
-        binding.taskStatusCheckbox.isChecked = task.isDone
-        when (binding.taskStatusCheckbox.isChecked) {
-            true -> binding.taskStatusCheckbox.apply {
+        binding.status.taskStatusCheckbox.isChecked = task.isDone
+        when (binding.status.taskStatusCheckbox.isChecked) {
+            true -> binding.status.taskStatusCheckbox.apply {
                 paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             }
-            false -> binding.taskStatusCheckbox.apply {
+            false -> binding.status.taskStatusCheckbox.apply {
                 paintFlags = paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
             }
         }
 
         /*
-        * Priority RadioGroup
+        * Priority Spinner TODO
         * */
-        binding.taskPriorityRadiobox.check(
-            when (task.priority) {
-                TodoItem.Companion.Priority.LOW -> R.id.radiobutton_item_priority_low
-                TodoItem.Companion.Priority.HIGH -> R.id.radiobutton_item_priority_high
-                else -> R.id.radiobutton_item_priority_normal
+        binding.priority.taskPrioritySpinner.setSelection(
+            when(task.priority) {
+                TodoItem.Companion.Priority.NORMAL -> 0
+                TodoItem.Companion.Priority.LOW -> 1
+                TodoItem.Companion.Priority.HIGH -> 2
             }
         )
 
@@ -107,17 +108,17 @@ class ItemEditFragment : Fragment() {
         /*
         * Deadline Switch
         * */
-        binding.taskDeadlineSwitch.isChecked = task.deadline != null
-        binding.taskDeadlineTextview.text = (task.deadline ?: "").toString()
+        binding.deadline.taskDeadlineSwitch.isChecked = task.deadline != null
+        binding.deadline.taskDeadlineTextview.text = (task.deadline ?: "").toString()
 
         /*
         * Deadline CalendarView
         * */
-        binding.calendarView.visibility = when(binding.taskDeadlineSwitch.isChecked) {
+        binding.deadline.taskDeadlineCalendarview.visibility = when(binding.deadline.taskDeadlineSwitch.isChecked) {
             true -> View.VISIBLE
             false -> View.GONE
         }
-        binding.calendarView.date = when(deadlineTimeState) {
+        binding.deadline.taskDeadlineCalendarview.date = when(deadlineTimeState) {
             null -> ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault()).toInstant().toEpochMilli()
             else -> ZonedDateTime.of(deadlineTimeState, ZoneId.systemDefault()).toInstant().toEpochMilli()
         }
@@ -129,7 +130,7 @@ class ItemEditFragment : Fragment() {
         /*
         * Status Checkbox
         * */
-        binding.taskStatusCheckbox.setOnCheckedChangeListener { view, isChecked ->
+        binding.status.taskStatusCheckbox.setOnCheckedChangeListener { view, isChecked ->
             task.isDone = isChecked
             when (view.isChecked) {
                 true -> view.apply {
@@ -142,15 +143,17 @@ class ItemEditFragment : Fragment() {
         }
 
         /*
-        * Priority RadioGroup
+        * Priority Spinner TODO
         * */
-        binding.taskPriorityRadiobox.setOnCheckedChangeListener { _, checkedId ->
-            task.priority = when (checkedId) {
-                R.id.radiobutton_item_priority_low -> TodoItem.Companion.Priority.LOW
-                R.id.radiobutton_item_priority_high -> TodoItem.Companion.Priority.HIGH
-                else -> TodoItem.Companion.Priority.NORMAL
+        binding.priority.taskPrioritySpinner.onItemSelectedListener = SpinnerListener(
+            onItemSelected = { position: Int ->
+                task.priority = when (position) {
+                    0 -> TodoItem.Companion.Priority.NORMAL
+                    1 -> TodoItem.Companion.Priority.LOW
+                    else -> TodoItem.Companion.Priority.HIGH
+                }
             }
-        }
+        )
 
         /*
         * Content TextView
@@ -162,13 +165,13 @@ class ItemEditFragment : Fragment() {
         /*
         * Deadline Switch
         * */
-        binding.taskDeadlineSwitch.setOnCheckedChangeListener { _, isChecked ->
+        binding.deadline.taskDeadlineSwitch.setOnCheckedChangeListener { _, isChecked ->
             task.deadline = when(isChecked) {
                 false -> null
                 true -> deadlineTimeState
             }
-            binding.taskDeadlineTextview.text = (task.deadline ?: "").toString()
-            binding.calendarView.visibility = when(isChecked) {
+            binding.deadline.taskDeadlineTextview.text = (task.deadline ?: "").toString()
+            binding.deadline.taskDeadlineCalendarview.visibility = when(isChecked) {
                 true -> View.VISIBLE
                 false -> View.GONE
             }
@@ -177,10 +180,10 @@ class ItemEditFragment : Fragment() {
         /*
         * Deadline CalendarView
         * */
-        binding.calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
+        binding.deadline.taskDeadlineCalendarview.setOnDateChangeListener { _, year, month, dayOfMonth ->
             deadlineTimeState = LocalDateTime.of(year, month, dayOfMonth, 0, 0)
             task.deadline = deadlineTimeState
-            binding.taskDeadlineTextview.text = (task.deadline ?: "").toString()
+            binding.deadline.taskDeadlineTextview.text = (task.deadline ?: "").toString()
         }
 
         /*

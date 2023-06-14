@@ -10,6 +10,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://dl.bintray.com/shabankamel/android" }
     }
 }
 rootProject.name = "YandexToDoApplication"

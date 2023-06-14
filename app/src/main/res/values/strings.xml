@@ -19,4 +19,11 @@
     <string name="priority">Priority</string>
     <string name="delete">Delete</string>
     <string name="save">Save</string>
+
+    <string-array name="priority_type">
+        <item>Normal</item>
+        <item>Low</item>
+        <item>High</item>
+    </string-array>
+
 </resources>

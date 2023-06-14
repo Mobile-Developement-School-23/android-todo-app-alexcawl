@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.FragmentItemShowBinding
 import org.alexcawl.todoapp.model.ItemViewModel
-import org.alexcawl.todoapp.recycle_view.ItemAdapter
+import org.alexcawl.todoapp.recycler_view.ItemAdapter
 
 class ItemShowFragment : Fragment() {
     private val itemViewModel: ItemViewModel by lazy {
