@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/shape_rounded_corners"
-    android:backgroundTint="@color/gray_1"
+    android:backgroundTint="?attr/containerColor"
     android:orientation="vertical"
     android:padding="10dp">
 
@@ -23,11 +23,11 @@
             android:drawablePadding="10dp"
             android:gravity="start|center_vertical"
             android:text="@string/deadline"
-            android:textColor="@color/gray_6"
+            android:textColor="?attr/textSecondaryColor"
             android:textSize="16sp"
             android:textStyle="bold"
             app:drawableStartCompat="@drawable/baseline_edit_calendar_24"
-            app:drawableTint="@color/blue" />
+            app:drawableTint="?attr/interactionColor" />
 
         <TextView
             android:id="@+id/task_deadline_textview"
@@ -37,7 +37,7 @@
             android:ellipsize="end"
             android:gravity="center_horizontal|center_vertical"
             android:maxLines="1"
-            android:textColor="@color/black"
+            android:textColor="?attr/textPrimaryColor"
             android:textSize="16sp"
             android:textStyle="bold" />
     </LinearLayout>

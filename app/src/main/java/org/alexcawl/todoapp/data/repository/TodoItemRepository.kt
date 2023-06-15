@@ -1,7 +1,7 @@
 package org.alexcawl.todoapp.data.repository
 
 import org.alexcawl.todoapp.data.model.TodoItem
-import java.time.LocalDateTime
+import java.util.*
 
 class TodoItemRepository private constructor() {
     companion object {
@@ -23,152 +23,78 @@ class TodoItemRepository private constructor() {
                 LOREM_IPSUM.substring(0, 50),
                 TodoItem.Companion.Priority.NORMAL,
                 false,
-                LocalDateTime.now()
+                Calendar.getInstance()
             ),
             TodoItem(
                 "2",
                 LOREM_IPSUM.substring(0),
                 TodoItem.Companion.Priority.NORMAL,
                 false,
-                LocalDateTime.now()
+                Calendar.getInstance()
             ),
             TodoItem(
                 "3",
                 LOREM_IPSUM.substring(0, 50),
                 TodoItem.Companion.Priority.LOW,
                 false,
-                LocalDateTime.now()
+                Calendar.getInstance()
             ),
             TodoItem(
                 "4",
                 LOREM_IPSUM.substring(0, 50),
                 TodoItem.Companion.Priority.NORMAL,
                 true,
-                LocalDateTime.now()
+                Calendar.getInstance()
             ),
             TodoItem(
                 "5",
                 LOREM_IPSUM.substring(0, 50),
                 TodoItem.Companion.Priority.HIGH,
                 false,
-                LocalDateTime.now()
+                Calendar.getInstance()
             ),
             TodoItem(
                 "6",
                 LOREM_IPSUM.substring(0),
                 TodoItem.Companion.Priority.NORMAL,
                 true,
-                LocalDateTime.now()
+                Calendar.getInstance()
             ),
             TodoItem(
                 "7",
                 LOREM_IPSUM.substring(0, 50),
                 TodoItem.Companion.Priority.NORMAL,
                 false,
-                LocalDateTime.now(),
+                Calendar.getInstance(),
                 null,
-                LocalDateTime.now()
+                Calendar.getInstance()
             ),
             TodoItem(
                 "8",
                 LOREM_IPSUM.substring(0),
                 TodoItem.Companion.Priority.NORMAL,
                 false,
-                LocalDateTime.now(),
+                Calendar.getInstance(),
                 null,
-                LocalDateTime.now()
+                Calendar.getInstance()
             ),
             TodoItem(
                 "9",
                 LOREM_IPSUM.substring(0),
                 TodoItem.Companion.Priority.NORMAL,
                 true,
-                LocalDateTime.now(),
+                Calendar.getInstance(),
                 null,
-                LocalDateTime.now()
+                Calendar.getInstance()
             ),
             TodoItem(
                 "10",
                 LOREM_IPSUM.substring(0),
                 TodoItem.Companion.Priority.HIGH,
                 true,
-                LocalDateTime.now(),
+                Calendar.getInstance(),
                 null,
-                LocalDateTime.now()
-            ),
-            TodoItem(
-                "11",
-                LOREM_IPSUM.substring(0, 20),
-                TodoItem.Companion.Priority.LOW,
-                true,
-                LocalDateTime.now(),
-                null,
-                LocalDateTime.now()
-            ),
-            TodoItem(
-                "12",
-                LOREM_IPSUM.substring(0, 50),
-                TodoItem.Companion.Priority.LOW,
-                false,
-                LocalDateTime.now(),
-                null,
-                LocalDateTime.now()
-            ),
-            TodoItem(
-                "13",
-                LOREM_IPSUM.substring(0, 100),
-                TodoItem.Companion.Priority.NORMAL,
-                false,
-                LocalDateTime.now()
-            ),
-            TodoItem(
-                "14",
-                LOREM_IPSUM.substring(0, 20),
-                TodoItem.Companion.Priority.NORMAL,
-                false,
-                LocalDateTime.now()
-            ),
-            TodoItem(
-                "15",
-                LOREM_IPSUM.substring(0, 20),
-                TodoItem.Companion.Priority.NORMAL,
-                false,
-                LocalDateTime.now()
-            ),
-            TodoItem(
-                "16",
-                LOREM_IPSUM.substring(0, 20),
-                TodoItem.Companion.Priority.NORMAL,
-                false,
-                LocalDateTime.now()
-            ),
-            TodoItem(
-                "17",
-                LOREM_IPSUM.substring(0, 20),
-                TodoItem.Companion.Priority.NORMAL,
-                false,
-                LocalDateTime.now()
-            ),
-            TodoItem(
-                "18",
-                LOREM_IPSUM.substring(0, 20),
-                TodoItem.Companion.Priority.NORMAL,
-                false,
-                LocalDateTime.now()
-            ),
-            TodoItem(
-                "19",
-                LOREM_IPSUM.substring(0, 20),
-                TodoItem.Companion.Priority.NORMAL,
-                false,
-                LocalDateTime.now()
-            ),
-            TodoItem(
-                "20",
-                LOREM_IPSUM.substring(0, 20),
-                TodoItem.Companion.Priority.NORMAL,
-                false,
-                LocalDateTime.now()
+                Calendar.getInstance()
             )
         )
     }

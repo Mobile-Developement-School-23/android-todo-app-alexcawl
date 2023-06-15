@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="YandexTodoApplicationTheme">
+        <attr name="surfaceColor" format="reference|color" />
+        <attr name="containerColor" format="reference|color" />
+        <attr name="successColor" format="reference|color" />
+        <attr name="failureColor" format="reference|color" />
+        <attr name="interactionColor" format="reference|color" />
+        <attr name="activatedColor" format="reference|color" />
+
+        <attr name="textPrimaryColor" format="reference|color" />
+        <attr name="textSecondaryColor" format="reference|color" />
+
+        <attr name="absWhite" format="reference|color" />
+        <attr name="absBlack" format="reference|color" />
+    </declare-styleable>
+</resources>

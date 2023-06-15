@@ -9,7 +9,7 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.YandexToDoApplication"
+        android:theme="@style/YandexToDoApplicationTheme"
         tools:targetApi="31">
         <activity
             android:name=".android.activity.MainActivity"

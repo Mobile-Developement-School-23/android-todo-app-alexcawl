@@ -17,17 +17,15 @@ import org.alexcawl.todoapp.data.model.TodoItem
 import org.alexcawl.todoapp.databinding.FragmentItemEditBinding
 import org.alexcawl.todoapp.extensions.removeAt
 import org.alexcawl.todoapp.extensions.set
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import java.util.*
 
 class ItemEditFragment : Fragment() {
     private val model: ItemViewModel by lazy {
         ViewModelProvider(this.requireActivity())[ItemViewModel::class.java]
     }
 
-    private lateinit var taskEditState: Pair<Int, TodoItem>
-    private var deadlineTimeState: LocalDateTime? = null
+    private lateinit var itemState: Pair<Int, TodoItem>
+    private var timeState: Calendar? = null
     private lateinit var binding: FragmentItemEditBinding
     private lateinit var navigationController: NavController
 
@@ -36,7 +34,7 @@ class ItemEditFragment : Fragment() {
 
         navigationController = findNavController()
         try {
-            taskEditState = initiateTaskEditState(arguments)
+            itemState = initiateTaskEditState(arguments)
         } catch (exception: IllegalStateException) {
             navigationController.navigateUp()
         }
@@ -56,18 +54,17 @@ class ItemEditFragment : Fragment() {
 
     @Throws(IllegalStateException::class)
     private fun initiateTaskEditState(args: Bundle?): Pair<Int, TodoItem> {
-        val identifier: String = args?.getString(TodoApplication.IDENTIFIER)
-            ?: throw IllegalStateException()
+        val identifier: String =
+            args?.getString(TodoApplication.IDENTIFIER) ?: throw IllegalStateException()
         val position: Int = model.todoItems.value?.indexOfFirst { it.identifier == identifier }
             ?: throw IllegalStateException()
-        val task: TodoItem = model.todoItems.value?.get(position)
-            ?: throw IllegalStateException()
+        val task: TodoItem = model.todoItems.value?.get(position) ?: throw IllegalStateException()
         return Pair(position, TodoItem.of(task))
     }
 
     private fun setLayoutContent() {
-        val task = taskEditState.second
-        deadlineTimeState = task.deadline
+        val task = itemState.second
+        timeState = task.deadline
         /*
         * Status Checkbox
         * */
@@ -82,7 +79,7 @@ class ItemEditFragment : Fragment() {
         }
 
         /*
-        * Priority Spinner TODO
+        * Priority Spinner
         * */
         binding.priority.taskPrioritySpinner.setSelection(
             when (task.priority) {
@@ -95,12 +92,12 @@ class ItemEditFragment : Fragment() {
         /*
         * Creation Time TextView
         * */
-        binding.taskCreationTimeTextview.text = task.creationTime.toString()
+        binding.taskCreationTimeTextview.text = model.representTimeUpToMinutes(task.creationTime)
 
         /*
         * Modifying Time TextView
         * */
-        binding.taskModifyingTimeTextview.text = (task.modifyingTime ?: "").toString()
+        binding.taskModifyingTimeTextview.text = model.representTimeUpToMinutes(task.modifyingTime)
 
         /*
         * Content TextView
@@ -111,7 +108,7 @@ class ItemEditFragment : Fragment() {
         * Deadline Switch
         * */
         binding.deadline.taskDeadlineSwitch.isChecked = task.deadline != null
-        binding.deadline.taskDeadlineTextview.text = (task.deadline ?: "").toString()
+        binding.deadline.taskDeadlineTextview.text = model.representTimeUpToDays(task.deadline)
 
         /*
         * Deadline CalendarView
@@ -121,16 +118,12 @@ class ItemEditFragment : Fragment() {
                 true -> View.VISIBLE
                 false -> View.GONE
             }
-        binding.deadline.taskDeadlineCalendarview.date = when (deadlineTimeState) {
-            null -> ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault()).toInstant()
-                .toEpochMilli()
-            else -> ZonedDateTime.of(deadlineTimeState, ZoneId.systemDefault()).toInstant()
-                .toEpochMilli()
-        }
+        binding.deadline.taskDeadlineCalendarview.date = task.deadline?.timeInMillis
+            ?: Calendar.getInstance().timeInMillis
     }
 
     private fun setLayoutCallback() {
-        val task = taskEditState.second
+        val task = itemState.second
 
         /*
         * Status Checkbox
@@ -172,9 +165,9 @@ class ItemEditFragment : Fragment() {
         binding.deadline.taskDeadlineSwitch.setOnCheckedChangeListener { _, isChecked ->
             task.deadline = when (isChecked) {
                 false -> null
-                true -> deadlineTimeState
+                true -> timeState
             }
-            binding.deadline.taskDeadlineTextview.text = (task.deadline ?: "").toString()
+            binding.deadline.taskDeadlineTextview.text = model.representTimeUpToDays(task.deadline)
             binding.deadline.taskDeadlineCalendarview.visibility = when (isChecked) {
                 true -> View.VISIBLE
                 false -> View.GONE
@@ -185,16 +178,16 @@ class ItemEditFragment : Fragment() {
         * Deadline CalendarView
         * */
         binding.deadline.taskDeadlineCalendarview.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            deadlineTimeState = LocalDateTime.of(year, month, dayOfMonth, 0, 0)
-            task.deadline = deadlineTimeState
-            binding.deadline.taskDeadlineTextview.text = (task.deadline ?: "").toString()
+            timeState = Calendar.Builder().setDate(year, month, dayOfMonth).build()
+            task.deadline = timeState
+            binding.deadline.taskDeadlineTextview.text = model.representTimeUpToDays(task.deadline)
         }
 
         /*
         * Delete Button
         * */
         binding.taskDeleteButton.setOnClickListener {
-            model.todoItems.removeAt(taskEditState.first)
+            model.todoItems.removeAt(itemState.first)
             navigationController.navigateUp()
         }
 
@@ -202,8 +195,8 @@ class ItemEditFragment : Fragment() {
         * Save Button
         * */
         binding.taskSaveButton.setOnClickListener {
-            task.modifyingTime = LocalDateTime.now()
-            model.todoItems[taskEditState.first] = task
+            task.modifyingTime = Calendar.getInstance()
+            model.todoItems[itemState.first] = task
             navigationController.navigateUp()
         }
     }

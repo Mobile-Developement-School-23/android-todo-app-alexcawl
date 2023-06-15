@@ -1,15 +1,15 @@
 package org.alexcawl.todoapp.data.model
 
-import java.time.LocalDateTime
+import java.util.Calendar
 
 data class TodoItem(
     val identifier: String,
     var text: String,
     var priority: Priority,
     var isDone: Boolean,
-    val creationTime: LocalDateTime,
-    var modifyingTime: LocalDateTime?,
-    var deadline: LocalDateTime?,
+    val creationTime: Calendar,
+    var modifyingTime: Calendar?,
+    var deadline: Calendar?,
 ) {
     companion object {
         enum class Priority {
@@ -30,7 +30,7 @@ data class TodoItem(
             )
         }
 
-        fun createEmpty(identifier: String, creationTime: LocalDateTime): TodoItem {
+        fun createEmpty(identifier: String, creationTime: Calendar): TodoItem {
             return TodoItem(
                 identifier,
                 "",
@@ -48,7 +48,7 @@ data class TodoItem(
         text: String,
         priority: Priority,
         isDone: Boolean,
-        creationTime: LocalDateTime,
+        creationTime: Calendar,
     ) : this(
         identifier,
         text,

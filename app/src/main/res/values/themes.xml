@@ -1,16 +1,22 @@
 <resources>
-    <style name="Theme.YandexToDoApplication" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/black</item>
-        <item name="colorPrimaryVariant">@color/gray_10</item>
-        <item name="colorOnPrimary">@color/white</item>
+    <style name="YandexToDoApplicationTheme"
+        parent="Theme.MaterialComponents.DayNight">
+        <item name="surfaceColor">@color/gray_1</item>
+        <item name="containerColor">@color/white</item>
+        <item name="successColor">@color/green</item>
+        <item name="failureColor">@color/red</item>
+        <item name="interactionColor">@color/blue</item>
+        <item name="textPrimaryColor">@color/gray_8</item>
+        <item name="textSecondaryColor">@color/gray_6</item>
+        <item name="activatedColor">@color/gray_3</item>
+        <item name="absWhite">@color/white</item>
+        <item name="absBlack">@color/black</item>
 
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/gray_9</item>
-        <item name="colorSecondaryVariant">@color/gray_8</item>
-        <item name="colorOnSecondary">@color/gray_2</item>
+        <item name="colorPrimary">?attr/surfaceColor</item>
+        <item name="colorPrimaryDark">?attr/surfaceColor</item>
+        <item name="android:textColorPrimary">?attr/textPrimaryColor</item>
+        <item name="colorAccent">?attr/interactionColor</item>
 
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>

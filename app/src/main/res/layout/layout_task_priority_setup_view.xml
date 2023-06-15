@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/shape_rounded_corners"
-    android:backgroundTint="@color/gray_1"
+    android:backgroundTint="?attr/containerColor"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="10dp">
@@ -17,24 +17,24 @@
         android:drawablePadding="10dp"
         android:gravity="start|center_vertical"
         android:text="@string/priority"
-        android:textColor="@color/gray_6"
+        android:textColor="?attr/textSecondaryColor"
         android:textSize="16sp"
         android:textStyle="bold"
         app:drawableStartCompat="@drawable/baseline_priority_high_24"
-        app:drawableTint="@color/red" />
+        app:drawableTint="?attr/failureColor" />
 
     <FrameLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:background="@drawable/shape_rounded_corners"
-        android:backgroundTint="@color/white">
+        android:backgroundTint="?attr/surfaceColor">
 
         <Spinner
             android:id="@+id/task_priority_spinner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:backgroundTint="@color/blue"
+            android:backgroundTint="?attr/interactionColor"
             android:entries="@array/priority_type"
             android:padding="15dp"
             android:spinnerMode="dropdown"

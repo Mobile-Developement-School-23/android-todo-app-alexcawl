@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/gray_1"
+    android:background="?attr/containerColor"
     android:gravity="start|center_vertical"
     android:orientation="horizontal"
     android:padding="10dp">
@@ -13,8 +13,8 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/shape_rounded_corners"
-        android:backgroundTint="@color/white"
-        android:buttonTint="@color/green"
+        android:backgroundTint="?attr/containerColor"
+        android:buttonTint="?attr/successColor"
         android:gravity="center" />
 
     <LinearLayout
@@ -28,10 +28,11 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="3"
-            android:padding="10dp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
             android:drawablePadding="10dp"
             android:gravity="start|center_vertical"
-            android:textColor="@color/gray_10"
+            android:textColor="?attr/textPrimaryColor"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -40,13 +41,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="10dp"
-            android:padding="10dp"
-            android:textColor="@color/gray_8"
-            android:textSize="15sp"
-            android:gravity="center_vertical"
-            android:textStyle="normal"
+            android:textColor="?attr/textSecondaryColor"
+            android:textSize="18sp"
+            android:paddingHorizontal="10dp"
+            android:gravity="start|center_vertical"
+            android:textStyle="italic"
             app:drawableStartCompat="@drawable/baseline_calendar_month_24"
-            app:drawableTint="@color/blue" />
+            app:drawableTint="?attr/interactionColor" />
     </LinearLayout>
 
 </LinearLayout>

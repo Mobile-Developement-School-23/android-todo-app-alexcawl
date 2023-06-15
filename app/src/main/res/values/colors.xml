@@ -7,7 +7,7 @@
     <!-- Surface colors -->
     <!-- White color variations -->
     <color name="white">#FFFFFFFF</color>
-    <color name="gray_1">#F0F0F0</color>
+    <color name="gray_1">#F5F5F5</color>
     <color name="gray_2">#FFD1D1D6</color>
     <color name="gray_3">#FFD1D1D6</color>
     <color name="gray_4">#FF8E8E93</color>

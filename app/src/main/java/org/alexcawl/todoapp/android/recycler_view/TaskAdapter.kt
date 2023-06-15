@@ -5,22 +5,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.color.MaterialColors.getColor
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.data.model.TodoItem
 import org.alexcawl.todoapp.databinding.LayoutTaskViewBinding
+import org.alexcawl.todoapp.service.ConverterService
 import java.util.*
 
 class TaskAdapter(
     private val list: MutableList<TodoItem>,
     private val onEditClicked: (TodoItem) -> Unit
 ) : RecyclerView.Adapter<TaskViewHolder>(), TaskMovementAdapter {
+    private val converterService: ConverterService = ConverterService.getInstance()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = LayoutTaskViewBinding.inflate(inflater, parent, false)
         return TaskViewHolder(
             binding,
-            parent.context.getColor(R.color.gray_2),
-            parent.context.getColor(R.color.gray_1)
+            getColor(parent, R.attr.activatedColor),
+            getColor(parent, R.attr.containerColor)
         )
     }
 
@@ -28,7 +32,6 @@ class TaskAdapter(
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val item = list[position]
-        val context = holder.itemView.context
         with(holder.binding) {
             /*
             * Checkbox
@@ -61,20 +64,20 @@ class TaskAdapter(
                     else -> 0
                 }, 0, 0, 0
             )
-            this.taskContent.compoundDrawables[0]?.setTint(context.getColor(
+            this.taskContent.compoundDrawables[0]?.setTint(
                 when(item.priority) {
-                    TodoItem.Companion.Priority.HIGH -> R.color.red
-                    else -> R.color.gray_8
+                    TodoItem.Companion.Priority.HIGH -> getColor(holder.itemView, R.attr.failureColor)
+                    else -> getColor(holder.itemView, R.attr.textSecondaryColor)
                 }
-            ))
+            )
 
             /*
             * Deadline
             * */
-            this.taskDeadline.visibility = when (item.deadline) {
+            this.taskDeadline.visibility = when (val deadline = item.deadline) {
                 null -> View.GONE
                 else -> {
-                    this.taskDeadline.text = item.deadline.toString()
+                    this.taskDeadline.text = converterService.getUpToDays(deadline)
                     View.VISIBLE
                 }
             }

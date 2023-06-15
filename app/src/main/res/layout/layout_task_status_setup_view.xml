@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/shape_rounded_corners"
-    android:backgroundTint="@color/gray_1"
-    android:padding="10dp"
-    android:gravity="center_vertical">
+    android:backgroundTint="?attr/containerColor"
+    android:gravity="center_vertical"
+    android:padding="10dp">
 
     <TextView
         android:layout_width="0dp"
@@ -15,23 +15,29 @@
         android:drawablePadding="10dp"
         android:gravity="start|center_vertical"
         android:text="@string/status"
-        android:textColor="@color/gray_6"
+        android:textColor="?attr/textSecondaryColor"
         android:textSize="16sp"
         android:textStyle="bold"
         app:drawableStartCompat="@drawable/baseline_check_box_24"
-        app:drawableTint="@color/green" />
+        app:drawableTint="?attr/successColor" />
 
-    <CheckBox
-        android:id="@+id/task_status_checkbox"
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:gravity="center_vertical"
+        android:layout_weight="1"
         android:background="@drawable/shape_rounded_corners"
-        android:backgroundTint="@color/white"
-        android:padding="5dp"
-        android:text="@string/task_is_done"
-        android:textColor="@color/gray_6"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:backgroundTint="?attr/surfaceColor">
+
+        <CheckBox
+            android:id="@+id/task_status_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:padding="5dp"
+            android:text="@string/task_is_done"
+            android:textColor="?attr/textPrimaryColor"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </FrameLayout>
 </LinearLayout>

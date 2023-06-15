@@ -8,7 +8,7 @@ interface TaskMovementAdapter {
      * an item is shifted, and not at the end of a "drop" event.
      *
      * @param fromPosition The start position of the moved item.
-     * @param toPosition   Then end position of the moved item.
+     * @param toPosition   The end position of the moved item.
      * @see RecyclerView.getAdapterPositionFor
      * @see RecyclerView.ViewHolder.getAdapterPosition
      */
@@ -16,7 +16,7 @@ interface TaskMovementAdapter {
 
 
     /**
-     * Called when an item has been dismissed by a swipe [<-].
+     * Called when an item has been moved left by a swipe [<-].
      *
      * @param position The position of the item dismissed.
      * @see RecyclerView.getAdapterPositionFor
@@ -25,7 +25,7 @@ interface TaskMovementAdapter {
     fun onItemMoveLeft(position: Int)
 
     /**
-     * Called when an item has been checked by a swipe [->].
+     * Called when an item has been moved right by a swipe [->].
      *
      * @param position The position of the item dismissed.
      * @see RecyclerView.getAdapterPositionFor

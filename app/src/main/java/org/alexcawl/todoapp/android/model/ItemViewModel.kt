@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import org.alexcawl.todoapp.data.model.TodoItem
 import org.alexcawl.todoapp.data.repository.TodoItemRepository
 import org.alexcawl.todoapp.service.ConverterService
-import java.time.LocalDateTime
+import java.util.*
 
 class ItemViewModel : ViewModel() {
     private val converterService: ConverterService = ConverterService.getInstance()
@@ -16,6 +16,19 @@ class ItemViewModel : ViewModel() {
         itemRepository.getItems().toMutableList()
     )
 
-    fun getRandomID(): String = LocalDateTime.now().toString()
+    fun getRandomID(): String = UUID.randomUUID().toString()
 
+    fun representTimeUpToDays(calendar: Calendar?): String {
+        return when (calendar) {
+            null -> ""
+            else -> converterService.getUpToDays(calendar)
+        }
+    }
+
+    fun representTimeUpToMinutes(calendar: Calendar?): String {
+        return when (calendar) {
+            null -> ""
+            else -> converterService.getUpToMinutes(calendar)
+        }
+    }
 }

@@ -1,13 +1,11 @@
 package org.alexcawl.todoapp.android.fragment
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.red
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.color.MaterialColors.getColor
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.android.application.TodoApplication
 import org.alexcawl.todoapp.android.model.ItemViewModel
@@ -32,7 +31,6 @@ class ItemShowFragment : Fragment() {
 
     private lateinit var binding: FragmentItemShowBinding
     private lateinit var navigationController: NavController
-    private lateinit var helper: ItemTouchHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,17 +72,20 @@ class ItemShowFragment : Fragment() {
         ItemTouchHelper(
             TaskSwipingLeftCallback(
                 adapter,
-                Color.RED,
+                getColor(view, R.attr.failureColor),
                 ContextCompat.getDrawable(this.requireContext(), R.drawable.baseline_delete_24)!!,
-                Color.WHITE
+                getColor(view, R.attr.absWhite)
             )
         ).attachToRecyclerView(binding.recyclerView)
         ItemTouchHelper(
             TaskSwipingRightCallback(
                 adapter,
-                Color.GREEN,
-                ContextCompat.getDrawable(this.requireContext(), R.drawable.baseline_check_box_24)!!,
-                Color.WHITE
+                getColor(view, R.attr.successColor),
+                ContextCompat.getDrawable(
+                    this.requireContext(),
+                    R.drawable.baseline_check_box_24
+                )!!,
+                getColor(view, R.attr.absWhite)
             )
         ).attachToRecyclerView(binding.recyclerView)
     }

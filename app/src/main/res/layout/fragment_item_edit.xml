@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="@color/white"
+    android:background="?attr/surfaceColor"
     tools:context=".android.fragment.ItemEditFragment">
 
     <include
@@ -40,7 +40,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/shape_rounded_corners"
-        android:backgroundTint="@color/gray_1"
+        android:backgroundTint="?attr/containerColor"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:padding="10dp"
@@ -62,11 +62,11 @@
                 android:drawablePadding="10dp"
                 android:gravity="start|center_vertical"
                 android:text="@string/created"
-                android:textColor="@color/gray_6"
+                android:textColor="?attr/textSecondaryColor"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:drawableStartCompat="@drawable/baseline_calendar_month_24"
-                app:drawableTint="@color/blue" />
+                app:drawableTint="?attr/interactionColor" />
 
             <TextView
                 android:id="@+id/task_creation_time_textview"
@@ -74,9 +74,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="6"
                 android:ellipsize="end"
-                android:gravity="start|center_vertical"
+                android:gravity="center"
                 android:maxLines="1"
-                android:textColor="@color/black"
+                android:textColor="?attr/textPrimaryColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -97,11 +97,11 @@
                 android:drawablePadding="10dp"
                 android:gravity="start|center_vertical"
                 android:text="@string/modified"
-                android:textColor="@color/gray_6"
+                android:textColor="?attr/textSecondaryColor"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:drawableStartCompat="@drawable/baseline_calendar_month_24"
-                app:drawableTint="@color/blue" />
+                app:drawableTint="?attr/interactionColor" />
 
             <TextView
                 android:id="@+id/task_modifying_time_textview"
@@ -109,9 +109,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="6"
                 android:ellipsize="end"
-                android:gravity="start|center_vertical"
+                android:gravity="center"
                 android:maxLines="1"
-                android:textColor="@color/black"
+                android:textColor="?attr/textPrimaryColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -132,7 +132,8 @@
         android:inputType="textMultiLine"
         android:minLines="1"
         android:padding="15dp"
-        android:textColor="@color/black"
+        android:textColor="?attr/textPrimaryColor"
+        android:textColorHint="?attr/textSecondaryColor"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/deadline"
         app:layout_constraintEnd_toEndOf="parent"
@@ -160,8 +161,9 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:backgroundTint="@color/red"
+        android:backgroundTint="?attr/failureColor"
         android:text="@string/delete"
+        android:textColor="?attr/absWhite"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/task_save_button"
         app:layout_constraintStart_toStartOf="parent" />
@@ -173,8 +175,9 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:backgroundTint="@color/green"
+        android:backgroundTint="?attr/successColor"
         android:text="@string/save"
+        android:textColor="?attr/absWhite"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/task_delete_button" />
