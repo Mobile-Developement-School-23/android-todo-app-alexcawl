@@ -10,14 +10,14 @@ import org.alexcawl.todoapp.data.model.TodoItem
 import org.alexcawl.todoapp.databinding.LayoutTaskViewBinding
 import java.util.*
 
-class ItemAdapter(
+class TaskAdapter(
     private val list: MutableList<TodoItem>,
     private val onEditClicked: (TodoItem) -> Unit
-) : RecyclerView.Adapter<ItemViewHolder>(), ItemTouchHelperAdapter {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+) : RecyclerView.Adapter<TaskViewHolder>(), TaskMovementAdapter {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = LayoutTaskViewBinding.inflate(inflater, parent, false)
-        return ItemViewHolder(
+        return TaskViewHolder(
             binding,
             parent.context.getColor(R.color.gray_2),
             parent.context.getColor(R.color.gray_1)
@@ -26,7 +26,7 @@ class ItemAdapter(
 
     override fun getItemCount(): Int = list.size
 
-    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val item = list[position]
         val context = holder.itemView.context
         with(holder.binding) {
@@ -96,17 +96,17 @@ class ItemAdapter(
         }
     }
 
-    override fun onItemRemove(position: Int) {
+    override fun onItemMoveLeft(position: Int) {
         list.removeAt(position)
         notifyItemRemoved(position)
     }
 
-    override fun onItemCheck(position: Int) {
+    override fun onItemMoveRight(position: Int) {
         list[position].isDone = !list[position].isDone
         notifyItemChanged(position)
     }
 
-    override fun onItemMove(fromPosition: Int, toPosition: Int) {
+    override fun onItemDrag(fromPosition: Int, toPosition: Int) {
         Collections.swap(list, fromPosition, toPosition)
         notifyItemMoved(fromPosition, toPosition)
     }

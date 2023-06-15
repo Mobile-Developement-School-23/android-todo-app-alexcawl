@@ -3,11 +3,11 @@ package org.alexcawl.todoapp.android.recycler_view
 import androidx.recyclerview.widget.RecyclerView
 import org.alexcawl.todoapp.databinding.LayoutTaskViewBinding
 
-class ItemViewHolder(
+class TaskViewHolder(
     val binding: LayoutTaskViewBinding,
     private val colorSelected: Int,
     private val colorDefault: Int
-) : RecyclerView.ViewHolder(binding.root), ItemTouchHelperViewHolder {
+) : RecyclerView.ViewHolder(binding.root), TaskMovementViewHolder {
     override fun onItemSelected() {
         binding.root.setBackgroundColor(colorSelected)
     }

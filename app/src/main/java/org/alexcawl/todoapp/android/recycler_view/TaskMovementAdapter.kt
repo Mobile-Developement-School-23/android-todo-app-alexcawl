@@ -2,7 +2,7 @@ package org.alexcawl.todoapp.android.recycler_view
 
 import androidx.recyclerview.widget.RecyclerView
 
-interface ItemTouchHelperAdapter {
+interface TaskMovementAdapter {
     /**
      * Called when an item has been dragged far enough to trigger a move. This is called every time
      * an item is shifted, and not at the end of a "drop" event.
@@ -12,7 +12,7 @@ interface ItemTouchHelperAdapter {
      * @see RecyclerView.getAdapterPositionFor
      * @see RecyclerView.ViewHolder.getAdapterPosition
      */
-    fun onItemMove(fromPosition: Int, toPosition: Int)
+    fun onItemDrag(fromPosition: Int, toPosition: Int)
 
 
     /**
@@ -22,7 +22,7 @@ interface ItemTouchHelperAdapter {
      * @see RecyclerView.getAdapterPositionFor
      * @see RecyclerView.ViewHolder.getAdapterPosition
      */
-    fun onItemRemove(position: Int)
+    fun onItemMoveLeft(position: Int)
 
     /**
      * Called when an item has been checked by a swipe [->].
@@ -31,5 +31,5 @@ interface ItemTouchHelperAdapter {
      * @see RecyclerView.getAdapterPositionFor
      * @see RecyclerView.ViewHolder.getAdapterPosition
      */
-    fun onItemCheck(position: Int)
+    fun onItemMoveRight(position: Int)
 }

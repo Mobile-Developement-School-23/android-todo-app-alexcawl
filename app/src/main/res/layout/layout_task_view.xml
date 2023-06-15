@@ -4,24 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/gray_1"
-    android:gravity="start"
+    android:gravity="start|center_vertical"
     android:orientation="horizontal"
     android:padding="10dp">
 
     <CheckBox
         android:id="@+id/task_checkbox"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:background="@drawable/shape_rounded_corners"
         android:backgroundTint="@color/white"
         android:buttonTint="@color/green"
         android:gravity="center" />
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="8"
         android:orientation="vertical">
 
         <TextView

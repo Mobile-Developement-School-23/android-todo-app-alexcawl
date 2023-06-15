@@ -2,7 +2,7 @@ package org.alexcawl.todoapp.android.recycler_view
 
 import androidx.recyclerview.widget.ItemTouchHelper
 
-interface ItemTouchHelperViewHolder {
+interface TaskMovementViewHolder {
     /**
      * Called when the [ItemTouchHelper] first registers an item as being moved or swiped.
      * Implementations should update the item view to indicate it's active state.

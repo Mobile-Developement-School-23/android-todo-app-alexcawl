@@ -31,7 +31,7 @@
         android:background="@drawable/selector_responsive_edit_text"
         android:gravity="start"
         android:hint="@string/enter_text"
-        android:inputType="text"
+        android:inputType="textMultiLine"
         android:minLines="1"
         android:padding="15dp"
         android:textColor="@color/black"
