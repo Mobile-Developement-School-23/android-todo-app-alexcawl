@@ -1,5 +1,5 @@
 # Yandex ToDo Application
-### Made by [Mikhail Babushkin](https://github.com/AlexCawl)
+### Made by [@ricardomilozio](https://github.com/AlexCawl)
 
 ## Project *killer-features*
 - Swiping both left & right
