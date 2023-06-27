@@ -1,54 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?attr/containerColor"
-    android:gravity="start|center_vertical"
-    android:orientation="horizontal"
-    android:padding="10dp">
+    android:padding="15dp"
+    android:background="?attr/colorSecondary"
+    android:layout_height="wrap_content">
 
-    <CheckBox
-        android:id="@+id/task_checkbox"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@drawable/shape_rounded_corners"
-        android:backgroundTint="?attr/containerColor"
-        android:buttonTint="?attr/successColor"
-        android:gravity="center" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/task_status"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/icon_checkbox_unchecked"
+        app:layout_constraintEnd_toStartOf="@id/task_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/task_text" />
 
-        <TextView
-            android:id="@+id/task_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="3"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="5dp"
-            android:drawablePadding="10dp"
-            android:gravity="start|center_vertical"
-            android:textColor="?attr/textPrimaryColor"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/task_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:text="@string/your_tasks"
+        android:textAppearance="@style/Body"
+        android:textColor="?attr/colorOnPrimary"
+        app:layout_constraintEnd_toStartOf="@id/task_info"
+        app:layout_constraintStart_toEndOf="@id/task_status"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/task_deadline"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawablePadding="10dp"
-            android:textColor="?attr/textSecondaryColor"
-            android:textSize="18sp"
-            android:paddingHorizontal="10dp"
-            android:gravity="start|center_vertical"
-            android:textStyle="italic"
-            app:drawableStartCompat="@drawable/baseline_calendar_month_24"
-            app:drawableTint="?attr/interactionColor" />
-    </LinearLayout>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/task_deadline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/your_tasks"
+        android:textAppearance="@style/Body"
+        android:textColor="?attr/colorOnTertiary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/task_text"
+        app:layout_constraintStart_toStartOf="@id/task_text"
+        app:layout_constraintTop_toBottomOf="@id/task_text"
+        app:layout_goneMarginBottom="10dp" />
 
-</LinearLayout>
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/task_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/icon_info"
+        android:tint="@color/gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/task_text"
+        app:layout_constraintTop_toTopOf="@id/task_text" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -11,11 +11,18 @@
     <string name="priority">Priority</string>
     <string name="delete">Delete</string>
     <string name="save">Save</string>
+    <string name="not_defined">Not defined</string>
 
     <string-array name="priority_type">
         <item>Normal</item>
         <item>Low</item>
         <item>High</item>
     </string-array>
+
+    <string name="sort_tasks">Sort tasks</string>
+    <string name="hide_done_tasks">Hide done tasks</string>
+    <string name="login">Login</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

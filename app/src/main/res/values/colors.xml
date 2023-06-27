@@ -1,28 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
+    <!-- Light Theme Colors -->
+        <!-- Support -->
+        <color name="lt_support_separator">#33000000</color>
+        <color name="lt_support_overlay">#0F000000</color>
 
-    <!-- Surface colors -->
-    <!-- White color variations -->
-    <color name="white">#FFFFFFFF</color>
-    <color name="gray_1">#F5F5F5</color>
-    <color name="gray_2">#FFD1D1D6</color>
-    <color name="gray_3">#FFD1D1D6</color>
-    <color name="gray_4">#FF8E8E93</color>
-    <color name="gray_5">#FF5C5C5C</color>
+        <!-- Label -->
+        <color name="lt_label_primary">#FF000000</color>
+        <color name="lt_label_secondary">#99000000</color>
+        <color name="lt_label_tertiary">#4D000000</color>
+        <color name="lt_label_disable">#26000000</color>
 
-    <!-- Black color variations -->
-    <color name="gray_6">#FF48484A</color>
-    <color name="gray_7">#FF3C3C3F</color>
-    <color name="gray_8">#FF252528</color>
-    <color name="gray_9">#FF2E2E2E</color>
-    <color name="gray_10">#FF161618</color>
-    <color name="black">#FF000000</color>
+        <!-- Color -->
+        <color name="lt_gray_light">#FFD1D1D6</color>
 
-    <!-- Status colors -->
-    <color name="red">#FFFF3B30</color>
-    <color name="green">#FF34C759</color>
-    <color name="blue">#FF007AFF</color>
+        <!-- Back -->
+        <color name="lt_back_primary">#FFF7F6F2</color>
+        <color name="lt_back_secondary">#FFFFFFFF</color>
+        <color name="lt_back_elevated">#FFFFFFFF</color>
+
+    <!-- Dark Theme Colors -->
+        <!-- Support -->
+        <color name="dt_support_separator">#33FFFFFF</color>
+        <color name="dt_support_overlay">#52000000</color>
+
+        <!-- Label -->
+        <color name="dt_label_primary">#FFFFFFFF</color>
+        <color name="dt_label_secondary">#99FFFFFF</color>
+        <color name="dt_label_tertiary">#66FFFFFF</color>
+        <color name="dt_label_disable">#26FFFFFF</color>
+
+        <!-- Color -->
+        <color name="dt_gray_light">#FF48484A</color>
+
+        <!-- Back -->
+        <color name="dt_back_primary">#FF161618</color>
+        <color name="dt_back_secondary">#FF252528</color>
+        <color name="dt_back_elevated">#FF3C3C3F</color>
+
+    <!-- Common Theme Colors -->
+        <color name="red">#FFFF3B30</color>
+        <color name="green">#FF34C759</color>
+        <color name="blue">#FF007AFF</color>
+        <color name="gray">#FF8E8E93</color>
+        <color name="white">#FFFFFFFF</color>
 </resources>

@@ -3,35 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
-    app:startDestination="@id/itemShowFragment">
-
+    app:startDestination="@id/taskShowFragment">
     <fragment
-        android:id="@+id/itemShowFragment"
-        android:name="org.alexcawl.todoapp.android.fragment.ItemShowFragment"
-        android:label="@string/your_tasks"
-        tools:layout="@layout/fragment_item_show">
-
+        android:id="@+id/taskShowFragment"
+        android:name="org.alexcawl.todoapp.presentation.fragment.TaskShowFragment"
+        android:label="fragment_task_show"
+        tools:layout="@layout/fragment_task_show">
         <action
-            android:id="@+id/action_taskShow_to_taskAdd"
-            app:destination="@id/itemAddFragment" />
+            android:id="@+id/taskAddAction"
+            app:destination="@id/taskAddFragment" />
         <action
-            android:id="@+id/action_taskShow_to_taskEdit"
-            app:destination="@id/itemEditFragment" />
+            android:id="@+id/taskEditAction"
+            app:destination="@id/taskEditFragment" />
     </fragment>
-
     <fragment
-        android:id="@+id/itemAddFragment"
-        android:name="org.alexcawl.todoapp.android.fragment.ItemAddFragment"
-        android:label="@string/add_task"
-        tools:layout="@layout/fragment_item_add" />
-
-    <fragment
-        android:id="@+id/itemEditFragment"
-        android:name="org.alexcawl.todoapp.android.fragment.ItemEditFragment"
-        android:label="@string/edit_task">
-
+        android:id="@+id/taskEditFragment"
+        android:name="org.alexcawl.todoapp.presentation.fragment.TaskEditFragment"
+        android:label="fragment_task_modify"
+        tools:layout="@layout/fragment_task_edit">
         <argument
-            android:name="identifier"
+            android:name="UUID"
             app:argType="string" />
+        <argument
+            android:name="isEnabled"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
+    <fragment
+        android:id="@+id/taskAddFragment"
+        android:name="org.alexcawl.todoapp.presentation.fragment.TaskAddFragment"
+        android:label="TaskAddFragment" />
 </navigation>
