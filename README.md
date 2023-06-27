@@ -19,13 +19,15 @@
 3. Навигация переживает поворот экрана, но данные во фрагменты нет. Вернее переживают, но не все. Тоже пофикшу при подключении ROOM.
 4. TodoItemsRepository сделан для мока данных! Реализован как singleton. Но пока только мокает данные! Данные добавляются, recycler view перерисовывает, все классно, но LiveData живет в ViewModel. Просто поэкспериментировал с observable list в LiveData с помощью extensions. Поэтому и не вызывается метод в ItemsTodoRepository :)
 
-## Screenshots
+## Homework [1] - refactoring
+В соответствии с советами ревьювера (прекрасными советами, между прочим) сделал:
+1. Переход на Flow
+2. Баги в UI - теперь DatePickerDialog, а не вылезающий календарь
+3. Переход в Clean Architecture
+4. Дизайн по Figma
+5. Collapsing Toolbar (с багом открытия после navigate Up - но пофикшу, обещаю...)
+6. Diff Util для Recycler View
 
-![Dark Theme](ScreenshotDarkTheme.png)
 
-![Main Screen](ScreenshotMainScreen.png)
-
-![Edit Task Screen](ScreenshotEditTask.png)
-
-![Add Task Screen](ScreenshotAddTask.png)
-
+Что спёр (позаимствовал) из репозитория: экстеншены для вьюх, утилитные методы для преобразования даты в корректный формат, организация неймспейсов.
+Надеюсь, что это не особо критично...
