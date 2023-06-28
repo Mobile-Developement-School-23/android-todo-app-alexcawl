@@ -1,6 +1,7 @@
 package org.alexcawl.todoapp.presentation.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +21,7 @@ import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.FragmentTaskAddBinding
-import org.alexcawl.todoapp.domain.model.TaskModel
+import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.util.createDatePicker
 import org.alexcawl.todoapp.presentation.util.createDateString
@@ -36,7 +37,7 @@ class TaskAddFragment : Fragment() {
         get() = _binding!!
 
     private var textFieldValue: String = ""
-    private var priorityFieldValue: TaskModel.Companion.Priority = TaskModel.Companion.Priority.NORMAL
+    private var priorityFieldValue: Priority = Priority.BASIC
     private var deadlineFieldValue: Long? = null
 
     override fun onCreateView(
@@ -72,6 +73,7 @@ class TaskAddFragment : Fragment() {
     private fun setupAddButton(button: AppCompatButton, navController: NavController) {
         button.setOnClickListener {
             lifecycle.coroutineScope.launch {
+                Log.println(Log.INFO, "DEADLINE", "$deadlineFieldValue")
                 model.addTask(textFieldValue, priorityFieldValue, deadlineFieldValue)
                 navController.navigateUp()
             }
@@ -93,15 +95,15 @@ class TaskAddFragment : Fragment() {
                 id: Long
             ) {
                 priorityFieldValue = when (position) {
-                    0 -> TaskModel.Companion.Priority.NORMAL
-                    1 -> TaskModel.Companion.Priority.LOW
-                    else -> TaskModel.Companion.Priority.HIGH
+                    0 -> Priority.BASIC
+                    1 -> Priority.LOW
+                    else -> Priority.IMPORTANT
                 }
                 textView.text = priorityFieldValue.toString().lowercase(Locale.ROOT)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                priorityFieldValue = TaskModel.Companion.Priority.NORMAL
+                priorityFieldValue = Priority.BASIC
                 textView.text = priorityFieldValue.toString().lowercase(Locale.ROOT)
             }
         }
@@ -120,6 +122,7 @@ class TaskAddFragment : Fragment() {
                     deadlineFieldValue = dateStringToTimestamp(dateString)
                     textView.text = dateString
                     clickableArea.isClickable = true
+                    Log.println(Log.INFO, "DEADLINE", "$deadlineFieldValue")
                 }
                 false -> {
                     textView.text = switch.context.getText(R.string.not_defined)
@@ -135,5 +138,6 @@ class TaskAddFragment : Fragment() {
                 deadlineFieldValue = dateStringToTimestamp(timestamp)
             }.show()
         }
+        clickableArea.isClickable = false
     }
 }

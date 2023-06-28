@@ -20,6 +20,8 @@
         android:id="@+id/task_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:drawableStart="@drawable/icon_priority_high"
+        android:drawablePadding="5dp"
         android:ellipsize="end"
         android:maxLines="3"
         android:text="@string/your_tasks"

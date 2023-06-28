@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.LayoutTaskViewBinding
+import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.domain.model.TaskModel
 import org.alexcawl.todoapp.presentation.util.gone
 import org.alexcawl.todoapp.presentation.util.toDateFormat
@@ -18,17 +19,22 @@ class TaskItemViewHolder(
     private val onEditClicked: (TaskModel) -> Unit,
     private val onInfoClicked: (TaskModel) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
+    private var _task: TaskModel? = null
+    val task: TaskModel
+        get() = _task!!
+
     fun onBind(task: TaskModel) {
+        _task = task
         with(binding) {
-            setupTaskStatus(taskStatus, task)
-            setupTaskInfo(taskInfo, task)
-            setupTaskText(taskText, task)
-            setupTaskDeadline(taskDeadline, task)
-            setupTaskEdit(root, task)
+            setupTaskStatus(taskStatus)
+            setupTaskInfo(taskInfo)
+            setupTaskText(taskText)
+            setupTaskDeadline(taskDeadline)
+            setupTaskEdit(root)
         }
     }
 
-    private fun setupTaskStatus(view: AppCompatImageView, task: TaskModel) {
+    private fun setupTaskStatus(view: AppCompatImageView) {
         val taskPriority = task.priority
         val taskStatus = task.isDone
         with(view) {
@@ -38,7 +44,7 @@ class TaskItemViewHolder(
                         view.context, R.drawable.icon_checkbox_done
                     )
                     false -> when (taskPriority) {
-                        TaskModel.Companion.Priority.HIGH -> ContextCompat.getDrawable(
+                        Priority.IMPORTANT -> ContextCompat.getDrawable(
                             view.context, R.drawable.icon_checkbox_unchecked_high
                         )
                         else -> ContextCompat.getDrawable(
@@ -50,40 +56,37 @@ class TaskItemViewHolder(
         }
     }
 
-    private fun setupTaskText(view: AppCompatTextView, task: TaskModel) {
-        val taskText: String = task.text
-        val taskPriority = task.priority
-        val taskStatus = task.isDone
+    private fun setupTaskText(view: AppCompatTextView) {
         with(view) {
-            text = taskText
-            compoundDrawables[0] = when (taskPriority) {
-                TaskModel.Companion.Priority.HIGH -> ContextCompat.getDrawable(
+            text = task.text
+            val drawable = when (task.priority) {
+                Priority.IMPORTANT -> ContextCompat.getDrawable(
                     view.context, R.drawable.icon_priority_high
                 )
-                TaskModel.Companion.Priority.LOW -> ContextCompat.getDrawable(
+                Priority.LOW -> ContextCompat.getDrawable(
                     view.context, R.drawable.icon_priority_low
                 )
                 else -> null
-            }
-            compoundDrawables.getOrNull(0)?.setTint(
-                when (taskPriority) {
-                    TaskModel.Companion.Priority.HIGH -> ContextCompat.getColor(
+            }?.apply {
+                setTint(when (task.priority) {
+                    Priority.IMPORTANT -> ContextCompat.getColor(
                         view.context, R.color.red
                     )
-                    TaskModel.Companion.Priority.LOW -> ContextCompat.getColor(
+                    Priority.LOW -> ContextCompat.getColor(
                         view.context, R.color.gray
                     )
                     else -> ContextCompat.getColor(view.context, R.color.white)
-                }
-            )
-            paintFlags = when (taskStatus) {
+                })
+            }
+            setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
+            paintFlags = when (task.isDone) {
                 true -> paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 false -> paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
             }
         }
     }
 
-    private fun setupTaskDeadline(view: AppCompatTextView, task: TaskModel) {
+    private fun setupTaskDeadline(view: AppCompatTextView) {
         when (val deadline = task.deadline) {
             null -> view.gone()
             else -> {
@@ -92,11 +95,11 @@ class TaskItemViewHolder(
         }
     }
 
-    private fun setupTaskInfo(view: AppCompatImageButton, task: TaskModel) {
+    private fun setupTaskInfo(view: AppCompatImageButton) {
         view.setOnClickListener { onInfoClicked(task) }
     }
 
-    private fun setupTaskEdit(view: View, task: TaskModel) {
+    private fun setupTaskEdit(view: View) {
         view.setOnClickListener { onEditClicked(task) }
     }
 }

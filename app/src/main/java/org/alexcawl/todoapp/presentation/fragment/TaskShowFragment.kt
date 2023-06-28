@@ -17,14 +17,16 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.FragmentTaskShowBinding
-import org.alexcawl.todoapp.presentation.adapter.OnItemDragCallback
+import org.alexcawl.todoapp.domain.util.ValidationException
 import org.alexcawl.todoapp.presentation.adapter.OnItemSwipeCallback
 import org.alexcawl.todoapp.presentation.adapter.TaskItemAdapter
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
-import org.alexcawl.todoapp.presentation.util.TodoApplication
 import org.alexcawl.todoapp.presentation.util.snackbar
 
 class TaskShowFragment : Fragment() {
@@ -32,6 +34,7 @@ class TaskShowFragment : Fragment() {
         ViewModelProvider(this.requireActivity())[TaskViewModel::class.java]
     }
 
+    private var isVisibilityAllActive: MutableStateFlow<Boolean> = MutableStateFlow(true)
     private var _binding: FragmentTaskShowBinding? = null
     private val binding: FragmentTaskShowBinding
         get() = _binding!!
@@ -48,20 +51,26 @@ class TaskShowFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val navigationController = findNavController()
         setupActionButton(binding.fab, navigationController)
-        setupVisibilityButton(binding.visibilityCollapsedButton)
-        setupOrderingButton(binding.orderCollapsedButton)
         setupRecyclerView(binding.recyclerView, navigationController)
+        setupVisibilityButton(binding.visibilityCollapsedButton)
+        setupUpdateButton(binding.orderCollapsedButton)
     }
 
     private fun setupVisibilityButton(view: AppCompatImageButton) {
         view.setOnClickListener {
-            view.snackbar("TODO VISIBILITY") // TODO
+            isVisibilityAllActive.value = isVisibilityAllActive.value.not()
+            view.setImageDrawable(
+                when(isVisibilityAllActive.value) {
+                    true -> ContextCompat.getDrawable(view.context, R.drawable.icon_visibility_on)
+                    false -> ContextCompat.getDrawable(view.context, R.drawable.icon_visibility_off)
+                }
+            )
         }
     }
 
-    private fun setupOrderingButton(view: AppCompatImageButton) {
+    private fun setupUpdateButton(view: AppCompatImageButton) {
         view.setOnClickListener {
-            view.snackbar("TODO ORDERING") // TODO
+            view.snackbar("TODO UPDATE") // TODO
         }
     }
 
@@ -81,8 +90,8 @@ class TaskShowFragment : Fragment() {
                 navController.navigate(
                     R.id.taskEditAction,
                     bundleOf(
-                        TodoApplication.UUID to it.id.toString(),
-                        TodoApplication.isEnabled to true
+                        "UUID" to it.id.toString(),
+                        "isEnabled" to true
                     )
                 )
             },
@@ -90,46 +99,47 @@ class TaskShowFragment : Fragment() {
                 navController.navigate(
                     R.id.taskEditAction,
                     bundleOf(
-                        TodoApplication.UUID to it.id.toString(),
-                        TodoApplication.isEnabled to false
+                        "UUID" to it.id.toString(),
+                        "isEnabled" to false
                     )
                 )
             },
             onTaskSwipeLeft = {
-                lifecycle.coroutineScope.launch {
+                lifecycle.coroutineScope.launch(Dispatchers.IO) {
                     viewModel.removeTask(it)
                 }
             },
             onTaskSwipeRight = {
-                lifecycle.coroutineScope.launch {
-                    viewModel.setTask(it)
-                }
-            },
-            onTaskDrag = {
-                lifecycle.coroutineScope.launch {
-                    viewModel.setTasks(it)
+                lifecycle.coroutineScope.launch(Dispatchers.IO) {
+                    try {
+                        viewModel.setTask(it)
+                    } catch (exception: ValidationException) {
+                        view.snackbar("Blank text is not allowed!")
+                    }
                 }
             }
         )
 
-        // Flow resource binding
-        lifecycle.coroutineScope.launch {
-            viewModel.getAllTasks().collect {
-                viewAdapter.submitList(it)
+        lifecycle.coroutineScope.launch(Dispatchers.IO) {
+            isVisibilityAllActive.collectLatest { state ->
+                when(state) {
+                    true -> {
+                        viewModel.getAllTasks().collectLatest {
+                            viewAdapter.submitList(it)
+                        }
+                    }
+                    false -> {
+                        viewModel.getUncompletedTasks().collectLatest {
+                            viewAdapter.submitList(it)
+                        }
+                    }
+                }
             }
         }
 
-        // Drag support helper
-        val dragHelper = ItemTouchHelper(
-            OnItemDragCallback { from, to -> viewAdapter.onItemDrag(from, to) }
-        )
-
-        // Swipe support helper
         val swipeHelper = ItemTouchHelper(
             OnItemSwipeCallback(
-                { position ->
-                    viewAdapter.onItemSwipeLeft(position)
-                },
+                { position -> viewAdapter.onItemSwipeLeft(position) },
                 { position -> viewAdapter.onItemSwipeRight(position) },
                 ContextCompat.getDrawable(requireContext(), R.drawable.icon_check),
                 ColorDrawable(ContextCompat.getColor(requireContext(), R.color.green)),
@@ -144,7 +154,6 @@ class TaskShowFragment : Fragment() {
         with(view) {
             layoutManager = viewManager
             adapter = viewAdapter
-            dragHelper.attachToRecyclerView(view)
             swipeHelper.attachToRecyclerView(view)
         }
     }

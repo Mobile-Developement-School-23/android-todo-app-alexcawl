@@ -1,5 +1,6 @@
 package org.alexcawl.todoapp.domain.model
 
+import org.alexcawl.todoapp.data.database.entity.TaskEntity
 import java.util.*
 
 data class TaskModel(
@@ -11,27 +12,15 @@ data class TaskModel(
     var deadline: Long? = null,
     var modifyingTime: Long? = null
 ) {
-    companion object {
-        enum class Priority {
-            LOW,
-            NORMAL,
-            HIGH
-        }
-    }
-
     constructor(id: UUID, creationTime: Long) : this(
-        id,
-        "",
-        Priority.NORMAL,
-        false,
-        creationTime
+        id, "", Priority.BASIC, false, creationTime
     )
 
     constructor(id: UUID) : this(
-        id,
-        "",
-        Priority.NORMAL,
-        false,
-        System.currentTimeMillis()
+        id, "", Priority.BASIC, false, System.currentTimeMillis()
+    )
+
+    fun toEntity(): TaskEntity = TaskEntity(
+        id.toString(), text, priority, isDone, creationTime, deadline, modifyingTime
     )
 }

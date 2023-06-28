@@ -13,9 +13,11 @@ import androidx.lifecycle.coroutineScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.FragmentTaskEditBinding
+import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.domain.model.TaskModel
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.util.*
@@ -28,10 +30,6 @@ class TaskEditFragment : Fragment() {
     private var _binding: FragmentTaskEditBinding? = null
     private val binding: FragmentTaskEditBinding
         get() = _binding!!
-
-    private var _task: TaskModel? = null
-    private val task: TaskModel
-        get() = _task!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,23 +53,32 @@ class TaskEditFragment : Fragment() {
         try {
             val (id: UUID, isEnabled: Boolean) = getID(arguments)
             lifecycle.coroutineScope.launch {
-                model.getAllTasks().collect { list ->
-                    _task = list.find { task -> task.id == id }!!
-
-                    with(binding) {
-                        setupCloseButton(taskCloseButton, navController)
-                        setupSaveButton(taskSaveButton, navController, isEnabled)
-                        setupDeleteButton(taskDeleteButton, navController, isEnabled)
-                        setupContentScriber(taskContentText, isEnabled)
-                        setupPriorityPicker(taskPrioritySpinner, taskPriorityText, isEnabled)
-                        setupDeadlinePicker(
-                            taskDeadlineSwitch,
-                            taskDeadlineText,
-                            taskDeadlinePickerArea,
-                            isEnabled
-                        )
-                        setupDateInfo(taskCreationTimeText, taskModifyingTimeText, taskModifyingTimeArea)
-                    }
+                model.getTaskById(id).collectLatest { result ->
+                    result.fold(
+                        onSuccess = {
+                            with(binding) {
+                                setupCloseButton(taskCloseButton, navController)
+                                setupSaveButton(taskSaveButton, navController, isEnabled, it)
+                                setupDeleteButton(taskDeleteButton, navController, isEnabled, it)
+                                setupContentScriber(taskContentText, isEnabled, it)
+                                setupPriorityPicker(taskPrioritySpinner, taskPriorityText, isEnabled, it)
+                                setupDeadlinePicker(
+                                    taskDeadlineSwitch,
+                                    taskDeadlineText,
+                                    taskDeadlinePickerArea,
+                                    isEnabled,
+                                    it
+                                )
+                                setupDateInfo(
+                                    taskCreationTimeText,
+                                    taskModifyingTimeText,
+                                    taskModifyingTimeArea,
+                                    it
+                                )
+                            }
+                        },
+                        onFailure = {}
+                    )
                 }
             }
         } catch (exception: IllegalArgumentException) {
@@ -82,11 +89,11 @@ class TaskEditFragment : Fragment() {
 
     @Throws(IllegalArgumentException::class)
     private fun getID(arguments: Bundle?): Pair<UUID, Boolean> {
-        val stringID = arguments?.getString(TodoApplication.UUID)
+        val stringID = arguments?.getString("UUID")
             ?: throw IllegalArgumentException("Null UUID!")
         val uuid = UUID.fromString(stringID)
             ?: throw IllegalArgumentException("Non-valid UUID: $stringID")
-        val isEnabled = arguments.getBoolean(TodoApplication.isEnabled)
+        val isEnabled = arguments.getBoolean("isEnabled")
         return Pair(uuid, isEnabled)
     }
 
@@ -99,16 +106,18 @@ class TaskEditFragment : Fragment() {
     private fun setupSaveButton(
         button: AppCompatButton,
         navController: NavController,
-        isEnabled: Boolean
+        isEnabled: Boolean,
+        task: TaskModel
     ) {
         when (isEnabled) {
             true -> button.setOnClickListener {
+                navController.navigateUp()
                 lifecycle.coroutineScope.launch {
                     model.setTask(task)
-                    navController.navigateUp()
                 }
             }
             false -> {
+                // Костыль
                 button.disable()
                 button.text = ""
             }
@@ -118,20 +127,25 @@ class TaskEditFragment : Fragment() {
     private fun setupDeleteButton(
         button: AppCompatButton,
         navController: NavController,
-        isEnabled: Boolean
+        isEnabled: Boolean,
+        task: TaskModel
     ) {
         when (isEnabled) {
             true -> button.setOnClickListener {
+                navController.navigateUp()
                 lifecycle.coroutineScope.launch {
                     model.removeTask(task)
-                    navController.navigateUp()
                 }
             }
             false -> button.invisible()
         }
     }
 
-    private fun setupContentScriber(editText: AppCompatEditText, isEnabled: Boolean) {
+    private fun setupContentScriber(
+        editText: AppCompatEditText,
+        isEnabled: Boolean,
+        task: TaskModel
+    ) {
         editText.setText(task.text)
         when (isEnabled) {
             true -> editText.addTextChangedListener { task.text = it.toString() }
@@ -142,8 +156,17 @@ class TaskEditFragment : Fragment() {
     private fun setupPriorityPicker(
         spinner: AppCompatSpinner,
         textView: AppCompatTextView,
-        isEnabled: Boolean
+        isEnabled: Boolean,
+        task: TaskModel
     ) {
+        textView.text = task.priority.toString().lowercase(Locale.ROOT)
+        spinner.setSelection(
+            when (task.priority) {
+                Priority.LOW -> 1
+                Priority.IMPORTANT -> 2
+                else -> 0
+            }
+        )
         when (isEnabled) {
             true -> spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
@@ -153,19 +176,16 @@ class TaskEditFragment : Fragment() {
                     id: Long
                 ) {
                     task.priority = when (position) {
-                        0 -> TaskModel.Companion.Priority.NORMAL
-                        1 -> TaskModel.Companion.Priority.LOW
-                        else -> TaskModel.Companion.Priority.HIGH
+                        0 -> Priority.BASIC
+                        1 -> Priority.LOW
+                        else -> Priority.IMPORTANT
                     }
                     textView.text = task.priority.toString().lowercase(Locale.ROOT)
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
-            false -> {
-                textView.text = task.priority.toString().lowercase(Locale.ROOT)
-                spinner.gone()
-            }
+            false -> spinner.gone()
         }
     }
 
@@ -173,9 +193,11 @@ class TaskEditFragment : Fragment() {
         switch: SwitchCompat,
         textView: AppCompatTextView,
         clickableArea: View,
-        isEnabled: Boolean
+        isEnabled: Boolean,
+        task: TaskModel
     ) {
-        textView.text = task.deadline?.toDateFormat() ?: textView.context.getText(R.string.not_defined)
+        textView.text =
+            task.deadline?.toDateFormat() ?: textView.context.getText(R.string.not_defined)
         when (isEnabled) {
             true -> {
                 switch.setOnCheckedChangeListener { _, isChecked ->
@@ -210,7 +232,8 @@ class TaskEditFragment : Fragment() {
     private fun setupDateInfo(
         creationDateTextView: AppCompatTextView,
         modifyingDateTextView: AppCompatTextView,
-        modifyingDateArea: View
+        modifyingDateArea: View,
+        task: TaskModel
     ) {
         val creationDate = task.creationTime
         val modifyingDate = task.modifyingTime
