@@ -1,6 +1,7 @@
 package org.alexcawl.todoapp.presentation.model
 
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.domain.model.TaskModel
@@ -15,6 +16,10 @@ class TaskViewModel : ViewModel() {
     private val getUncompletedCase = TaskGetUncompletedUseCase
     private val getSingleCase = TaskGetByIdUseCase
     private val removeCase = TaskRemoveUseCase
+
+    private val _visibility: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val visibility: StateFlow<Boolean> get() = _visibility
+
     fun getAllTasks(): StateFlow<List<TaskModel>> = getAllCase()
 
     fun getUncompletedTasks(): StateFlow<List<TaskModel>> = getUncompletedCase()
@@ -32,4 +37,8 @@ class TaskViewModel : ViewModel() {
 
     @Throws(ValidationException::class)
     suspend fun setTask(task: TaskModel): Unit = editCase(task)
+
+    fun invertVisibilityState() {
+        _visibility.value = _visibility.value.not()
+    }
 }

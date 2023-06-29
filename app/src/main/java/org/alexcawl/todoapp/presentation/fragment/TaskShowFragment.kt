@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
@@ -30,11 +30,13 @@ import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.util.snackbar
 
 class TaskShowFragment : Fragment() {
-    private val viewModel: TaskViewModel by lazy {
+    private val model: TaskViewModel by lazy {
         ViewModelProvider(this.requireActivity())[TaskViewModel::class.java]
     }
 
-    private var isVisibilityAllActive: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    private val visibility: StateFlow<Boolean> by lazy {
+        model.visibility
+    }
     private var _binding: FragmentTaskShowBinding? = null
     private val binding: FragmentTaskShowBinding
         get() = _binding!!
@@ -57,10 +59,17 @@ class TaskShowFragment : Fragment() {
     }
 
     private fun setupVisibilityButton(view: AppCompatImageButton) {
+        view.setImageDrawable(
+            when(visibility.value) {
+                true -> ContextCompat.getDrawable(view.context, R.drawable.icon_visibility_on)
+                false -> ContextCompat.getDrawable(view.context, R.drawable.icon_visibility_off)
+            }
+        )
+
         view.setOnClickListener {
-            isVisibilityAllActive.value = isVisibilityAllActive.value.not()
+            model.invertVisibilityState()
             view.setImageDrawable(
-                when(isVisibilityAllActive.value) {
+                when(visibility.value) {
                     true -> ContextCompat.getDrawable(view.context, R.drawable.icon_visibility_on)
                     false -> ContextCompat.getDrawable(view.context, R.drawable.icon_visibility_off)
                 }
@@ -81,10 +90,7 @@ class TaskShowFragment : Fragment() {
     }
 
     private fun setupRecyclerView(view: RecyclerView, navController: NavController) {
-        // Layout manager
         val viewManager = LinearLayoutManager(context)
-
-        // RecyclerViewAdapter
         val viewAdapter = TaskItemAdapter(
             onEditClicked = {
                 navController.navigate(
@@ -106,13 +112,13 @@ class TaskShowFragment : Fragment() {
             },
             onTaskSwipeLeft = {
                 lifecycle.coroutineScope.launch(Dispatchers.IO) {
-                    viewModel.removeTask(it)
+                    model.removeTask(it)
                 }
             },
             onTaskSwipeRight = {
                 lifecycle.coroutineScope.launch(Dispatchers.IO) {
                     try {
-                        viewModel.setTask(it)
+                        model.setTask(it)
                     } catch (exception: ValidationException) {
                         view.snackbar("Blank text is not allowed!")
                     }
@@ -121,15 +127,15 @@ class TaskShowFragment : Fragment() {
         )
 
         lifecycle.coroutineScope.launch(Dispatchers.IO) {
-            isVisibilityAllActive.collectLatest { state ->
+            visibility.collectLatest { state ->
                 when(state) {
                     true -> {
-                        viewModel.getAllTasks().collectLatest {
+                        model.getAllTasks().collectLatest {
                             viewAdapter.submitList(it)
                         }
                     }
                     false -> {
-                        viewModel.getUncompletedTasks().collectLatest {
+                        model.getUncompletedTasks().collectLatest {
                             viewAdapter.submitList(it)
                         }
                     }
