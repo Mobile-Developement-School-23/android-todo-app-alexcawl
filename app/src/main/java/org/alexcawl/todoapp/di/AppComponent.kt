@@ -7,7 +7,7 @@ import org.alexcawl.todoapp.presentation.fragment.TaskShowFragment
 import javax.inject.Singleton
 
 @Singleton
-@Component(dependencies = [], modules = [AppModule::class, DataModule::class, DomainModule::class])
+@Component(dependencies = [], modules = [AppModule::class, DatabaseModule::class, DomainModule::class, NetworkModule::class])
 interface AppComponent {
     fun inject(fragment: TaskShowFragment)
 

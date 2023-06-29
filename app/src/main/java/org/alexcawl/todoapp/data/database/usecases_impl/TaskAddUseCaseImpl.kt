@@ -1,7 +1,7 @@
 package org.alexcawl.todoapp.data.database.usecases_impl
 
 import org.alexcawl.todoapp.domain.model.Priority
-import org.alexcawl.todoapp.domain.service.TaskRepository
+import org.alexcawl.todoapp.domain.repository.TaskRepository
 import org.alexcawl.todoapp.domain.usecases.TaskAddUseCase
 
 class TaskAddUseCaseImpl(

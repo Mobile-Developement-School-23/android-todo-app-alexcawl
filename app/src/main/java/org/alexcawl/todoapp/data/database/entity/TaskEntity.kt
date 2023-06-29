@@ -4,8 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.alexcawl.todoapp.domain.model.Priority
-import org.alexcawl.todoapp.domain.model.TaskModel
-import java.util.*
 
 @Entity(tableName = "tasks")
 data class TaskEntity(
@@ -16,8 +14,4 @@ data class TaskEntity(
     @ColumnInfo(name = "creation_time") val creationTime: Long,
     @ColumnInfo(name = "deadline") val deadline: Long? = null,
     @ColumnInfo(name = "modifying_time") val modifyingTime: Long? = null
-) {
-    fun toModel(): TaskModel = TaskModel(
-        UUID.fromString(id), text, priority, isDone, creationTime, deadline, modifyingTime
-    )
-}
+)

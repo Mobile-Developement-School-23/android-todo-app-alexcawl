@@ -1,6 +1,5 @@
 package org.alexcawl.todoapp.domain.model
 
-import org.alexcawl.todoapp.data.database.entity.TaskEntity
 import java.util.*
 
 data class TaskModel(
@@ -20,7 +19,4 @@ data class TaskModel(
         id, "", Priority.BASIC, false, System.currentTimeMillis()
     )
 
-    fun toEntity(): TaskEntity = TaskEntity(
-        id.toString(), text, priority, isDone, creationTime, deadline, modifyingTime
-    )
 }

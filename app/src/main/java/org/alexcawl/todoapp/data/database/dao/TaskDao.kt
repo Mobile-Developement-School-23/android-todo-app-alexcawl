@@ -7,14 +7,20 @@ import org.alexcawl.todoapp.data.database.entity.TaskEntity
 @Dao
 interface TaskDao {
     @Insert(entity = TaskEntity::class, onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addTask(task: TaskEntity)
+    suspend fun updateTask(task: TaskEntity)
 
     @Delete(entity = TaskEntity::class)
     suspend fun removeTask(task: TaskEntity)
 
     @Query("SELECT * FROM tasks WHERE id = :id")
-    fun getTaskById(id: String): Flow<TaskEntity?>
+    fun getTask(id: String): Flow<TaskEntity?>
 
     @Query("SELECT * FROM tasks")
-    fun getAllTasks(): Flow<List<TaskEntity>>
+    fun getTasks(): Flow<List<TaskEntity>>
+
+    @Query("DELETE FROM tasks")
+    suspend fun removeTasks()
+
+    @Insert
+    suspend fun updateTasks(tasks: List<TaskEntity>)
 }

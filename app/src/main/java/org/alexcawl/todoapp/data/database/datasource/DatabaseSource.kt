@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.alexcawl.todoapp.data.database.dao.TaskDao
 import org.alexcawl.todoapp.data.database.entity.TaskEntity
+import org.alexcawl.todoapp.data.util.toModel
 import org.alexcawl.todoapp.data.util.DataState
 import org.alexcawl.todoapp.domain.model.TaskModel
 
@@ -12,7 +13,7 @@ class DatabaseSource(
 ) {
     fun getAllTasks(): Flow<DataState<List<TaskModel>>> = flow {
         emit(DataState.Initial)
-        dao.getAllTasks().collect { list ->
+        dao.getTasks().collect { list ->
             list.also { emit(DataState.Loading) }
                 .map { task -> task.toModel() }
                 .sortedByDescending { maxOf(it.creationTime, it.modifyingTime ?: 0) }
@@ -22,7 +23,7 @@ class DatabaseSource(
 
     fun getUncompletedTasks(): Flow<DataState<List<TaskModel>>> = flow {
         emit(DataState.Initial)
-        dao.getAllTasks().collect { list ->
+        dao.getTasks().collect { list ->
             list.also { emit(DataState.Loading) }
                 .filter { !it.isDone }
                 .map { task -> task.toModel() }
@@ -33,7 +34,7 @@ class DatabaseSource(
 
     fun getTask(id: String): Flow<DataState<TaskModel>> = flow {
         emit(DataState.Initial)
-        dao.getTaskById(id).collect {
+        dao.getTask(id).collect {
             when(it) {
                 null -> emit(DataState.NotFound)
                 else -> emit(DataState.OK(it.toModel()))
@@ -41,7 +42,11 @@ class DatabaseSource(
         }
     }
 
-    suspend fun updateTask(task: TaskEntity) = dao.addTask(task)
+    suspend fun updateTask(task: TaskEntity) = dao.updateTask(task)
+
+    suspend fun updateTasks(tasks: List<TaskEntity>) = dao.updateTasks(tasks)
 
     suspend fun removeTask(task: TaskEntity) = dao.removeTask(task)
+
+    suspend fun removeTasks() = dao.removeTasks()
 }

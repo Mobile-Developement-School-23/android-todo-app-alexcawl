@@ -4,7 +4,8 @@ import dagger.Module
 import dagger.Provides
 import org.alexcawl.todoapp.data.database.datasource.DatabaseSource
 import org.alexcawl.todoapp.data.database.usecases_impl.*
-import org.alexcawl.todoapp.domain.service.TaskRepository
+import org.alexcawl.todoapp.data.network.datasource.NetworkSource
+import org.alexcawl.todoapp.domain.repository.TaskRepository
 import org.alexcawl.todoapp.domain.usecases.*
 import javax.inject.Singleton
 
@@ -12,29 +13,39 @@ import javax.inject.Singleton
 class DomainModule {
     @Provides
     @Singleton
-    fun provideTaskGetAllUseCase(repository: TaskRepository): TaskGetAllUseCase = TaskGetAllUseCaseImpl(repository)
+    fun provideTaskGetAllUseCase(repository: TaskRepository): TaskGetAllUseCase =
+        TaskGetAllUseCaseImpl(repository)
 
     @Provides
     @Singleton
-    fun provideTaskGetByIdUseCase(repository: TaskRepository): TaskGetByIdUseCase = TaskGetByIdUseCaseImpl(repository)
+    fun provideTaskGetByIdUseCase(repository: TaskRepository): TaskGetByIdUseCase =
+        TaskGetByIdUseCaseImpl(repository)
 
     @Provides
     @Singleton
-    fun provideTaskGetUncompletedUseCase(repository: TaskRepository): TaskGetUncompletedUseCase = TaskGetUncompletedUseCaseImpl(repository)
+    fun provideTaskGetUncompletedUseCase(repository: TaskRepository): TaskGetUncompletedUseCase =
+        TaskGetUncompletedUseCaseImpl(repository)
 
     @Provides
     @Singleton
-    fun provideTaskRemoveUseCase(repository: TaskRepository): TaskRemoveUseCase = TaskRemoveUseCaseImpl(repository)
+    fun provideTaskRemoveUseCase(repository: TaskRepository): TaskRemoveUseCase =
+        TaskRemoveUseCaseImpl(repository)
 
     @Provides
     @Singleton
-    fun provideTaskUpdateUseCase(repository: TaskRepository): TaskUpdateUseCase = TaskUpdateUseCaseImpl(repository)
+    fun provideTaskUpdateUseCase(repository: TaskRepository): TaskUpdateUseCase =
+        TaskUpdateUseCaseImpl(repository)
 
     @Provides
     @Singleton
-    fun provideTaskAddUseCase(repository: TaskRepository): TaskAddUseCase = TaskAddUseCaseImpl(repository)
+    fun provideTaskAddUseCase(repository: TaskRepository): TaskAddUseCase =
+        TaskAddUseCaseImpl(repository)
 
     @Provides
     @Singleton
-    fun provideTaskRepository(dataSource: DatabaseSource): TaskRepository = TaskRepository(dataSource)
+    fun provideTaskRepository(
+        dataSource: DatabaseSource,
+        networkSource: NetworkSource
+    ): TaskRepository =
+        TaskRepository(dataSource, networkSource)
 }

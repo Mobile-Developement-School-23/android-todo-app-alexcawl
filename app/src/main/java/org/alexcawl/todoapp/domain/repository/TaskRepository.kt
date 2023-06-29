@@ -1,16 +1,19 @@
-package org.alexcawl.todoapp.domain.service
+package org.alexcawl.todoapp.domain.repository
 
 import kotlinx.coroutines.flow.*
 import org.alexcawl.todoapp.data.database.datasource.DatabaseSource
 import org.alexcawl.todoapp.data.database.usecases_impl.*
+import org.alexcawl.todoapp.data.network.datasource.NetworkSource
 import org.alexcawl.todoapp.data.util.DataState
+import org.alexcawl.todoapp.data.util.toEntity
 import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.domain.model.TaskModel
 import org.alexcawl.todoapp.domain.util.ValidationException
 import java.util.*
 
 class TaskRepository(
-    private val databaseSource: DatabaseSource
+    private val databaseSource: DatabaseSource,
+    private val networkSource: NetworkSource
 ) {
 
     fun getAllTasks(): Flow<DataState<List<TaskModel>>> =

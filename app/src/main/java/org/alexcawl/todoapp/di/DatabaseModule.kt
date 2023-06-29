@@ -10,7 +10,7 @@ import org.alexcawl.todoapp.data.database.db.ApplicationDatabase
 import javax.inject.Singleton
 
 @Module
-class DataModule {
+class DatabaseModule {
     @Provides
     @Singleton
     fun provideDatabase(context: Context): ApplicationDatabase = Room
