@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import org.alexcawl.todoapp.R
-import org.alexcawl.todoapp.data.database.db.DatabaseModule
 import org.alexcawl.todoapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -13,7 +12,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navigationController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        DatabaseModule.init(applicationContext)
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val navHostFragment = supportFragmentManager

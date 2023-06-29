@@ -13,19 +13,25 @@ import androidx.lifecycle.coroutineScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
+import org.alexcawl.todoapp.data.util.DataState
 import org.alexcawl.todoapp.databinding.FragmentTaskEditBinding
 import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.domain.model.TaskModel
+import org.alexcawl.todoapp.domain.util.ValidationException
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
+import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
 import org.alexcawl.todoapp.presentation.util.*
 import java.util.*
+import javax.inject.Inject
 
 class TaskEditFragment : Fragment() {
+    @Inject
+    lateinit var modelFactory: TaskViewModelFactory
     private val model: TaskViewModel by lazy {
-        ViewModelProvider(this.requireActivity())[TaskViewModel::class.java]
+        ViewModelProvider(this, modelFactory)[TaskViewModel::class.java]
     }
     private var _binding: FragmentTaskEditBinding? = null
     private val binding: FragmentTaskEditBinding
@@ -36,6 +42,7 @@ class TaskEditFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        (requireContext().applicationContext as ToDoApplication).appComponent.inject(this)
         _binding = FragmentTaskEditBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -53,33 +60,51 @@ class TaskEditFragment : Fragment() {
         try {
             val (id: UUID, isEnabled: Boolean) = getID(arguments)
             lifecycle.coroutineScope.launch {
-                model.getTaskById(id).collectLatest { result ->
-                    result.fold(
-                        onSuccess = {
-                            with(binding) {
-                                setupCloseButton(taskCloseButton, navController)
-                                setupSaveButton(taskSaveButton, navController, isEnabled, it)
-                                setupDeleteButton(taskDeleteButton, navController, isEnabled, it)
-                                setupContentScriber(taskContentText, isEnabled, it)
-                                setupPriorityPicker(taskPrioritySpinner, taskPriorityText, isEnabled, it)
-                                setupDeadlinePicker(
-                                    taskDeadlineSwitch,
-                                    taskDeadlineText,
-                                    taskDeadlinePickerArea,
-                                    isEnabled,
-                                    it
-                                )
-                                setupDateInfo(
-                                    taskCreationTimeText,
-                                    taskModifyingTimeText,
-                                    taskModifyingTimeArea,
-                                    it
-                                )
+                model.requireTask(id)
+                    .stateIn(lifecycle.coroutineScope)
+                    .collect { taskState ->
+                        when (taskState) {
+                            is DataState.OK -> {
+                                val task = taskState.content
+                                with(binding) {
+                                    setupCloseButton(taskCloseButton, navController)
+                                    setupSaveButton(taskSaveButton, navController, isEnabled, task)
+                                    setupDeleteButton(
+                                        taskDeleteButton,
+                                        navController,
+                                        isEnabled,
+                                        task
+                                    )
+                                    setupContentScriber(taskContentText, isEnabled, task)
+                                    setupPriorityPicker(
+                                        taskPrioritySpinner,
+                                        taskPriorityText,
+                                        isEnabled,
+                                        task
+                                    )
+                                    setupDeadlinePicker(
+                                        taskDeadlineSwitch,
+                                        taskDeadlineText,
+                                        taskDeadlinePickerArea,
+                                        isEnabled,
+                                        task
+                                    )
+                                    setupDateInfo(
+                                        taskCreationTimeText,
+                                        taskModifyingTimeText,
+                                        taskModifyingTimeArea,
+                                        task
+                                    )
+                                }
                             }
-                        },
-                        onFailure = {}
-                    )
-                }
+                            else -> {
+                                with(binding) {
+                                    setupCloseButton(taskCloseButton, navController)
+                                }
+                            }
+                        }
+
+                    }
             }
         } catch (exception: IllegalArgumentException) {
             Snackbar.make(view, exception.message ?: "", Snackbar.LENGTH_LONG).show()
@@ -111,13 +136,16 @@ class TaskEditFragment : Fragment() {
     ) {
         when (isEnabled) {
             true -> button.setOnClickListener {
-                navController.navigateUp()
                 lifecycle.coroutineScope.launch {
-                    model.setTask(task)
+                    try {
+                        model.setTask(task)
+                        navController.navigateUp()
+                    } catch (exception: ValidationException) {
+                        button.snackbar(exception.message ?: "")
+                    }
                 }
             }
             false -> {
-                // Костыль
                 button.disable()
                 button.text = ""
             }

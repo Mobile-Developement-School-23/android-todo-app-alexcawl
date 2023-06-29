@@ -1,19 +1,13 @@
 package org.alexcawl.todoapp.presentation.fragment
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.AppCompatEditText
-import androidx.appcompat.widget.AppCompatImageButton
-import androidx.appcompat.widget.AppCompatSpinner
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.appcompat.widget.SwitchCompat
+import androidx.appcompat.widget.*
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
 import androidx.navigation.NavController
@@ -22,15 +16,18 @@ import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.FragmentTaskAddBinding
 import org.alexcawl.todoapp.domain.model.Priority
+import org.alexcawl.todoapp.domain.util.ValidationException
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
-import org.alexcawl.todoapp.presentation.util.createDatePicker
-import org.alexcawl.todoapp.presentation.util.createDateString
-import org.alexcawl.todoapp.presentation.util.dateStringToTimestamp
+import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
+import org.alexcawl.todoapp.presentation.util.*
 import java.util.*
+import javax.inject.Inject
 
 class TaskAddFragment : Fragment() {
+    @Inject
+    lateinit var modelFactory: TaskViewModelFactory
     private val model: TaskViewModel by lazy {
-        ViewModelProvider(this.requireActivity())[TaskViewModel::class.java]
+        ViewModelProvider(this, modelFactory)[TaskViewModel::class.java]
     }
     private var _binding: FragmentTaskAddBinding? = null
     private val binding: FragmentTaskAddBinding
@@ -44,6 +41,7 @@ class TaskAddFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        (requireContext().applicationContext as ToDoApplication).appComponent.inject(this)
         _binding = FragmentTaskAddBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -73,9 +71,12 @@ class TaskAddFragment : Fragment() {
     private fun setupAddButton(button: AppCompatButton, navController: NavController) {
         button.setOnClickListener {
             lifecycle.coroutineScope.launch {
-                Log.println(Log.INFO, "DEADLINE", "$deadlineFieldValue")
-                model.addTask(textFieldValue, priorityFieldValue, deadlineFieldValue)
-                navController.navigateUp()
+                try {
+                    model.addTask(textFieldValue, priorityFieldValue, deadlineFieldValue)
+                    navController.navigateUp()
+                } catch (exception: ValidationException) {
+                    button.snackbar(exception.message ?: "")
+                }
             }
         }
     }
@@ -122,7 +123,6 @@ class TaskAddFragment : Fragment() {
                     deadlineFieldValue = dateStringToTimestamp(dateString)
                     textView.text = dateString
                     clickableArea.isClickable = true
-                    Log.println(Log.INFO, "DEADLINE", "$deadlineFieldValue")
                 }
                 false -> {
                     textView.text = switch.context.getText(R.string.not_defined)

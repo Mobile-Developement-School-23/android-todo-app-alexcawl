@@ -22,18 +22,23 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
+import org.alexcawl.todoapp.data.util.DataState
 import org.alexcawl.todoapp.databinding.FragmentTaskShowBinding
 import org.alexcawl.todoapp.domain.util.ValidationException
 import org.alexcawl.todoapp.presentation.adapter.OnItemSwipeCallback
 import org.alexcawl.todoapp.presentation.adapter.TaskItemAdapter
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
+import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
+import org.alexcawl.todoapp.presentation.util.ToDoApplication
 import org.alexcawl.todoapp.presentation.util.snackbar
+import javax.inject.Inject
 
 class TaskShowFragment : Fragment() {
+    @Inject
+    lateinit var modelFactory: TaskViewModelFactory
     private val model: TaskViewModel by lazy {
-        ViewModelProvider(this.requireActivity())[TaskViewModel::class.java]
+        ViewModelProvider(this, modelFactory)[TaskViewModel::class.java]
     }
-
     private val visibility: StateFlow<Boolean> by lazy {
         model.visibility
     }
@@ -46,6 +51,7 @@ class TaskShowFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        (requireContext().applicationContext as ToDoApplication).appComponent.inject(this)
         _binding = FragmentTaskShowBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -127,16 +133,22 @@ class TaskShowFragment : Fragment() {
         )
 
         lifecycle.coroutineScope.launch(Dispatchers.IO) {
-            visibility.collectLatest { state ->
-                when(state) {
+            visibility.collectLatest { visibilityState ->
+                when(visibilityState) {
                     true -> {
-                        model.getAllTasks().collectLatest {
-                            viewAdapter.submitList(it)
+                        model.allTasks.collectLatest { taskState ->
+                            when(taskState) {
+                                is DataState.OK -> viewAdapter.submitList(taskState.content)
+                                else -> viewAdapter.submitList(listOf())
+                            }
                         }
                     }
                     false -> {
-                        model.getUncompletedTasks().collectLatest {
-                            viewAdapter.submitList(it)
+                        model.uncompletedTasks.collectLatest { taskState ->
+                            when(taskState) {
+                                is DataState.OK -> viewAdapter.submitList(taskState.content)
+                                else -> viewAdapter.submitList(listOf())
+                            }
                         }
                     }
                 }

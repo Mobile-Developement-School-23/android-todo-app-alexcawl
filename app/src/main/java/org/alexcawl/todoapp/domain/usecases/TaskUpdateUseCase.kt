@@ -1,7 +1,9 @@
 package org.alexcawl.todoapp.domain.usecases
 
 import org.alexcawl.todoapp.domain.model.TaskModel
+import org.alexcawl.todoapp.domain.util.ValidationException
 
-interface TaskRemoveUseCase {
+interface TaskUpdateUseCase {
+    @Throws(ValidationException::class)
     suspend operator fun invoke(task: TaskModel)
 }
