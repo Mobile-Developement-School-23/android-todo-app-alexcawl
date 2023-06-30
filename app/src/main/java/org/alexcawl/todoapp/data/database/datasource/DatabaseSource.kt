@@ -22,7 +22,7 @@ class DatabaseSource(
         dao.getTask(id.toString()).collect {
             when (it) {
                 null -> emit(RoomState.Failure(ValidationException("Item not found!")))
-                else -> emit(RoomState.Success(it.toModel()))
+                else -> emit(RoomState.Success(it.toModel(), committer.getRevision()))
             }
         }
     }.catch {
@@ -38,16 +38,15 @@ class DatabaseSource(
         dao.getTasks().collect { list ->
             list.map(TaskEntity::toModel)
                 .sortedByDescending { maxOf(it.creationTime, it.modifyingTime ?: 0) }
-                .also { tasks -> emit(RoomState.Success(tasks)) }
+                .also { tasks -> emit(RoomState.Success(tasks, committer.getRevision())) }
         }
     }.catch {
         emit(RoomState.Failure(it))
     }
 
-    suspend fun synchronizeData(list: List<TaskModel>, revision: Int) {
-        if (revision != committer.getRevision()) {
-            dao.removeTasks()
-            dao.updateTasks(list.map(TaskModel::toEntity))
-        }
+    suspend fun upsertTasks(list: List<TaskModel>, revision: Int) {
+        dao.removeTasks()
+        dao.updateTasks(list.map(TaskModel::toEntity))
+        committer.setRevision(revision)
     }
 }

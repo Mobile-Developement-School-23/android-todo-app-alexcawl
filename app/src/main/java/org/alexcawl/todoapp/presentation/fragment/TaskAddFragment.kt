@@ -73,7 +73,10 @@ class TaskAddFragment : Fragment() {
                 model.addTask(textFieldValue, priorityFieldValue, deadlineFieldValue).collect { uiState ->
                     when (uiState) {
                         is UiState.Success -> navController.navigateUp()
-                        is UiState.Error -> button.snackbar(uiState.cause)
+                        is UiState.Error -> {
+                            button.snackbar(uiState.cause)
+                            navController.navigateUp()
+                        }
                         else -> {}
                     }
                 }

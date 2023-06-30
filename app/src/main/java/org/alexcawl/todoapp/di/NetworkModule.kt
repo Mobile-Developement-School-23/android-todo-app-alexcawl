@@ -27,15 +27,12 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideNetworkClient(): OkHttpClient = OkHttpClient.Builder().addInterceptor { chain ->
-        Log.d("NETWORK", chain.request().toString())
         val newRequest: Request = chain.request()
             .newBuilder()
             .addHeader("Authorization", "Bearer debamboozle")
             .build()
         chain.proceed(newRequest)
-    }.addInterceptor(HttpLoggingInterceptor().also {
-        it.level = HttpLoggingInterceptor.Level.BODY
-    }).build()
+    }.build()
 
     @Provides
     @Singleton

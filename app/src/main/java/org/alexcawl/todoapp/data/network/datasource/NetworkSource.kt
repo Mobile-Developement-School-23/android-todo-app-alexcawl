@@ -1,6 +1,5 @@
 package org.alexcawl.todoapp.data.network.datasource
 
-import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -18,11 +17,10 @@ class NetworkSource(
     private val committer: PreferencesCommitter,
     private val api: TaskApi
 ) {
-    @Deprecated("Unused")
     fun getTasks(): Flow<NetworkState<List<TaskModel>>> = flow {
         emit(NetworkState.Loading)
-        val tasks = api.getTasks().list.map(TaskDto::toModel)
-        emit(NetworkState.Success(tasks, committer.getRevision()))
+        val response = api.getTasks()
+        emit(NetworkState.Success(response.list.map(TaskDto::toModel), response.revision))
     }.catch {
         NetworkState.Failure(it)
     }
@@ -43,12 +41,10 @@ class NetworkSource(
     fun postTask(task: TaskModel): Flow<NetworkState<TaskModel>> = flow {
         emit(NetworkState.Loading)
         val revision = committer.getRevision()
-        Log.d("POST-TASK", "revision before exception is -> $revision")
         val response = api.postTask(revision, TaskSingleRequestDto(task.toDto()))
         committer.setRevision(response.revision)
         emit(NetworkState.Success(response.element.toModel(), response.revision))
     }.catch {
-        Log.d("POST-TASK-EXCEPTION", it.stackTraceToString())
         emit(NetworkState.Failure(it))
     }
 

@@ -16,31 +16,44 @@ import org.alexcawl.todoapp.domain.util.ValidationException
 import java.util.*
 
 class TaskRepository(
-    private val databaseSource: DatabaseSource,
-    private val networkSource: NetworkSource
+    private val databaseSource: DatabaseSource, private val networkSource: NetworkSource
 ) {
     fun getAllTasks(): Flow<DataState<List<TaskModel>>> = flow {
         emit(DataState.Initial)
         databaseSource.getTasks().collect { roomState ->
             when (roomState) {
                 is RoomState.Success -> {
-                    val tasks: List<TaskModel> = roomState.data
-                    emit(DataState.Deprecated(tasks))
-                    networkSource.patchTasks(tasks)
-                        .collect { networkState ->
-                            when (networkState) {
-                                is NetworkState.Success -> databaseSource.synchronizeData(
-                                    networkState.data,
-                                    networkState.revision
-                                ).also { emit(DataState.Latest(networkState.data)) }
-                                is NetworkState.Failure -> emit(DataState.Deprecated(tasks))
-                                else -> {}
+                    emit(DataState.Deprecated(roomState.data))
+                    networkSource.getTasks().collect { networkState ->
+                        Log.d("NETWORK_STATE", networkState.toString())
+                        when (networkState) {
+                            is NetworkState.Success -> {
+                                val androidRevision = roomState.revision
+                                val networkRevision = networkState.revision
+                                when {
+                                    androidRevision < networkRevision -> {
+                                        databaseSource.upsertTasks(networkState.data, networkState.revision)
+                                        emit(DataState.Latest(networkState.data))
+                                    }
+                                    androidRevision > networkRevision -> {
+                                        networkSource.patchTasks(roomState.data).collect {
+                                            when(it) {
+                                                is NetworkState.Success -> databaseSource.upsertTasks(networkState.data, networkState.revision)
+                                                else -> {}
+                                            }
+                                        }
+                                    }
+                                }
                             }
+                            is NetworkState.Failure -> emit(DataState.Deprecated(roomState.data))
+                            else -> {}
                         }
+                    }
                 }
                 is RoomState.Failure -> emit(DataState.Exception(roomState.cause))
                 else -> {}
             }
+
         }
     }
 
@@ -67,24 +80,17 @@ class TaskRepository(
 
     @Throws(ValidationException::class, NetworkException::class)
     suspend fun addTask(
-        text: String,
-        priority: Priority,
-        deadline: Long?
+        text: String, priority: Priority, deadline: Long?
     ) {
         validateTask(text, deadline)
         val task = buildTaskModel(text, priority, deadline)
+        databaseSource.updateTask(buildTaskModel(text, priority, deadline).toEntity())
         networkSource.postTask(task).collect { networkState ->
             when (networkState) {
-                is NetworkState.Success -> {
-                    databaseSource.updateTask(
-                        buildTaskModel(
-                            text,
-                            priority,
-                            deadline
-                        ).toEntity()
-                    )
+                is NetworkState.Failure -> {
+                    // TODO revision + 1
+                    throw NetworkException("Bad connection!")
                 }
-                is NetworkState.Failure -> throw NetworkException("Unsynchronized data!")
                 else -> {}
             }
         }
@@ -92,10 +98,13 @@ class TaskRepository(
 
     @Throws(NetworkException::class)
     suspend fun removeTask(task: TaskModel) {
+        databaseSource.removeTask(task.toEntity())
         networkSource.deleteTask(task).collect { networkState ->
             when (networkState) {
-                is NetworkState.Success -> databaseSource.removeTask(task.toEntity())
-                is NetworkState.Failure -> throw NetworkException("Unsynchronized data!")
+                is NetworkState.Failure -> {
+                    // TODO revision + 1
+                    throw NetworkException("Bad connection!")
+                }
                 else -> {}
             }
         }
@@ -104,12 +113,13 @@ class TaskRepository(
     @Throws(ValidationException::class, NetworkException::class)
     suspend fun updateTask(task: TaskModel) {
         validateTask(task.text, task.deadline)
+        databaseSource.updateTask(task.copy(modifyingTime = System.currentTimeMillis()).toEntity())
         networkSource.putTask(task).collect { networkState ->
             when (networkState) {
-                is NetworkState.Success -> databaseSource.updateTask(
-                    task.copy(modifyingTime = System.currentTimeMillis()).toEntity()
-                )
-                is NetworkState.Failure -> throw NetworkException("Unsynchronized data!")
+                is NetworkState.Failure -> {
+                    // TODO revision + 1
+                    throw NetworkException("Bad connection!")
+                }
                 else -> {}
             }
         }

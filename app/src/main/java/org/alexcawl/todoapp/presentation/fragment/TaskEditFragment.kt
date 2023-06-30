@@ -101,8 +101,6 @@ class TaskEditFragment : Fragment() {
             taskCloseButton.setOnClickListener {
                 navController.navigateUp()
             }
-            taskSaveButton.disable()
-            taskSaveButton.text = ""
         }
     }
 
@@ -121,7 +119,10 @@ class TaskEditFragment : Fragment() {
                     model.setTask(task).collect { uiState ->
                         when (uiState) {
                             is UiState.Success -> navController.navigateUp()
-                            is UiState.Error -> button.snackbar(uiState.cause)
+                            is UiState.Error -> {
+                                button.snackbar(uiState.cause)
+                                navController.navigateUp()
+                            }
                             else -> {}
                         }
                     }
@@ -143,7 +144,10 @@ class TaskEditFragment : Fragment() {
                     model.removeTask(task).collect { uiState ->
                         when (uiState) {
                             is UiState.Success -> navController.navigateUp()
-                            is UiState.Error -> button.snackbar(uiState.cause)
+                            is UiState.Error -> {
+                                button.snackbar(uiState.cause)
+                                navController.navigateUp()
+                            }
                             else -> {}
                         }
                     }
