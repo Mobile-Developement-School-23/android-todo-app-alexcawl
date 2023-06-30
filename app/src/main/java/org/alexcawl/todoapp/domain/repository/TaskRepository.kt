@@ -10,7 +10,6 @@ import org.alexcawl.todoapp.data.util.toEntity
 import org.alexcawl.todoapp.domain.model.DataState
 import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.domain.model.TaskModel
-import org.alexcawl.todoapp.domain.util.NetworkException
 import org.alexcawl.todoapp.domain.util.ValidationException
 import org.alexcawl.todoapp.presentation.util.PreferencesCommitter
 import java.util.*
@@ -24,43 +23,32 @@ class TaskRepository(
         emit(DataState.Initial)
         databaseSource.getTasks().collect { roomState ->
             when (roomState) {
-                is RoomState.Success -> {
-                    emit(DataState.Deprecated(roomState.data))
-                    networkSource.getTasks().collect { networkState ->
-                        when (networkState) {
-                            is NetworkState.Success -> {
-                                val androidRevision = roomState.revision
-                                val networkRevision = networkState.revision
-                                when {
-                                    androidRevision < networkRevision -> {
-                                        databaseSource.upsertTasks(
-                                            networkState.data,
-                                            networkState.revision
-                                        )
-                                        emit(DataState.Latest(networkState.data))
-                                    }
-                                    androidRevision > networkRevision -> {
-                                        networkSource.patchTasks(roomState.data).collect {
-                                            when (it) {
-                                                is NetworkState.Success -> databaseSource.upsertTasks(
-                                                    networkState.data,
-                                                    networkState.revision
-                                                )
-                                                else -> {}
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            is NetworkState.Failure -> emit(DataState.Deprecated(roomState.data))
-                            else -> {}
-                        }
-                    }
+                is RoomState.Success -> emit(DataState.Result(roomState.data)).also {
+                    synchronizeTasks(roomState.revision, roomState.data)
                 }
                 is RoomState.Failure -> emit(DataState.Exception(roomState.cause))
                 else -> {}
             }
+        }
+    }
 
+    private suspend fun synchronizeTasks(androidRevision: Int, tasks: List<TaskModel>) {
+        networkSource.getTasks().collect { networkState ->
+            when (networkState) {
+                is NetworkState.Success -> {
+                    when {
+                        tasks != networkState.data || androidRevision != networkState.revision -> networkSource.patchTasks(tasks)
+                            .collect {
+                                when (it) {
+                                    is NetworkState.Success -> committer.setRevision(it.revision)
+                                    else -> {}
+                                }
+                            }
+                        else -> {}
+                    }
+                }
+                else -> {}
+            }
         }
     }
 
@@ -68,7 +56,7 @@ class TaskRepository(
         emit(DataState.Initial)
         databaseSource.getTask(id).collect { roomState ->
             when (roomState) {
-                is RoomState.Success -> emit(DataState.Latest(roomState.data))
+                is RoomState.Success -> emit(DataState.Result(roomState.data))
                 is RoomState.Failure -> emit(DataState.Exception(roomState.cause))
                 else -> {}
             }
@@ -77,7 +65,7 @@ class TaskRepository(
         emit(DataState.Exception(it))
     }
 
-    @Throws(ValidationException::class, NetworkException::class)
+    @Throws(ValidationException::class)
     suspend fun addTask(
         text: String, priority: Priority, deadline: Long?
     ) {
@@ -86,39 +74,29 @@ class TaskRepository(
         databaseSource.updateTask(buildTaskModel(text, priority, deadline).toEntity())
         networkSource.postTask(task).collect { networkState ->
             when (networkState) {
-                is NetworkState.Failure -> {
-                    committer.updateRevision()
-                    throw NetworkException("Bad connection!")
-                }
+                is NetworkState.Failure -> committer.updateRevision()
                 else -> {}
             }
         }
     }
 
-    @Throws(NetworkException::class)
     suspend fun removeTask(task: TaskModel) {
         databaseSource.removeTask(task.toEntity())
         networkSource.deleteTask(task).collect { networkState ->
             when (networkState) {
-                is NetworkState.Failure -> {
-                    committer.updateRevision()
-                    throw NetworkException("Bad connection!")
-                }
+                is NetworkState.Failure -> committer.updateRevision()
                 else -> {}
             }
         }
     }
 
-    @Throws(ValidationException::class, NetworkException::class)
+    @Throws(ValidationException::class)
     suspend fun updateTask(task: TaskModel) {
         validateTask(task.text, task.deadline)
         databaseSource.updateTask(task.copy(modifyingTime = System.currentTimeMillis()).toEntity())
         networkSource.putTask(task).collect { networkState ->
             when (networkState) {
-                is NetworkState.Failure -> {
-                    committer.updateRevision()
-                    throw NetworkException("Bad connection!")
-                }
+                is NetworkState.Failure -> committer.updateRevision()
                 else -> {}
             }
         }

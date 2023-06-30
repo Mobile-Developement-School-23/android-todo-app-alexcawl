@@ -1,5 +1,6 @@
 package org.alexcawl.todoapp.data.database.datasource
 
+import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -45,8 +46,10 @@ class DatabaseSource(
     }
 
     suspend fun upsertTasks(list: List<TaskModel>, revision: Int) {
+        Log.d("SHIT-UPSERT-START", "")
         dao.removeTasks()
         dao.updateTasks(list.map(TaskModel::toEntity))
         committer.setRevision(revision)
+        Log.d("SHIT-UPSERT-END", "")
     }
 }

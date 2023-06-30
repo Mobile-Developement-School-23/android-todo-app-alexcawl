@@ -1,7 +1,5 @@
 package org.alexcawl.todoapp.di
 
-import android.content.Context
-import android.util.Log
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -32,7 +30,9 @@ class NetworkModule {
             .addHeader("Authorization", "Bearer debamboozle")
             .build()
         chain.proceed(newRequest)
-    }.build()
+    }.addInterceptor(HttpLoggingInterceptor().also {
+        it.level = HttpLoggingInterceptor.Level.BODY
+    }).build()
 
     @Provides
     @Singleton

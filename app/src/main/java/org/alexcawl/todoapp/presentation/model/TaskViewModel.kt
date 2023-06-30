@@ -20,43 +20,32 @@ class TaskViewModel(
     private val removeCase: TaskRemoveUseCase,
     private val addCase: TaskAddUseCase
 ) : ViewModel() {
-    private val _visibility: MutableStateFlow<Boolean> = MutableStateFlow(true)
-    val visibility: StateFlow<Boolean>
-        get() = _visibility
-
     private var job: Job? = null
-    private val _tasks: MutableStateFlow<UiState<List<TaskModel>>> =
-        MutableStateFlow(UiState.Start)
-    val getAll: StateFlow<UiState<List<TaskModel>>>
-        get() = _tasks
+    private val _tasks: Flow<DataState<List<TaskModel>>> = getAllCase()
 
-    private val _undoneTasks: MutableStateFlow<UiState<List<TaskModel>>> =
-        MutableStateFlow(UiState.Start)
-    val getUndone: StateFlow<UiState<List<TaskModel>>>
-        get() = _undoneTasks
+    private val _visibility: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val visibility: StateFlow<Boolean> get() = _visibility
+
+    private val _allTasks: MutableStateFlow<UiState<List<TaskModel>>> = MutableStateFlow(UiState.Start)
+    val allTasks: StateFlow<UiState<List<TaskModel>>> get() = _allTasks
+
+    private val _undoneTasks: MutableStateFlow<UiState<List<TaskModel>>> = MutableStateFlow(UiState.Start)
+    val undoneTasks: StateFlow<UiState<List<TaskModel>>> get() = _undoneTasks
 
     init {
         job = viewModelScope.launch(Dispatchers.IO) {
-            getAllCase().collect { state ->
+            _tasks.collect { state ->
                 when (state) {
-                    is DataState.Deprecated -> {
-                        _tasks.emit(UiState.Success(
-                            state.data, "Data is deprecated!")
-                        )
-                        _undoneTasks.emit(UiState.Success(
-                            state.data.filter { !it.isDone }, "Data is deprecated!")
-                        )
-                    }
-                    is DataState.Latest -> {
-                        _tasks.emit(UiState.Success(state.data))
+                    is DataState.Result -> {
+                        _allTasks.emit(UiState.Success(state.data))
                         _undoneTasks.emit(UiState.Success(state.data.filter { !it.isDone }))
                     }
                     is DataState.Exception -> {
-                        _tasks.emit(UiState.Error(state.cause.message ?: ""))
+                        _allTasks.emit(UiState.Error(state.cause.message ?: ""))
                         _undoneTasks.emit(UiState.Error(state.cause.message ?: ""))
                     }
                     else -> {
-                        _tasks.emit(UiState.Start)
+                        _allTasks.emit(UiState.Start)
                         _undoneTasks.emit(UiState.Start)
                     }
                 }
@@ -91,10 +80,7 @@ class TaskViewModel(
     fun requireTask(id: UUID): Flow<UiState<TaskModel>> = flow {
         getSingleCase(id).collect { dataState ->
             when (dataState) {
-                is DataState.Deprecated -> emit(
-                    UiState.Success(dataState.data, "Data is deprecated!")
-                )
-                is DataState.Latest -> emit(UiState.Success(dataState.data))
+                is DataState.Result -> emit(UiState.Success(dataState.data))
                 is DataState.Exception -> emit(UiState.Error(dataState.cause.message ?: ""))
                 else -> emit(UiState.Start)
             }
