@@ -7,6 +7,7 @@ import org.alexcawl.todoapp.data.database.usecases_impl.*
 import org.alexcawl.todoapp.data.network.datasource.NetworkSource
 import org.alexcawl.todoapp.domain.repository.TaskRepository
 import org.alexcawl.todoapp.domain.usecases.*
+import org.alexcawl.todoapp.presentation.util.PreferencesCommitter
 import javax.inject.Singleton
 
 @Module
@@ -20,11 +21,6 @@ class DomainModule {
     @Singleton
     fun provideTaskGetByIdUseCase(repository: TaskRepository): TaskGetByIdUseCase =
         TaskGetByIdUseCaseImpl(repository)
-
-    @Provides
-    @Singleton
-    fun provideTaskGetUncompletedUseCase(repository: TaskRepository): TaskGetUncompletedUseCase =
-        TaskGetUncompletedUseCaseImpl(repository)
 
     @Provides
     @Singleton
@@ -45,7 +41,8 @@ class DomainModule {
     @Singleton
     fun provideTaskRepository(
         dataSource: DatabaseSource,
-        networkSource: NetworkSource
+        networkSource: NetworkSource,
+        committer: PreferencesCommitter
     ): TaskRepository =
-        TaskRepository(dataSource, networkSource)
+        TaskRepository(dataSource, networkSource, committer)
 }

@@ -21,14 +21,12 @@ class AppModule(
     fun provideTaskViewModelFactory(
         editCase: TaskUpdateUseCase,
         getAllCase: TaskGetAllUseCase,
-        getUncompletedCase: TaskGetUncompletedUseCase,
         getSingleCase: TaskGetByIdUseCase,
         removeCase: TaskRemoveUseCase,
         addCase: TaskAddUseCase
     ): TaskViewModelFactory = TaskViewModelFactory(
         updateCase = editCase,
         getAllCase = getAllCase,
-        getUncompletedCase = getUncompletedCase,
         getSingleCase = getSingleCase,
         removeCase = removeCase,
         addCase = addCase
@@ -36,5 +34,5 @@ class AppModule(
 
     @Provides
     @Singleton
-    fun provideSharedPreferences(context: Context) = PreferencesCommitter()
+    fun provideSharedPreferences(context: Context) = PreferencesCommitter(context)
 }

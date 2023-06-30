@@ -132,7 +132,7 @@ class TaskShowFragment : Fragment() {
             visibility.collectLatest { visibilityState ->
                 when (visibilityState) {
                     true -> {
-                        model.allTasks.collectLatest { uiState ->
+                        model.getAll.collectLatest { uiState ->
                             when (uiState) {
                                 is UiState.Success -> viewAdapter.submitList(uiState.data)
                                 is UiState.Error -> view.snackbar(uiState.cause)
@@ -141,7 +141,7 @@ class TaskShowFragment : Fragment() {
                         }
                     }
                     false -> {
-                        model.uncompletedTasks.collectLatest { uiState ->
+                        model.getUndone.collectLatest { uiState ->
                             when (uiState) {
                                 is UiState.Success -> viewAdapter.submitList(uiState.data)
                                 is UiState.Error -> view.snackbar(uiState.cause)

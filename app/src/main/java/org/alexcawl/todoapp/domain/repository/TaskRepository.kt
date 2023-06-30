@@ -1,6 +1,5 @@
 package org.alexcawl.todoapp.domain.repository
 
-import android.util.Log
 import kotlinx.coroutines.flow.*
 import org.alexcawl.todoapp.data.database.datasource.DatabaseSource
 import org.alexcawl.todoapp.data.database.usecases_impl.*
@@ -13,10 +12,13 @@ import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.domain.model.TaskModel
 import org.alexcawl.todoapp.domain.util.NetworkException
 import org.alexcawl.todoapp.domain.util.ValidationException
+import org.alexcawl.todoapp.presentation.util.PreferencesCommitter
 import java.util.*
 
 class TaskRepository(
-    private val databaseSource: DatabaseSource, private val networkSource: NetworkSource
+    private val databaseSource: DatabaseSource,
+    private val networkSource: NetworkSource,
+    private val committer: PreferencesCommitter
 ) {
     fun getAllTasks(): Flow<DataState<List<TaskModel>>> = flow {
         emit(DataState.Initial)
@@ -25,20 +27,25 @@ class TaskRepository(
                 is RoomState.Success -> {
                     emit(DataState.Deprecated(roomState.data))
                     networkSource.getTasks().collect { networkState ->
-                        Log.d("NETWORK_STATE", networkState.toString())
                         when (networkState) {
                             is NetworkState.Success -> {
                                 val androidRevision = roomState.revision
                                 val networkRevision = networkState.revision
                                 when {
                                     androidRevision < networkRevision -> {
-                                        databaseSource.upsertTasks(networkState.data, networkState.revision)
+                                        databaseSource.upsertTasks(
+                                            networkState.data,
+                                            networkState.revision
+                                        )
                                         emit(DataState.Latest(networkState.data))
                                     }
                                     androidRevision > networkRevision -> {
                                         networkSource.patchTasks(roomState.data).collect {
-                                            when(it) {
-                                                is NetworkState.Success -> databaseSource.upsertTasks(networkState.data, networkState.revision)
+                                            when (it) {
+                                                is NetworkState.Success -> databaseSource.upsertTasks(
+                                                    networkState.data,
+                                                    networkState.revision
+                                                )
                                                 else -> {}
                                             }
                                         }
@@ -54,14 +61,6 @@ class TaskRepository(
                 else -> {}
             }
 
-        }
-    }
-
-    fun getUncompletedTasks(): Flow<DataState<List<TaskModel>>> = getAllTasks().map { dataState ->
-        when (dataState) {
-            is DataState.Deprecated -> DataState.Deprecated(dataState.data.filter { !it.isDone })
-            is DataState.Latest -> DataState.Latest(dataState.data.filter { !it.isDone })
-            else -> dataState
         }
     }
 
@@ -88,7 +87,7 @@ class TaskRepository(
         networkSource.postTask(task).collect { networkState ->
             when (networkState) {
                 is NetworkState.Failure -> {
-                    // TODO revision + 1
+                    committer.updateRevision()
                     throw NetworkException("Bad connection!")
                 }
                 else -> {}
@@ -102,7 +101,7 @@ class TaskRepository(
         networkSource.deleteTask(task).collect { networkState ->
             when (networkState) {
                 is NetworkState.Failure -> {
-                    // TODO revision + 1
+                    committer.updateRevision()
                     throw NetworkException("Bad connection!")
                 }
                 else -> {}
@@ -117,7 +116,7 @@ class TaskRepository(
         networkSource.putTask(task).collect { networkState ->
             when (networkState) {
                 is NetworkState.Failure -> {
-                    // TODO revision + 1
+                    committer.updateRevision()
                     throw NetworkException("Bad connection!")
                 }
                 else -> {}

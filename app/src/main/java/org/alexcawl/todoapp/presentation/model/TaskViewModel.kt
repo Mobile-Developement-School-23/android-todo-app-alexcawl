@@ -16,7 +16,6 @@ import java.util.*
 class TaskViewModel(
     private val updateCase: TaskUpdateUseCase,
     private val getAllCase: TaskGetAllUseCase,
-    private val getUncompletedCase: TaskGetUncompletedUseCase,
     private val getSingleCase: TaskGetByIdUseCase,
     private val removeCase: TaskRemoveUseCase,
     private val addCase: TaskAddUseCase
@@ -26,48 +25,40 @@ class TaskViewModel(
         get() = _visibility
 
     private var job: Job? = null
-    private val _allTasks: MutableStateFlow<UiState<List<TaskModel>>> =
+    private val _tasks: MutableStateFlow<UiState<List<TaskModel>>> =
         MutableStateFlow(UiState.Start)
-    val allTasks: StateFlow<UiState<List<TaskModel>>>
-        get() = _allTasks
+    val getAll: StateFlow<UiState<List<TaskModel>>>
+        get() = _tasks
 
-    private val _uncompletedTasks: MutableStateFlow<UiState<List<TaskModel>>> =
+    private val _undoneTasks: MutableStateFlow<UiState<List<TaskModel>>> =
         MutableStateFlow(UiState.Start)
-    val uncompletedTasks: StateFlow<UiState<List<TaskModel>>>
-        get() = _uncompletedTasks
+    val getUndone: StateFlow<UiState<List<TaskModel>>>
+        get() = _undoneTasks
 
     init {
         job = viewModelScope.launch(Dispatchers.IO) {
-            getAllCase().collect { dataState ->
-                when (dataState) {
-                    is DataState.Deprecated -> _allTasks.emit(
-                        UiState.Success(
-                            dataState.data, "Data is deprecated!"
+            getAllCase().collect { state ->
+                when (state) {
+                    is DataState.Deprecated -> {
+                        _tasks.emit(UiState.Success(
+                            state.data, "Data is deprecated!")
                         )
-                    )
-                    is DataState.Latest -> _allTasks.emit(UiState.Success(dataState.data))
-                    is DataState.Exception -> _allTasks.emit(
-                        UiState.Error(
-                            dataState.cause.message ?: ""
+                        _undoneTasks.emit(UiState.Success(
+                            state.data.filter { !it.isDone }, "Data is deprecated!")
                         )
-                    )
-                    else -> _allTasks.emit(UiState.Start)
-                }
-            }
-            getUncompletedCase().collect { dataState ->
-                when (dataState) {
-                    is DataState.Deprecated -> _uncompletedTasks.emit(
-                        UiState.Success(
-                            dataState.data, "Data is deprecated!"
-                        )
-                    )
-                    is DataState.Latest -> _uncompletedTasks.emit(UiState.Success(dataState.data))
-                    is DataState.Exception -> _uncompletedTasks.emit(
-                        UiState.Error(
-                            dataState.cause.message ?: ""
-                        )
-                    )
-                    else -> _uncompletedTasks.emit(UiState.Start)
+                    }
+                    is DataState.Latest -> {
+                        _tasks.emit(UiState.Success(state.data))
+                        _undoneTasks.emit(UiState.Success(state.data.filter { !it.isDone }))
+                    }
+                    is DataState.Exception -> {
+                        _tasks.emit(UiState.Error(state.cause.message ?: ""))
+                        _undoneTasks.emit(UiState.Error(state.cause.message ?: ""))
+                    }
+                    else -> {
+                        _tasks.emit(UiState.Start)
+                        _undoneTasks.emit(UiState.Start)
+                    }
                 }
             }
         }
@@ -101,9 +92,7 @@ class TaskViewModel(
         getSingleCase(id).collect { dataState ->
             when (dataState) {
                 is DataState.Deprecated -> emit(
-                    UiState.Success(
-                        dataState.data, "Data is deprecated!"
-                    )
+                    UiState.Success(dataState.data, "Data is deprecated!")
                 )
                 is DataState.Latest -> emit(UiState.Success(dataState.data))
                 is DataState.Exception -> emit(UiState.Error(dataState.cause.message ?: ""))
