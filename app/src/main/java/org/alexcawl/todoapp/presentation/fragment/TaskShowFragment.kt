@@ -22,14 +22,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
-import org.alexcawl.todoapp.data.util.DataState
 import org.alexcawl.todoapp.databinding.FragmentTaskShowBinding
-import org.alexcawl.todoapp.domain.util.ValidationException
 import org.alexcawl.todoapp.presentation.adapter.OnItemSwipeCallback
 import org.alexcawl.todoapp.presentation.adapter.TaskItemAdapter
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
 import org.alexcawl.todoapp.presentation.util.ToDoApplication
+import org.alexcawl.todoapp.presentation.util.UiState
 import org.alexcawl.todoapp.presentation.util.snackbar
 import javax.inject.Inject
 
@@ -47,9 +46,7 @@ class TaskShowFragment : Fragment() {
         get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         (requireContext().applicationContext as ToDoApplication).appComponent.inject(this)
         _binding = FragmentTaskShowBinding.inflate(inflater, container, false)
@@ -66,7 +63,7 @@ class TaskShowFragment : Fragment() {
 
     private fun setupVisibilityButton(view: AppCompatImageButton) {
         view.setImageDrawable(
-            when(visibility.value) {
+            when (visibility.value) {
                 true -> ContextCompat.getDrawable(view.context, R.drawable.icon_visibility_on)
                 false -> ContextCompat.getDrawable(view.context, R.drawable.icon_visibility_off)
             }
@@ -75,7 +72,7 @@ class TaskShowFragment : Fragment() {
         view.setOnClickListener {
             model.invertVisibilityState()
             view.setImageDrawable(
-                when(visibility.value) {
+                when (visibility.value) {
                     true -> ContextCompat.getDrawable(view.context, R.drawable.icon_visibility_on)
                     false -> ContextCompat.getDrawable(view.context, R.drawable.icon_visibility_off)
                 }
@@ -97,57 +94,58 @@ class TaskShowFragment : Fragment() {
 
     private fun setupRecyclerView(view: RecyclerView, navController: NavController) {
         val viewManager = LinearLayoutManager(context)
-        val viewAdapter = TaskItemAdapter(
-            onEditClicked = {
-                navController.navigate(
-                    R.id.taskEditAction,
-                    bundleOf(
-                        "UUID" to it.id.toString(),
-                        "isEnabled" to true
-                    )
+        val viewAdapter = TaskItemAdapter(onEditClicked = {
+            navController.navigate(
+                R.id.taskEditAction, bundleOf(
+                    "UUID" to it.id.toString(), "isEnabled" to true
                 )
-            },
-            onInfoClicked = {
-                navController.navigate(
-                    R.id.taskEditAction,
-                    bundleOf(
-                        "UUID" to it.id.toString(),
-                        "isEnabled" to false
-                    )
+            )
+        }, onInfoClicked = {
+            navController.navigate(
+                R.id.taskEditAction, bundleOf(
+                    "UUID" to it.id.toString(), "isEnabled" to false
                 )
-            },
-            onTaskSwipeLeft = {
-                lifecycle.coroutineScope.launch(Dispatchers.IO) {
-                    model.removeTask(it)
-                }
-            },
-            onTaskSwipeRight = {
-                lifecycle.coroutineScope.launch(Dispatchers.IO) {
-                    try {
-                        model.setTask(it)
-                    } catch (exception: ValidationException) {
-                        view.snackbar("Blank text is not allowed!")
+            )
+        }, onTaskSwipeLeft = {
+            lifecycle.coroutineScope.launch(Dispatchers.IO) {
+                model.removeTask(it).collect { uiState ->
+                    when (uiState) {
+                        is UiState.Success -> view.snackbar("OK")
+                        is UiState.Error -> view.snackbar(uiState.cause)
+                        else -> {}
                     }
                 }
             }
-        )
+        }, onTaskSwipeRight = {
+            lifecycle.coroutineScope.launch(Dispatchers.IO) {
+                model.setTask(it).collect { uiState ->
+                    when (uiState) {
+                        is UiState.Success -> view.snackbar("OK")
+                        is UiState.Error -> view.snackbar(uiState.cause)
+                        else -> {}
+                    }
+                }
+            }
+        })
 
         lifecycle.coroutineScope.launch(Dispatchers.IO) {
             visibility.collectLatest { visibilityState ->
-                when(visibilityState) {
+                when (visibilityState) {
                     true -> {
-                        model.allTasks.collectLatest { taskState ->
-                            when(taskState) {
-                                is DataState.OK -> viewAdapter.submitList(taskState.content)
-                                else -> viewAdapter.submitList(listOf())
+                        model.allTasks.collectLatest { uiState ->
+                            when (uiState) {
+                                is UiState.Success -> viewAdapter.submitList(uiState.data)
+                                is UiState.Error -> view.snackbar(uiState.cause)
+                                is UiState.Start -> viewAdapter.submitList(listOf())
                             }
                         }
                     }
                     false -> {
-                        model.uncompletedTasks.collectLatest { taskState ->
-                            when(taskState) {
-                                is DataState.OK -> viewAdapter.submitList(taskState.content)
-                                else -> viewAdapter.submitList(listOf())
+                        model.uncompletedTasks.collectLatest { uiState ->
+                            when (uiState) {
+                                is UiState.Success -> viewAdapter.submitList(uiState.data)
+                                is UiState.Error -> view.snackbar(uiState.cause)
+                                is UiState.Start -> viewAdapter.submitList(listOf())
                             }
                         }
                     }
@@ -156,8 +154,7 @@ class TaskShowFragment : Fragment() {
         }
 
         val swipeHelper = ItemTouchHelper(
-            OnItemSwipeCallback(
-                { position -> viewAdapter.onItemSwipeLeft(position) },
+            OnItemSwipeCallback({ position -> viewAdapter.onItemSwipeLeft(position) },
                 { position -> viewAdapter.onItemSwipeRight(position) },
                 ContextCompat.getDrawable(requireContext(), R.drawable.icon_check),
                 ColorDrawable(ContextCompat.getColor(requireContext(), R.color.green)),

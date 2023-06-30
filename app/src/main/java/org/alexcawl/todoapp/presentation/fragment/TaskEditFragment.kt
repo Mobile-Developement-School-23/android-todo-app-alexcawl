@@ -10,17 +10,16 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
-import org.alexcawl.todoapp.data.util.DataState
 import org.alexcawl.todoapp.databinding.FragmentTaskEditBinding
 import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.domain.model.TaskModel
-import org.alexcawl.todoapp.domain.util.ValidationException
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
 import org.alexcawl.todoapp.presentation.util.*
@@ -38,13 +37,24 @@ class TaskEditFragment : Fragment() {
         get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         (requireContext().applicationContext as ToDoApplication).appComponent.inject(this)
         _binding = FragmentTaskEditBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(
+        view: View, savedInstanceState: Bundle?
+    ) {
+        val navController = findNavController()
+        try {
+            val (id: UUID, isEnabled: Boolean) = getID(arguments)
+            setupCoroutineData(id, isEnabled, navController)
+        } catch (exception: IllegalArgumentException) {
+            Snackbar.make(view, exception.message ?: "", Snackbar.LENGTH_LONG).show()
+            navController.navigateUp()
+        }
     }
 
     override fun onDestroyView() {
@@ -52,74 +62,48 @@ class TaskEditFragment : Fragment() {
         _binding = null
     }
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?
-    ) {
-        val navController = findNavController()
-        try {
-            val (id: UUID, isEnabled: Boolean) = getID(arguments)
-            lifecycle.coroutineScope.launch {
-                model.requireTask(id)
-                    .stateIn(lifecycle.coroutineScope)
-                    .collect { taskState ->
-                        when (taskState) {
-                            is DataState.OK -> {
-                                val task = taskState.content
-                                with(binding) {
-                                    setupCloseButton(taskCloseButton, navController)
-                                    setupSaveButton(taskSaveButton, navController, isEnabled, task)
-                                    setupDeleteButton(
-                                        taskDeleteButton,
-                                        navController,
-                                        isEnabled,
-                                        task
-                                    )
-                                    setupContentScriber(taskContentText, isEnabled, task)
-                                    setupPriorityPicker(
-                                        taskPrioritySpinner,
-                                        taskPriorityText,
-                                        isEnabled,
-                                        task
-                                    )
-                                    setupDeadlinePicker(
-                                        taskDeadlineSwitch,
-                                        taskDeadlineText,
-                                        taskDeadlinePickerArea,
-                                        isEnabled,
-                                        task
-                                    )
-                                    setupDateInfo(
-                                        taskCreationTimeText,
-                                        taskModifyingTimeText,
-                                        taskModifyingTimeArea,
-                                        task
-                                    )
-                                }
-                            }
-                            else -> {
-                                with(binding) {
-                                    setupCloseButton(taskCloseButton, navController)
-                                }
-                            }
-                        }
+    @Throws(IllegalArgumentException::class)
+    private fun getID(arguments: Bundle?): Pair<UUID, Boolean> {
+        val stringID = arguments?.getString("UUID") ?: throw IllegalArgumentException("Null UUID!")
+        val uuid =
+            UUID.fromString(stringID) ?: throw IllegalArgumentException("Non-valid UUID: $stringID")
+        val isEnabled = arguments.getBoolean("isEnabled")
+        return Pair(uuid, isEnabled)
+    }
 
-                    }
+    private fun setupCoroutineData(id: UUID, isEnabled: Boolean, navController: NavController) {
+        lifecycleScope.launch {
+            model.requireTask(id).stateIn(lifecycleScope).collect { uiState ->
+                when (uiState) {
+                    is UiState.Success -> setupOkState(isEnabled, navController, uiState.data)
+                    else -> setupErrorState(navController)
+                }
             }
-        } catch (exception: IllegalArgumentException) {
-            Snackbar.make(view, exception.message ?: "", Snackbar.LENGTH_LONG).show()
-            navController.navigateUp()
         }
     }
 
-    @Throws(IllegalArgumentException::class)
-    private fun getID(arguments: Bundle?): Pair<UUID, Boolean> {
-        val stringID = arguments?.getString("UUID")
-            ?: throw IllegalArgumentException("Null UUID!")
-        val uuid = UUID.fromString(stringID)
-            ?: throw IllegalArgumentException("Non-valid UUID: $stringID")
-        val isEnabled = arguments.getBoolean("isEnabled")
-        return Pair(uuid, isEnabled)
+    private fun setupOkState(isEnabled: Boolean, navController: NavController, task: TaskModel) {
+        with(binding) {
+            setupCloseButton(taskCloseButton, navController)
+            setupSaveButton(taskSaveButton, navController, isEnabled, task)
+            setupDeleteButton(taskDeleteButton, navController, isEnabled, task)
+            setupContentScriber(taskContentText, isEnabled, task)
+            setupPriorityPicker(taskPrioritySpinner, taskPriorityText, isEnabled, task)
+            setupDeadlinePicker(
+                taskDeadlineSwitch, taskDeadlineText, taskDeadlinePickerArea, isEnabled, task
+            )
+            setupDateInfo(taskCreationTimeText, taskModifyingTimeText, taskModifyingTimeArea, task)
+        }
+    }
+
+    private fun setupErrorState(navController: NavController) {
+        with(binding) {
+            taskCloseButton.setOnClickListener {
+                navController.navigateUp()
+            }
+            taskSaveButton.disable()
+            taskSaveButton.text = ""
+        }
     }
 
     private fun setupCloseButton(button: AppCompatImageButton, navController: NavController) {
@@ -129,19 +113,17 @@ class TaskEditFragment : Fragment() {
     }
 
     private fun setupSaveButton(
-        button: AppCompatButton,
-        navController: NavController,
-        isEnabled: Boolean,
-        task: TaskModel
+        button: AppCompatButton, navController: NavController, isEnabled: Boolean, task: TaskModel
     ) {
         when (isEnabled) {
             true -> button.setOnClickListener {
                 lifecycle.coroutineScope.launch {
-                    try {
-                        model.setTask(task)
-                        navController.navigateUp()
-                    } catch (exception: ValidationException) {
-                        button.snackbar(exception.message ?: "")
+                    model.setTask(task).collect { uiState ->
+                        when (uiState) {
+                            is UiState.Success -> navController.navigateUp()
+                            is UiState.Error -> button.snackbar(uiState.cause)
+                            else -> {}
+                        }
                     }
                 }
             }
@@ -153,16 +135,18 @@ class TaskEditFragment : Fragment() {
     }
 
     private fun setupDeleteButton(
-        button: AppCompatButton,
-        navController: NavController,
-        isEnabled: Boolean,
-        task: TaskModel
+        button: AppCompatButton, navController: NavController, isEnabled: Boolean, task: TaskModel
     ) {
         when (isEnabled) {
             true -> button.setOnClickListener {
-                navController.navigateUp()
                 lifecycle.coroutineScope.launch {
-                    model.removeTask(task)
+                    model.removeTask(task).collect { uiState ->
+                        when (uiState) {
+                            is UiState.Success -> navController.navigateUp()
+                            is UiState.Error -> button.snackbar(uiState.cause)
+                            else -> {}
+                        }
+                    }
                 }
             }
             false -> button.invisible()
@@ -170,9 +154,7 @@ class TaskEditFragment : Fragment() {
     }
 
     private fun setupContentScriber(
-        editText: AppCompatEditText,
-        isEnabled: Boolean,
-        task: TaskModel
+        editText: AppCompatEditText, isEnabled: Boolean, task: TaskModel
     ) {
         editText.setText(task.text)
         when (isEnabled) {
@@ -182,10 +164,7 @@ class TaskEditFragment : Fragment() {
     }
 
     private fun setupPriorityPicker(
-        spinner: AppCompatSpinner,
-        textView: AppCompatTextView,
-        isEnabled: Boolean,
-        task: TaskModel
+        spinner: AppCompatSpinner, textView: AppCompatTextView, isEnabled: Boolean, task: TaskModel
     ) {
         textView.text = task.priority.toString().lowercase(Locale.ROOT)
         spinner.setSelection(
@@ -198,10 +177,7 @@ class TaskEditFragment : Fragment() {
         when (isEnabled) {
             true -> spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
+                    parent: AdapterView<*>?, view: View?, position: Int, id: Long
                 ) {
                     task.priority = when (position) {
                         0 -> Priority.BASIC
@@ -233,8 +209,7 @@ class TaskEditFragment : Fragment() {
                         true -> {
                             val dateString = createDateString(Calendar.getInstance())
                             task.deadline = task.deadline ?: dateStringToTimestamp(dateString)
-                            textView.text =
-                                task.deadline?.toDateFormat() ?: dateString
+                            textView.text = task.deadline?.toDateFormat() ?: dateString
                             clickableArea.isClickable = true
                         }
                         false -> {
@@ -269,8 +244,7 @@ class TaskEditFragment : Fragment() {
         creationDateTextView.text = creationDate.toDateFormat()
         when (modifyingDate) {
             null -> modifyingDateArea.gone()
-            else -> modifyingDateTextView.text =
-                modifyingDate.toDateFormat()
+            else -> modifyingDateTextView.text = modifyingDate.toDateFormat()
         }
     }
 }

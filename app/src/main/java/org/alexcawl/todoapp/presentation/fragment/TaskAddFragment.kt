@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.FragmentTaskAddBinding
 import org.alexcawl.todoapp.domain.model.Priority
-import org.alexcawl.todoapp.domain.util.ValidationException
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
 import org.alexcawl.todoapp.presentation.util.*
@@ -71,11 +70,12 @@ class TaskAddFragment : Fragment() {
     private fun setupAddButton(button: AppCompatButton, navController: NavController) {
         button.setOnClickListener {
             lifecycle.coroutineScope.launch {
-                try {
-                    model.addTask(textFieldValue, priorityFieldValue, deadlineFieldValue)
-                    navController.navigateUp()
-                } catch (exception: ValidationException) {
-                    button.snackbar(exception.message ?: "")
+                model.addTask(textFieldValue, priorityFieldValue, deadlineFieldValue).collect { uiState ->
+                    when (uiState) {
+                        is UiState.Success -> navController.navigateUp()
+                        is UiState.Error -> button.snackbar(uiState.cause)
+                        else -> {}
+                    }
                 }
             }
         }

@@ -1,36 +1,74 @@
 package org.alexcawl.todoapp.data.network.datasource
 
+import android.util.Log
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import org.alexcawl.todoapp.data.network.api.TaskApi
+import org.alexcawl.todoapp.data.network.dto.request.TaskListRequestDto
+import org.alexcawl.todoapp.data.network.dto.request.TaskSingleRequestDto
 import org.alexcawl.todoapp.data.network.dto.response.TaskDto
-import org.alexcawl.todoapp.data.network.dto.response.TaskListResponseDto
-import org.alexcawl.todoapp.data.util.DataState
+import org.alexcawl.todoapp.data.network.util.NetworkState
+import org.alexcawl.todoapp.data.util.toDto
 import org.alexcawl.todoapp.data.util.toModel
 import org.alexcawl.todoapp.domain.model.TaskModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import org.alexcawl.todoapp.presentation.util.PreferencesCommitter
 
 class NetworkSource(
+    private val committer: PreferencesCommitter,
     private val api: TaskApi
 ) {
-    fun getTasks(): Flow<DataState<List<TaskModel>>> = flow {
-        emit(DataState.Initial)
-        val tasks: MutableList<TaskDto> = mutableListOf()
-        api.getTasks().enqueue(
-            object : Callback<TaskListResponseDto> {
-                override fun onResponse(
-                    call: Call<TaskListResponseDto>, response: Response<TaskListResponseDto>
-                ) {
-                    println(response.body().toString())
-                    tasks.addAll(response.body().list)
-                }
+    @Deprecated("Unused")
+    fun getTasks(): Flow<NetworkState<List<TaskModel>>> = flow {
+        emit(NetworkState.Loading)
+        val tasks = api.getTasks().list.map(TaskDto::toModel)
+        emit(NetworkState.Success(tasks, committer.getRevision()))
+    }.catch {
+        NetworkState.Failure(it)
+    }
 
-                override fun onFailure(call: Call<TaskListResponseDto>, t: Throwable) =
-                    call.cancel()
-            }
+    fun patchTasks(list: List<TaskModel>): Flow<NetworkState<List<TaskModel>>> = flow {
+        emit(NetworkState.Loading)
+        val revision = committer.getRevision()
+        val response = api.patchTasks(
+            revision,
+            TaskListRequestDto(list.map(TaskModel::toDto))
         )
-        emit(DataState.OK(tasks.map(TaskDto::toModel)))
+        committer.setRevision(response.revision)
+        emit(NetworkState.Success(response.list.map(TaskDto::toModel), response.revision))
+    }.catch {
+        emit(NetworkState.Failure(it))
+    }
+
+    fun postTask(task: TaskModel): Flow<NetworkState<TaskModel>> = flow {
+        emit(NetworkState.Loading)
+        val revision = committer.getRevision()
+        Log.d("POST-TASK", "revision before exception is -> $revision")
+        val response = api.postTask(revision, TaskSingleRequestDto(task.toDto()))
+        committer.setRevision(response.revision)
+        emit(NetworkState.Success(response.element.toModel(), response.revision))
+    }.catch {
+        Log.d("POST-TASK-EXCEPTION", it.stackTraceToString())
+        emit(NetworkState.Failure(it))
+    }
+
+    fun putTask(task: TaskModel): Flow<NetworkState<TaskModel>> = flow {
+        emit(NetworkState.Loading)
+        val revision = committer.getRevision()
+        val response = api.putTask(revision, task.id, TaskSingleRequestDto(task.toDto()))
+        committer.setRevision(response.revision)
+        emit(NetworkState.Success(response.element.toModel(), response.revision))
+    }.catch {
+        emit(NetworkState.Failure(it))
+    }
+
+    fun deleteTask(task: TaskModel): Flow<NetworkState<TaskModel>> = flow {
+        emit(NetworkState.Loading)
+        val revision = committer.getRevision()
+        val response = api.deleteTask(revision, task.id)
+        committer.setRevision(response.revision)
+        emit(NetworkState.Success(response.element.toModel(), revision))
+    }    .catch {
+        emit(NetworkState.Failure(it))
     }
 }

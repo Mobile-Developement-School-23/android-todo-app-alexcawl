@@ -22,7 +22,7 @@ fun TaskModel.toDto(): TaskDto = TaskDto(
     isDone,
     null,
     creationTime,
-    modifyingTime,
+    modifyingTime ?: 0,
     "Mick-Android"
 )
 

@@ -1,11 +1,15 @@
 package org.alexcawl.todoapp.di
 
+import android.content.Context
+import android.util.Log
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.logging.HttpLoggingInterceptor
 import org.alexcawl.todoapp.data.network.api.TaskApi
 import org.alexcawl.todoapp.data.network.datasource.NetworkSource
+import org.alexcawl.todoapp.presentation.util.PreferencesCommitter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -23,12 +27,15 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideNetworkClient(): OkHttpClient = OkHttpClient.Builder().addInterceptor { chain ->
-        val newRequest: Request = chain!!.request()
+        Log.d("NETWORK", chain.request().toString())
+        val newRequest: Request = chain.request()
             .newBuilder()
             .addHeader("Authorization", "Bearer debamboozle")
             .build()
         chain.proceed(newRequest)
-    }.build()
+    }.addInterceptor(HttpLoggingInterceptor().also {
+        it.level = HttpLoggingInterceptor.Level.BODY
+    }).build()
 
     @Provides
     @Singleton
@@ -37,9 +44,9 @@ class NetworkModule {
         factory: GsonConverterFactory,
         client: OkHttpClient
     ): Retrofit = Retrofit.Builder()
-        .client(client)
         .baseUrl(url)
         .addConverterFactory(factory)
+        .client(client)
         .build()
 
     @Provides
@@ -48,5 +55,5 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideNetworkSource(api: TaskApi) = NetworkSource(api)
+    fun provideNetworkSource(committer: PreferencesCommitter, api: TaskApi) = NetworkSource(committer, api)
 }

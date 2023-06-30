@@ -11,6 +11,6 @@ data class TaskDto(
     @SerializedName("done") val done: Boolean,
     @SerializedName("color") val color: String?,
     @SerializedName("created_at") val createdAt: Long,
-    @SerializedName("changed_at") val changedAt: Long?,
+    @SerializedName("changed_at") val changedAt: Long,
     @SerializedName("last_updated_by") val deviceID: String
 )

@@ -5,6 +5,7 @@ import dagger.Module
 import dagger.Provides
 import org.alexcawl.todoapp.domain.usecases.*
 import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
+import org.alexcawl.todoapp.presentation.util.PreferencesCommitter
 import javax.inject.Singleton
 
 @Module
@@ -32,4 +33,8 @@ class AppModule(
         removeCase = removeCase,
         addCase = addCase
     )
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(context: Context) = PreferencesCommitter()
 }

@@ -3,13 +3,14 @@ package org.alexcawl.todoapp.presentation.model
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import org.alexcawl.todoapp.data.util.DataState
+import org.alexcawl.todoapp.domain.model.DataState
 import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.domain.model.TaskModel
 import org.alexcawl.todoapp.domain.usecases.*
-import org.alexcawl.todoapp.domain.util.ValidationException
+import org.alexcawl.todoapp.presentation.util.UiState
 import java.util.*
 
 class TaskViewModel(
@@ -24,42 +25,98 @@ class TaskViewModel(
     val visibility: StateFlow<Boolean>
         get() = _visibility
 
-    private val _allTasks: MutableStateFlow<DataState<List<TaskModel>>> =
-        MutableStateFlow(DataState.Initial)
-    val allTasks: StateFlow<DataState<List<TaskModel>>>
+    private var job: Job? = null
+    private val _allTasks: MutableStateFlow<UiState<List<TaskModel>>> =
+        MutableStateFlow(UiState.Start)
+    val allTasks: StateFlow<UiState<List<TaskModel>>>
         get() = _allTasks
 
-    private val _uncompletedTasks: MutableStateFlow<DataState<List<TaskModel>>> =
-        MutableStateFlow(DataState.Initial)
-    val uncompletedTasks: StateFlow<DataState<List<TaskModel>>>
+    private val _uncompletedTasks: MutableStateFlow<UiState<List<TaskModel>>> =
+        MutableStateFlow(UiState.Start)
+    val uncompletedTasks: StateFlow<UiState<List<TaskModel>>>
         get() = _uncompletedTasks
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            getAllCase().collect { state ->
-                _allTasks.emit(state)
+        job = viewModelScope.launch(Dispatchers.IO) {
+            getAllCase().collect { dataState ->
+                when (dataState) {
+                    is DataState.Deprecated -> _allTasks.emit(
+                        UiState.Success(
+                            dataState.data, "Data is deprecated!"
+                        )
+                    )
+                    is DataState.Latest -> _allTasks.emit(UiState.Success(dataState.data))
+                    is DataState.Exception -> _allTasks.emit(
+                        UiState.Error(
+                            dataState.cause.message ?: ""
+                        )
+                    )
+                    else -> _allTasks.emit(UiState.Start)
+                }
             }
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            getUncompletedCase().collect { state ->
-                _uncompletedTasks.emit(state)
+            getUncompletedCase().collect { dataState ->
+                when (dataState) {
+                    is DataState.Deprecated -> _uncompletedTasks.emit(
+                        UiState.Success(
+                            dataState.data, "Data is deprecated!"
+                        )
+                    )
+                    is DataState.Latest -> _uncompletedTasks.emit(UiState.Success(dataState.data))
+                    is DataState.Exception -> _uncompletedTasks.emit(
+                        UiState.Error(
+                            dataState.cause.message ?: ""
+                        )
+                    )
+                    else -> _uncompletedTasks.emit(UiState.Start)
+                }
             }
         }
     }
 
-    @Throws(ValidationException::class)
-    suspend fun removeTask(task: TaskModel) = removeCase(task)
+    fun addTask(text: String, priority: Priority, deadline: Long?): Flow<UiState<String>> = flow {
+        emit(UiState.Start)
+        addCase(text, priority, deadline)
+        emit(UiState.Success("Task added!"))
+    }.catch {
+        emit(UiState.Error(it.message ?: "Unrecognized exception!"))
+    }
 
-    suspend fun addTask(
-        text: String, priority: Priority, deadline: Long?
-    ) = addCase(text, priority, deadline)
+    fun setTask(task: TaskModel): Flow<UiState<String>> = flow {
+        emit(UiState.Start)
+        updateCase(task)
+        emit(UiState.Success("Task modified!"))
+    }.catch {
+        emit(UiState.Error(it.stackTraceToString()))
+    }
 
-    @Throws(ValidationException::class)
-    suspend fun setTask(task: TaskModel) = updateCase(task)
+    suspend fun removeTask(task: TaskModel): Flow<UiState<String>> = flow {
+        emit(UiState.Start)
+        removeCase(task)
+        emit(UiState.Success("Task deleted!"))
+    }.catch {
+        emit(UiState.Error(it.stackTraceToString()))
+    }
 
-    fun requireTask(id: UUID) = getSingleCase(id)
+    fun requireTask(id: UUID): Flow<UiState<TaskModel>> = flow {
+        getSingleCase(id).collect { dataState ->
+            when (dataState) {
+                is DataState.Deprecated -> emit(
+                    UiState.Success(
+                        dataState.data, "Data is deprecated!"
+                    )
+                )
+                is DataState.Latest -> emit(UiState.Success(dataState.data))
+                is DataState.Exception -> emit(UiState.Error(dataState.cause.message ?: ""))
+                else -> emit(UiState.Start)
+            }
+        }
+    }
 
     fun invertVisibilityState() {
         _visibility.value = _visibility.value.not()
+    }
+
+    override fun onCleared() {
+        job?.cancel()
     }
 }
