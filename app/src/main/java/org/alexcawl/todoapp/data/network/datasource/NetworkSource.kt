@@ -1,6 +1,5 @@
 package org.alexcawl.todoapp.data.network.datasource
 
-import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -21,7 +20,6 @@ class NetworkSource(
     fun getTasks(): Flow<NetworkState<List<TaskModel>>> = flow {
         emit(NetworkState.Loading)
         val response = api.getTasks()
-        Log.d("SHIT", response.list.toString())
         emit(NetworkState.Success(response.list.map(TaskDto::toModel), response.revision))
     }.catch {
         NetworkState.Failure(it)
