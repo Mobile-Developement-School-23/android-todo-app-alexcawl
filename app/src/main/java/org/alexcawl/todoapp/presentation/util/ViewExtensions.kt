@@ -7,6 +7,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
 import org.alexcawl.todoapp.R
+import org.alexcawl.todoapp.domain.model.Priority
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDateTime
@@ -46,13 +47,14 @@ fun Long.toDateFormat(): String = run {
     localDateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 }
 
+fun Priority.toTextFormat(): String =
+    this.toString().lowercase().replaceFirstChar { it.uppercase() }
+
 fun createDateString(day: Int, month: Int, year: Int): String =
     String.format("%02d.%02d.%04d", day, month + 1, year)
 
 fun createDateString(calendar: Calendar): String = createDateString(
-    calendar.get(Calendar.DAY_OF_MONTH),
-    calendar.get(Calendar.MONTH),
-    calendar.get(Calendar.YEAR)
+    calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR)
 )
 
 fun dateStringToTimestamp(dateString: String): Long {

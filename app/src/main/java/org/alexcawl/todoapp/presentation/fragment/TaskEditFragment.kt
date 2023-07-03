@@ -14,7 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.FragmentTaskEditBinding
@@ -49,8 +48,8 @@ class TaskEditFragment : Fragment() {
     ) {
         val navController = findNavController()
         try {
-            val (id: UUID, isEnabled: Boolean) = getID(arguments)
-            setupCoroutineData(id, isEnabled, navController)
+            val id: UUID = getID(arguments)
+            setupLifecycleData(id, navController)
         } catch (exception: IllegalArgumentException) {
             Snackbar.make(view, exception.message ?: "", Snackbar.LENGTH_LONG).show()
             navController.navigateUp()
@@ -63,43 +62,37 @@ class TaskEditFragment : Fragment() {
     }
 
     @Throws(IllegalArgumentException::class)
-    private fun getID(arguments: Bundle?): Pair<UUID, Boolean> {
-        val stringID = arguments?.getString("UUID") ?: throw IllegalArgumentException("Null UUID!")
-        val uuid =
-            UUID.fromString(stringID) ?: throw IllegalArgumentException("Non-valid UUID: $stringID")
-        val isEnabled = arguments.getBoolean("isEnabled")
-        return Pair(uuid, isEnabled)
+    private fun getID(arguments: Bundle?): UUID {
+        val stringID = arguments?.getString("UUID")
+            ?: throw IllegalArgumentException("Null UUID!")
+        return UUID.fromString(stringID)
+            ?: throw IllegalArgumentException("Non-valid UUID: $stringID")
     }
 
-    private fun setupCoroutineData(id: UUID, isEnabled: Boolean, navController: NavController) {
+    private fun setupLifecycleData(id: UUID, navController: NavController) {
         lifecycleScope.launch {
-            model.requireTask(id).stateIn(lifecycleScope).collect { uiState ->
+            model.requireTask(id).collect { uiState: UiState<TaskModel> ->
                 when (uiState) {
-                    is UiState.Success -> setupOkState(isEnabled, navController, uiState.data)
-                    else -> setupErrorState(navController)
+                    is UiState.Start -> with(binding) {
+                        setupCloseButton(taskCloseButton, navController)
+                    }
+                    is UiState.Error -> navController.navigateUp().also {
+                        binding.root.snackbar(uiState.cause)
+                    }
+                    is UiState.Success -> with(binding) {
+                        setupSaveButton(taskSaveButton, navController, uiState.data)
+                        setupTaskText(taskText, uiState.data)
+                        setupTaskPriority(prioritySpinner, taskPriority, uiState.data)
+                        setupTaskDeadline(
+                            deadlineSwitch,
+                            taskDeadline,
+                            deadlinePicker,
+                            uiState.data
+                        )
+                        setupTaskDates(taskCreatedAt, taskChangedAt, uiState.data)
+                        setupDeleteButton(taskDeleteButton, navController, uiState.data)
+                    }
                 }
-            }
-        }
-    }
-
-    private fun setupOkState(isEnabled: Boolean, navController: NavController, task: TaskModel) {
-        with(binding) {
-            setupCloseButton(taskCloseButton, navController)
-            setupSaveButton(taskSaveButton, navController, isEnabled, task)
-            setupDeleteButton(taskDeleteButton, navController, isEnabled, task)
-            setupContentScriber(taskContentText, isEnabled, task)
-            setupPriorityPicker(taskPrioritySpinner, taskPriorityText, isEnabled, task)
-            setupDeadlinePicker(
-                taskDeadlineSwitch, taskDeadlineText, taskDeadlinePickerArea, isEnabled, task
-            )
-            setupDateInfo(taskCreationTimeText, taskModifyingTimeText, taskModifyingTimeArea, task)
-        }
-    }
-
-    private fun setupErrorState(navController: NavController) {
-        with(binding) {
-            taskCloseButton.setOnClickListener {
-                navController.navigateUp()
             }
         }
     }
@@ -111,66 +104,56 @@ class TaskEditFragment : Fragment() {
     }
 
     private fun setupSaveButton(
-        button: AppCompatButton, navController: NavController, isEnabled: Boolean, task: TaskModel
+        button: AppCompatButton,
+        navController: NavController,
+        task: TaskModel
     ) {
-        when (isEnabled) {
-            true -> button.setOnClickListener {
-                lifecycle.coroutineScope.launch {
-                    model.setTask(task).collect { uiState ->
-                        when (uiState) {
-                            is UiState.Success -> navController.navigateUp()
-                            is UiState.Error -> {
-                                button.snackbar(uiState.cause)
-                                navController.navigateUp()
-                            }
-                            else -> {}
+        button.setOnClickListener {
+            lifecycle.coroutineScope.launch {
+                model.setTask(task).collect { uiState: UiState<String> ->
+                    when (uiState) {
+                        is UiState.Start -> {}
+                        is UiState.Success -> navController.navigateUp()
+                        is UiState.Error -> navController.navigateUp().also {
+                            button.snackbar(uiState.cause)
                         }
                     }
                 }
-            }
-            false -> {
-                button.disable()
-                button.text = ""
             }
         }
     }
 
     private fun setupDeleteButton(
-        button: AppCompatButton, navController: NavController, isEnabled: Boolean, task: TaskModel
+        button: AppCompatButton, navController: NavController, task: TaskModel
     ) {
-        when (isEnabled) {
-            true -> button.setOnClickListener {
-                lifecycle.coroutineScope.launch {
-                    model.removeTask(task).collect { uiState ->
-                        when (uiState) {
-                            is UiState.Success -> navController.navigateUp()
-                            is UiState.Error -> {
-                                button.snackbar(uiState.cause)
-                                navController.navigateUp()
-                            }
-                            else -> {}
+        button.setOnClickListener {
+            lifecycle.coroutineScope.launch {
+                model.removeTask(task).collect { uiState ->
+                    when (uiState) {
+                        is UiState.Start -> {}
+                        is UiState.Success -> navController.navigateUp()
+                        is UiState.Error -> navController.navigateUp().also {
+                            button.snackbar(uiState.cause)
                         }
                     }
                 }
             }
-            false -> button.invisible()
         }
     }
 
-    private fun setupContentScriber(
-        editText: AppCompatEditText, isEnabled: Boolean, task: TaskModel
+    private fun setupTaskText(
+        editText: AppCompatEditText, task: TaskModel
     ) {
         editText.setText(task.text)
-        when (isEnabled) {
-            true -> editText.addTextChangedListener { task.text = it.toString() }
-            false -> editText.disable()
+        editText.addTextChangedListener {
+            task.text = it.toString()
         }
     }
 
-    private fun setupPriorityPicker(
-        spinner: AppCompatSpinner, textView: AppCompatTextView, isEnabled: Boolean, task: TaskModel
+    private fun setupTaskPriority(
+        spinner: AppCompatSpinner, textView: AppCompatTextView, task: TaskModel
     ) {
-        textView.text = task.priority.toString().lowercase(Locale.ROOT)
+        textView.text = task.priority.toTextFormat()
         spinner.setSelection(
             when (task.priority) {
                 Priority.LOW -> 1
@@ -178,77 +161,65 @@ class TaskEditFragment : Fragment() {
                 else -> 0
             }
         )
-        when (isEnabled) {
-            true -> spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?, view: View?, position: Int, id: Long
-                ) {
-                    task.priority = when (position) {
-                        0 -> Priority.BASIC
-                        1 -> Priority.LOW
-                        else -> Priority.IMPORTANT
-                    }
-                    textView.text = task.priority.toString().lowercase(Locale.ROOT)
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                task.priority = when (position) {
+                    0 -> Priority.BASIC
+                    1 -> Priority.LOW
+                    else -> Priority.IMPORTANT
                 }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
+                textView.text = task.priority.toTextFormat()
             }
-            false -> spinner.gone()
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
 
-    private fun setupDeadlinePicker(
+    private fun setupTaskDeadline(
         switch: SwitchCompat,
         textView: AppCompatTextView,
         clickableArea: View,
-        isEnabled: Boolean,
         task: TaskModel
     ) {
-        textView.text =
-            task.deadline?.toDateFormat() ?: textView.context.getText(R.string.not_defined)
-        when (isEnabled) {
-            true -> {
-                switch.setOnCheckedChangeListener { _, isChecked ->
-                    when (isChecked) {
-                        true -> {
-                            val dateString = createDateString(Calendar.getInstance())
-                            task.deadline = task.deadline ?: dateStringToTimestamp(dateString)
-                            textView.text = task.deadline?.toDateFormat() ?: dateString
-                            clickableArea.isClickable = true
-                        }
-                        false -> {
-                            textView.text = switch.context.getText(R.string.not_defined)
-                            task.deadline = null
-                            clickableArea.isClickable = false
-                        }
-                    }
+        switch.isChecked = task.deadline != null
+        textView.text = task.deadline?.toDateFormat()
+            ?: textView.context.getText(R.string.not_defined)
+        switch.setOnCheckedChangeListener { _, isChecked ->
+            when (isChecked) {
+                true -> {
+                    val dateString = createDateString(Calendar.getInstance())
+                    task.deadline = task.deadline ?: dateStringToTimestamp(dateString)
+                    textView.text = task.deadline?.toDateFormat() ?: dateString
+                    clickableArea.isClickable = true
                 }
-                clickableArea.setOnClickListener {
-                    it.context.createDatePicker { _, year, month, dayOfMonth ->
-                        val timestamp = createDateString(dayOfMonth, month, year)
-                        textView.text = timestamp
-                        task.deadline = dateStringToTimestamp(timestamp)
-                    }.show()
+                false -> {
+                    textView.text = switch.context.getText(R.string.not_defined)
+                    task.deadline = null
+                    clickableArea.isClickable = false
                 }
-                clickableArea.isClickable = false
             }
-            false -> switch.gone()
         }
+        clickableArea.setOnClickListener {
+            it.context.createDatePicker { _, year, month, dayOfMonth ->
+                val timestamp = createDateString(dayOfMonth, month, year)
+                textView.text = timestamp
+                task.deadline = dateStringToTimestamp(timestamp)
+            }.show()
+        }
+        clickableArea.isClickable = false
     }
 
-    private fun setupDateInfo(
-        creationDateTextView: AppCompatTextView,
-        modifyingDateTextView: AppCompatTextView,
-        modifyingDateArea: View,
+    private fun setupTaskDates(
+        textViewCreatedAt: AppCompatTextView,
+        textViewChangedAt: AppCompatTextView,
         task: TaskModel
     ) {
-        val creationDate = task.creationTime
-        val modifyingDate = task.modifyingTime
-
-        creationDateTextView.text = creationDate.toDateFormat()
-        when (modifyingDate) {
-            null -> modifyingDateArea.gone()
-            else -> modifyingDateTextView.text = modifyingDate.toDateFormat()
-        }
+        textViewCreatedAt.text = task.creationTime.toDateFormat()
+        textViewChangedAt.text = task.modifyingTime?.toDateFormat()
     }
 }

@@ -55,9 +55,9 @@ class TaskAddFragment : Fragment() {
         with(binding) {
             setupCloseButton(taskCloseButton, navController)
             setupAddButton(taskSaveButton, navController)
-            setupContentScriber(taskContentText)
-            setupPriorityPicker(taskPrioritySpinner, taskPriorityText)
-            setupDeadlinePicker(taskDeadlineSwitch, taskDeadlineText, taskDeadlinePickerArea)
+            setupContentScriber(taskText)
+            setupPriorityPicker(prioritySpinner, taskPriority)
+            setupDeadlinePicker(deadlineSwitch, taskDeadline, deadlinePicker)
         }
     }
 

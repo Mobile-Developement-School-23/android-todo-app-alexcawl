@@ -15,7 +15,7 @@
 
         <Toolbar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:background="?attr/colorPrimary"
             android:contentInsetStart="0dp"
             android:elevation="5dp"
@@ -29,7 +29,7 @@
                     android:id="@+id/task_close_button"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="8dp"
                     android:backgroundTint="@android:color/transparent"
                     android:contentDescription="@string/delete"
                     android:src="@drawable/icon_clear"
@@ -42,8 +42,8 @@
                     android:id="@+id/task_save_button"
                     style="@style/YandexToDoApplicationTheme.ButtonStyle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="8dp"
                     android:text="@string/edit_task"
                     android:textAllCaps="true"
                     android:textAppearance="@style/Button"
@@ -67,14 +67,14 @@
             android:background="?attr/colorPrimary">
 
             <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/task_content_text"
+                android:id="@+id/task_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="15dp"
-                android:elevation="2dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:background="@drawable/selector_responsive_edit_text"
+                android:elevation="2dp"
                 android:gravity="start"
                 android:hint="@string/enter_text"
                 android:inputType="textMultiLine"
@@ -88,18 +88,18 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/taskModify_prioritySetBlock"
+                android:id="@+id/priority_block"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="15dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:gravity="center_vertical"
                 android:minHeight="48dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/task_content_text">
+                app:layout_constraintTop_toBottomOf="@id/task_text">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="0dp"
@@ -115,7 +115,7 @@
                         android:textColor="?attr/colorOnPrimary" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/task_priority_text"
+                        android:id="@+id/task_priority"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/priority"
@@ -130,7 +130,7 @@
                     android:background="@drawable/shape_rounded_corners">
 
                     <androidx.appcompat.widget.AppCompatSpinner
-                        android:id="@+id/task_priority_spinner"
+                        android:id="@+id/priority_spinner"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:backgroundTint="?attr/blue"
@@ -142,32 +142,32 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/taskModify_dividerA"
+                android:id="@+id/divider1"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="15dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:background="?attr/colorTertiary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/taskModify_prioritySetBlock" />
+                app:layout_constraintTop_toBottomOf="@id/priority_block" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/taskModify_deadlineSetBlock"
+                android:id="@+id/deadline_block"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="15dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:gravity="center_vertical"
                 android:minHeight="48dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/taskModify_dividerA">
+                app:layout_constraintTop_toBottomOf="@id/divider1">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/task_deadline_picker_area"
+                    android:id="@+id/deadline_picker"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -181,7 +181,7 @@
                         android:textColor="?attr/colorOnPrimary" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/task_deadline_text"
+                        android:id="@+id/task_deadline"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/deadline"
@@ -190,7 +190,7 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/task_deadline_switch"
+                    android:id="@+id/deadline_switch"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -198,30 +198,30 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/taskModify_dividerB"
+                android:id="@+id/divider2"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="15dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:background="?attr/colorTertiary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/taskModify_deadlineSetBlock" />
+                app:layout_constraintTop_toBottomOf="@id/deadline_block" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/taskModify_editInfo"
+                android:id="@+id/time_block"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="15dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:gravity="center_vertical"
                 android:minHeight="48dp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/taskModify_dividerB">
+                app:layout_constraintTop_toBottomOf="@id/divider2">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
@@ -238,7 +238,7 @@
                         android:textAppearance="@style/Body" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/task_creation_time_text"
+                        android:id="@+id/task_created_at"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -264,7 +264,7 @@
                         android:textAppearance="@style/Body" />
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/task_modifying_time_text"
+                        android:id="@+id/task_changed_at"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -276,23 +276,23 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/taskModify_dividerC"
+                android:id="@+id/divider3"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="16dp"
                 android:background="?attr/colorTertiary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/taskModify_editInfo" />
+                app:layout_constraintTop_toBottomOf="@id/time_block" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/task_delete_button"
                 style="@style/YandexToDoApplicationTheme.ButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="15dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:background="@android:color/transparent"
                 android:drawableStart="@drawable/icon_delete"
                 android:drawablePadding="10dp"
@@ -303,7 +303,7 @@
                 android:textColor="?attr/red"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/taskModify_dividerC" />
+                app:layout_constraintTop_toBottomOf="@id/divider3" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
