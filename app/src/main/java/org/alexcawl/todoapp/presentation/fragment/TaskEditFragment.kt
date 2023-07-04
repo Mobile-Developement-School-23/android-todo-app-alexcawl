@@ -211,7 +211,7 @@ class TaskEditFragment : Fragment() {
                 task.deadline = dateStringToTimestamp(timestamp)
             }.show()
         }
-        clickableArea.isClickable = false
+        clickableArea.isClickable = switch.isChecked
     }
 
     private fun setupTaskDates(

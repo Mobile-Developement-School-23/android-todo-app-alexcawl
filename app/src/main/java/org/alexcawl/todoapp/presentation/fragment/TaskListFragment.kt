@@ -82,7 +82,7 @@ class TaskListFragment : Fragment() {
 
     private fun setupUpdateButton(view: AppCompatImageButton) {
         view.setOnClickListener {
-            view.snackbar("TODO UPDATE") // TODO
+            view.snackbar("TODO UPDATE")
         }
     }
 
@@ -102,7 +102,6 @@ class TaskListFragment : Fragment() {
             lifecycle.coroutineScope.launch(Dispatchers.IO) {
                 model.removeTask(it).collect { uiState ->
                     when (uiState) {
-                        is UiState.Success -> view.snackbar("OK")
                         is UiState.Error -> view.snackbar(uiState.cause)
                         else -> {}
                     }
@@ -112,7 +111,6 @@ class TaskListFragment : Fragment() {
             lifecycle.coroutineScope.launch(Dispatchers.IO) {
                 model.setTask(it).collect { uiState ->
                     when (uiState) {
-                        is UiState.Success -> view.snackbar("OK")
                         is UiState.Error -> view.snackbar(uiState.cause)
                         else -> {}
                     }
