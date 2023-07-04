@@ -1,8 +1,11 @@
 package org.alexcawl.todoapp.presentation.util
 
 import android.content.Context
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class PreferencesCommitter(
+@Singleton
+class PreferencesCommitter @Inject constructor(
     val context: Context
 ) {
     private val preferences = context.getSharedPreferences("ToDoPref", 0)

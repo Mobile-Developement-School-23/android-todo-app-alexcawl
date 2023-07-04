@@ -6,8 +6,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import org.alexcawl.todoapp.data.network.api.TaskApi
-import org.alexcawl.todoapp.data.network.datasource.NetworkSource
-import org.alexcawl.todoapp.presentation.util.PreferencesCommitter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -49,8 +47,4 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideApi(retrofit: Retrofit): TaskApi = retrofit.create(TaskApi::class.java)
-
-    @Provides
-    @Singleton
-    fun provideNetworkSource(committer: PreferencesCommitter, api: TaskApi) = NetworkSource(committer, api)
 }

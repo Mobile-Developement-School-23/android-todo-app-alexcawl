@@ -24,7 +24,7 @@ class DatabaseSource @Inject constructor(
         emit(RoomState.Initial)
         dao.getTask(id.toString()).collect {
             when (it) {
-                null -> emit(RoomState.Failure(ValidationException("Item not found!")))
+                null -> emit(RoomState.Failure(ValidationException("Item not found!"))) // TODO - not Validation Exception
                 else -> emit(RoomState.Success(it.toModel(), committer.getRevision()))
             }
         }
