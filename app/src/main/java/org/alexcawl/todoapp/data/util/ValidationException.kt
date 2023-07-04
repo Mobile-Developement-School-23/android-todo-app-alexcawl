@@ -1,3 +1,3 @@
-package org.alexcawl.todoapp.domain.util
+package org.alexcawl.todoapp.data.util
 
 class ValidationException(val info: String): RuntimeException()

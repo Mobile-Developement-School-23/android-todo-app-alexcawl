@@ -3,8 +3,6 @@ package org.alexcawl.todoapp.di
 import android.content.Context
 import dagger.Module
 import dagger.Provides
-import org.alexcawl.todoapp.domain.usecases.*
-import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
 import org.alexcawl.todoapp.presentation.util.PreferencesCommitter
 import javax.inject.Singleton
 
@@ -15,22 +13,6 @@ class AppModule(
     @Provides
     @Singleton
     fun provideContext(): Context = context
-
-    @Provides
-    @Singleton
-    fun provideTaskViewModelFactory(
-        editCase: TaskUpdateUseCase,
-        getAllCase: TaskGetAllUseCase,
-        getSingleCase: TaskGetByIdUseCase,
-        removeCase: TaskRemoveUseCase,
-        addCase: TaskAddUseCase
-    ): TaskViewModelFactory = TaskViewModelFactory(
-        updateCase = editCase,
-        getAllCase = getAllCase,
-        getSingleCase = getSingleCase,
-        removeCase = removeCase,
-        addCase = addCase
-    )
 
     @Provides
     @Singleton

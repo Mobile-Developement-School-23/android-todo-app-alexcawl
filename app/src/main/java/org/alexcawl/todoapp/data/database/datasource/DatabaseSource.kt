@@ -9,11 +9,14 @@ import org.alexcawl.todoapp.data.database.util.RoomState
 import org.alexcawl.todoapp.data.util.toEntity
 import org.alexcawl.todoapp.data.util.toModel
 import org.alexcawl.todoapp.domain.model.TaskModel
-import org.alexcawl.todoapp.domain.util.ValidationException
+import org.alexcawl.todoapp.data.util.ValidationException
 import org.alexcawl.todoapp.presentation.util.PreferencesCommitter
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class DatabaseSource(
+@Singleton
+class DatabaseSource @Inject constructor(
     private val committer: PreferencesCommitter,
     private val dao: TaskDao
 ) {

@@ -1,3 +1,3 @@
-package org.alexcawl.todoapp.domain.util
+package org.alexcawl.todoapp.data.util
 
 class NetworkException(val info: String): RuntimeException()

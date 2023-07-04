@@ -1,48 +1,29 @@
 package org.alexcawl.todoapp.di
 
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
-import org.alexcawl.todoapp.data.database.datasource.DatabaseSource
-import org.alexcawl.todoapp.data.database.usecases_impl.*
-import org.alexcawl.todoapp.data.network.datasource.NetworkSource
+import org.alexcawl.todoapp.data.repository.TaskRepositoryImpl
+import org.alexcawl.todoapp.data.usecases.*
 import org.alexcawl.todoapp.domain.repository.TaskRepository
 import org.alexcawl.todoapp.domain.usecases.*
-import org.alexcawl.todoapp.presentation.util.PreferencesCommitter
-import javax.inject.Singleton
 
 @Module
-class DomainModule {
-    @Provides
-    @Singleton
-    fun provideTaskGetAllUseCase(repository: TaskRepository): TaskGetAllUseCase =
-        TaskGetAllUseCaseImpl(repository)
+interface DomainModule {
+    @Binds
+    fun bindTaskGetAllUseCase(useCase: TaskGetAllUseCaseImpl): TaskGetAllUseCase
 
-    @Provides
-    @Singleton
-    fun provideTaskGetByIdUseCase(repository: TaskRepository): TaskGetByIdUseCase =
-        TaskGetByIdUseCaseImpl(repository)
+    @Binds
+    fun bindTaskGetByIdUseCase(useCase: TaskGetByIdUseCaseImpl): TaskGetByIdUseCase
 
-    @Provides
-    @Singleton
-    fun provideTaskRemoveUseCase(repository: TaskRepository): TaskRemoveUseCase =
-        TaskRemoveUseCaseImpl(repository)
+    @Binds
+    fun bindTaskRemoveUseCase(useCase: TaskRemoveUseCaseImpl): TaskRemoveUseCase
 
-    @Provides
-    @Singleton
-    fun provideTaskUpdateUseCase(repository: TaskRepository): TaskUpdateUseCase =
-        TaskUpdateUseCaseImpl(repository)
+    @Binds
+    fun bindTaskUpdateUseCase(useCase: TaskUpdateUseCaseImpl): TaskUpdateUseCase
 
-    @Provides
-    @Singleton
-    fun provideTaskAddUseCase(repository: TaskRepository): TaskAddUseCase =
-        TaskAddUseCaseImpl(repository)
+    @Binds
+    fun bindTaskAddUseCase(useCase: TaskAddUseCaseImpl): TaskAddUseCase
 
-    @Provides
-    @Singleton
-    fun provideTaskRepository(
-        dataSource: DatabaseSource,
-        networkSource: NetworkSource,
-        committer: PreferencesCommitter
-    ): TaskRepository =
-        TaskRepository(dataSource, networkSource, committer)
+    @Binds
+    fun bindTaskRepository(repository: TaskRepositoryImpl): TaskRepository
 }

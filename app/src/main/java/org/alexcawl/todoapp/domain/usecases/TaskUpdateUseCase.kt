@@ -1,7 +1,7 @@
 package org.alexcawl.todoapp.domain.usecases
 
 import org.alexcawl.todoapp.domain.model.TaskModel
-import org.alexcawl.todoapp.domain.util.ValidationException
+import org.alexcawl.todoapp.data.util.ValidationException
 
 interface TaskUpdateUseCase {
     @Throws(ValidationException::class)

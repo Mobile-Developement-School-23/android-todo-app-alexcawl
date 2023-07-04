@@ -33,17 +33,13 @@ import org.alexcawl.todoapp.presentation.util.snackbar
 import javax.inject.Inject
 
 class TaskListFragment : Fragment() {
-    @Inject
-    lateinit var modelFactory: TaskViewModelFactory
+    @Inject lateinit var modelFactory: TaskViewModelFactory
     private val model: TaskViewModel by lazy {
         ViewModelProvider(this, modelFactory)[TaskViewModel::class.java]
     }
-    private val visibility: StateFlow<Boolean> by lazy {
-        model.visibility
-    }
+    private val visibility: StateFlow<Boolean> by lazy { model.visibility }
     private var _binding: FragmentTaskListBinding? = null
-    private val binding: FragmentTaskListBinding
-        get() = _binding!!
+    private val binding: FragmentTaskListBinding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?

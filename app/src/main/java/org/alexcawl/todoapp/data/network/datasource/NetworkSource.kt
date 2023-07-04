@@ -12,8 +12,11 @@ import org.alexcawl.todoapp.data.util.toDto
 import org.alexcawl.todoapp.data.util.toModel
 import org.alexcawl.todoapp.domain.model.TaskModel
 import org.alexcawl.todoapp.presentation.util.PreferencesCommitter
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class NetworkSource(
+@Singleton
+class NetworkSource @Inject constructor(
     private val committer: PreferencesCommitter,
     private val api: TaskApi
 ) {

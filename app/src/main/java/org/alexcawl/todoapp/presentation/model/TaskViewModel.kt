@@ -2,7 +2,6 @@ package org.alexcawl.todoapp.presentation.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -33,7 +32,7 @@ class TaskViewModel(
     val undoneTasks: StateFlow<UiState<List<TaskModel>>> get() = _undoneTasks
 
     init {
-        job = viewModelScope.launch(Dispatchers.IO) {
+        job = viewModelScope.launch {
             _tasks.collect { state ->
                 when (state) {
                     is DataState.Result -> {
