@@ -13,42 +13,45 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:src="@drawable/icon_checkbox_unchecked"
-        app:layout_constraintEnd_toStartOf="@id/task_text"
+        app:layout_constraintEnd_toStartOf="@id/text_container"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/task_text" />
+        app:layout_constraintTop_toTopOf="@id/text_container" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/task_text"
+    <LinearLayout
+        android:id="@+id/text_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:drawableStart="@drawable/icon_priority_high"
-        android:drawablePadding="5dp"
-        android:ellipsize="end"
-        android:maxLines="3"
-        android:text="@string/your_tasks"
-        android:textAppearance="@style/Body"
-        android:textColor="?attr/colorOnPrimary"
+        android:layout_marginBottom="16dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/task_info"
         app:layout_constraintStart_toEndOf="@id/task_status"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/task_deadline"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="@string/your_tasks"
-        android:textAppearance="@style/Body"
-        android:textColor="?attr/colorOnTertiary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/task_text"
-        app:layout_constraintStart_toStartOf="@id/task_text"
-        app:layout_constraintTop_toBottomOf="@id/task_text"
-        app:layout_goneMarginBottom="10dp" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/task_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/icon_priority_high"
+            android:drawablePadding="5dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:text="@string/your_tasks"
+            android:textAppearance="@style/Body"
+            android:textColor="?attr/colorOnPrimary" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/task_deadline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/your_tasks"
+            android:textAppearance="@style/Body"
+            android:textColor="?attr/colorOnTertiary" />
+    </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/task_info"
@@ -56,12 +59,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:foreground="?android:attr/selectableItemBackground"
         android:background="@android:color/transparent"
         android:src="@drawable/icon_info"
         android:tint="@color/gray"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/task_text"
-        app:layout_constraintTop_toTopOf="@id/task_text" />
-
+        app:layout_constraintStart_toEndOf="@id/text_container"
+        app:layout_constraintTop_toTopOf="@id/text_container" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
