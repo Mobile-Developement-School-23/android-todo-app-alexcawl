@@ -3,7 +3,10 @@ package org.alexcawl.todoapp.presentation.model
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.domain.model.DataState
 import org.alexcawl.todoapp.domain.model.Priority
@@ -13,14 +16,14 @@ import org.alexcawl.todoapp.presentation.util.UiState
 import java.util.*
 
 class TaskViewModel(
-    private val updateCase: TaskUpdateUseCase,
-    private val getAllCase: TaskGetAllUseCase,
-    private val getSingleCase: TaskGetByIdUseCase,
-    private val removeCase: TaskRemoveUseCase,
-    private val addCase: TaskAddUseCase
+    private val updateCase: UpdateTaskUseCase,
+    private val getAllCase: GetTasksUseCase,
+    private val getSingleCase: GetTaskUseCase,
+    private val deleteCase: DeleteTaskUseCase,
+    private val addCase: AddTaskUseCase,
+    private val syncCase: SynchronizeUseCase
 ) : ViewModel() {
     private var job: Job? = null
-    private val _tasks: Flow<DataState<List<TaskModel>>> = getAllCase()
 
     private val _visibility: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val visibility: StateFlow<Boolean> get() = _visibility
@@ -33,15 +36,15 @@ class TaskViewModel(
 
     init {
         job = viewModelScope.launch {
-            _tasks.collect { state ->
+            getAllCase().collect { state ->
                 when (state) {
                     is DataState.Result -> {
                         _allTasks.emit(UiState.Success(state.data))
                         _undoneTasks.emit(UiState.Success(state.data.filter { !it.isDone }))
                     }
                     is DataState.Exception -> {
-                        _allTasks.emit(UiState.Error(state.cause.message ?: ""))
-                        _undoneTasks.emit(UiState.Error(state.cause.message ?: ""))
+                        _allTasks.emit(UiState.Error(state.cause.message ?: "WTF"))
+                        _undoneTasks.emit(UiState.Error(state.cause.message ?: "WTF"))
                     }
                     else -> {
                         _allTasks.emit(UiState.Start)
@@ -53,34 +56,50 @@ class TaskViewModel(
     }
 
     fun addTask(text: String, priority: Priority, deadline: Long?): Flow<UiState<String>> = flow {
-        emit(UiState.Start)
-        addCase(text, priority, deadline)
-        emit(UiState.Success("Task added!"))
-    }.catch {
-        emit(UiState.Error(it.message ?: "Unrecognized exception!"))
+        addCase(text, priority, deadline).collect { state ->
+            when (state) {
+                is DataState.Initial -> emit(UiState.Start)
+                is DataState.Result -> emit(UiState.Success("Task added!"))
+                is DataState.Exception -> emit(UiState.Error(state.cause.message ?: "WTF"))
+            }
+        }
     }
 
     fun setTask(task: TaskModel): Flow<UiState<String>> = flow {
-        emit(UiState.Start)
-        updateCase(task)
-        emit(UiState.Success("Task modified!"))
-    }.catch {
-        emit(UiState.Error(it.stackTraceToString()))
+        updateCase(task).collect { state ->
+            when (state) {
+                is DataState.Initial -> emit(UiState.Start)
+                is DataState.Result -> emit(UiState.Success("Task modified!"))
+                is DataState.Exception -> emit(UiState.Error(state.cause.message ?: "WTF"))
+            }
+        }
     }
 
-    suspend fun removeTask(task: TaskModel): Flow<UiState<String>> = flow {
-        emit(UiState.Start)
-        removeCase(task)
-        emit(UiState.Success("Task deleted!"))
-    }.catch {
-        emit(UiState.Error(it.stackTraceToString()))
+    fun removeTask(task: TaskModel): Flow<UiState<String>> = flow {
+        deleteCase(task).collect { state ->
+            when (state) {
+                is DataState.Initial -> emit(UiState.Start)
+                is DataState.Result -> emit(UiState.Success("Task deleted!"))
+                is DataState.Exception -> emit(UiState.Error(state.cause.message ?: "WTF"))
+            }
+        }
     }
 
     fun requireTask(id: UUID): Flow<UiState<TaskModel>> = flow {
-        getSingleCase(id).collect { dataState ->
-            when (dataState) {
-                is DataState.Result -> emit(UiState.Success(dataState.data))
-                is DataState.Exception -> emit(UiState.Error(dataState.cause.message ?: ""))
+        getSingleCase(id).collect { state ->
+            when (state) {
+                is DataState.Result -> emit(UiState.Success(state.data))
+                is DataState.Exception -> emit(UiState.Error(state.cause.message ?: "WTF"))
+                else -> emit(UiState.Start)
+            }
+        }
+    }
+
+    fun synchronize(): Flow<UiState<String>> = flow {
+        syncCase().collect { state ->
+            when (state) {
+                is DataState.Result -> emit(UiState.Success("Synchronized!"))
+                is DataState.Exception -> emit(UiState.Error(state.cause.message ?: "WTF"))
                 else -> emit(UiState.Start)
             }
         }

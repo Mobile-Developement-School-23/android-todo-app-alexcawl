@@ -8,17 +8,19 @@ import javax.inject.Singleton
 
 @Singleton
 class TaskViewModelFactory @Inject constructor(
-    private val updateCase: TaskUpdateUseCase,
-    private val getAllCase: TaskGetAllUseCase,
-    private val getSingleCase: TaskGetByIdUseCase,
-    private val removeCase: TaskRemoveUseCase,
-    private val addCase: TaskAddUseCase
+    private val updateCase: UpdateTaskUseCase,
+    private val getAllCase: GetTasksUseCase,
+    private val getSingleCase: GetTaskUseCase,
+    private val removeCase: DeleteTaskUseCase,
+    private val addCase: AddTaskUseCase,
+    private val syncCase: SynchronizeUseCase
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T = TaskViewModel(
         updateCase = updateCase,
         getAllCase = getAllCase,
         getSingleCase = getSingleCase,
-        removeCase = removeCase,
-        addCase = addCase
+        deleteCase = removeCase,
+        addCase = addCase,
+        syncCase = syncCase
     ) as T
 }

@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import org.alexcawl.todoapp.data.database.dao.TaskDao
 import org.alexcawl.todoapp.data.database.entity.TaskEntity
 
-@Database(entities = [TaskEntity::class], version = 2, exportSchema = false)
+@Database(entities = [TaskEntity::class], version = 3, exportSchema = false)
 abstract class ApplicationDatabase : RoomDatabase() {
     abstract fun taskDao(): TaskDao
 }

@@ -2,28 +2,36 @@ package org.alexcawl.todoapp.di
 
 import dagger.Binds
 import dagger.Module
-import org.alexcawl.todoapp.data.repository.TaskRepositoryImpl
+import org.alexcawl.todoapp.data.service.SynchronizeServiceImpl
+import org.alexcawl.todoapp.data.service.TaskServiceImpl
 import org.alexcawl.todoapp.data.usecases.*
-import org.alexcawl.todoapp.domain.repository.TaskRepository
+import org.alexcawl.todoapp.domain.service.SynchronizeService
+import org.alexcawl.todoapp.domain.service.TaskService
 import org.alexcawl.todoapp.domain.usecases.*
 
 @Module
 interface DomainModule {
     @Binds
-    fun bindTaskGetAllUseCase(useCase: TaskGetAllUseCaseImpl): TaskGetAllUseCase
+    fun bindTaskGetAllUseCase(useCase: GetTasksUseCaseImpl): GetTasksUseCase
 
     @Binds
-    fun bindTaskGetByIdUseCase(useCase: TaskGetByIdUseCaseImpl): TaskGetByIdUseCase
+    fun bindTaskGetByIdUseCase(useCase: GetTaskUseCaseImpl): GetTaskUseCase
 
     @Binds
-    fun bindTaskRemoveUseCase(useCase: TaskRemoveUseCaseImpl): TaskRemoveUseCase
+    fun bindTaskRemoveUseCase(useCase: DeleteTaskUseCaseImpl): DeleteTaskUseCase
 
     @Binds
-    fun bindTaskUpdateUseCase(useCase: TaskUpdateUseCaseImpl): TaskUpdateUseCase
+    fun bindTaskUpdateUseCase(useCase: UpdateTaskUseCaseImpl): UpdateTaskUseCase
 
     @Binds
-    fun bindTaskAddUseCase(useCase: TaskAddUseCaseImpl): TaskAddUseCase
+    fun bindTaskAddUseCase(useCase: AddTaskUseCaseImpl): AddTaskUseCase
 
     @Binds
-    fun bindTaskRepository(repository: TaskRepositoryImpl): TaskRepository
+    fun bindSynchronizeUseCase(useCase: SynchronizeUseCaseImpl): SynchronizeUseCase
+
+    @Binds
+    fun bindTaskService(service: TaskServiceImpl): TaskService
+
+    @Binds
+    fun bindSyncService(service: SynchronizeServiceImpl): SynchronizeService
 }

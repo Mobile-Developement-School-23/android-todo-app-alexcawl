@@ -7,11 +7,11 @@ import org.alexcawl.todoapp.domain.model.TaskModel
 import java.util.*
 
 fun TaskEntity.toModel(): TaskModel = TaskModel(
-    UUID.fromString(id), text, priority, isDone, creationTime, deadline, modifyingTime
+    UUID.fromString(id), text, priority, isDone, creationTime, modifyingTime, deadline
 )
 
 fun TaskModel.toEntity(): TaskEntity = TaskEntity(
-    id.toString(), text, priority, isDone, creationTime, deadline, modifyingTime
+    id.toString(), text, priority, isDone, creationTime, modifyingTime, deadline
 )
 
 fun TaskModel.toDto(): TaskDto = TaskDto(
@@ -22,7 +22,7 @@ fun TaskModel.toDto(): TaskDto = TaskDto(
     isDone,
     null,
     creationTime,
-    modifyingTime ?: 0,
+    modifyingTime,
     "Mick-Android"
 )
 
@@ -32,6 +32,6 @@ fun TaskDto.toModel(): TaskModel = TaskModel(
     Priority.valueOf(importance.uppercase(Locale.ROOT)),
     done,
     createdAt,
-    deadline,
-    changedAt
+    changedAt,
+    deadline
 )

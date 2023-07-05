@@ -78,7 +78,15 @@ class TaskListFragment : Fragment() {
 
     private fun setupUpdateButton(view: AppCompatImageButton) {
         view.setOnClickListener {
-            view.snackbar("TODO UPDATE")
+            lifecycle.coroutineScope.launch(Dispatchers.IO) {
+                model.synchronize().collect {
+                    when (it) {
+                        is UiState.Start -> view.snackbar("Loading...")
+                        is UiState.Success -> view.snackbar("Synchronized!")
+                        is UiState.Error -> view.snackbar(it.cause)
+                    }
+                }
+            }
         }
     }
 

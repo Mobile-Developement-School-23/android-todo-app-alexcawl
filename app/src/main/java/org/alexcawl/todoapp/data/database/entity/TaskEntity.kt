@@ -12,6 +12,6 @@ data class TaskEntity(
     @ColumnInfo(name = "priority") val priority: Priority,
     @ColumnInfo(name = "is_done") val isDone: Boolean,
     @ColumnInfo(name = "creation_time") val creationTime: Long,
-    @ColumnInfo(name = "deadline") val deadline: Long? = null,
-    @ColumnInfo(name = "modifying_time") val modifyingTime: Long? = null
+    @ColumnInfo(name = "modifying_time") val modifyingTime: Long,
+    @ColumnInfo(name = "deadline") val deadline: Long? = null
 )

@@ -220,6 +220,6 @@ class TaskEditFragment : Fragment() {
         task: TaskModel
     ) {
         textViewCreatedAt.text = task.creationTime.toDateFormat()
-        textViewChangedAt.text = task.modifyingTime?.toDateFormat()
+        textViewChangedAt.text = task.modifyingTime.toDateFormat()
     }
 }
