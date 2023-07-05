@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -33,7 +34,8 @@ import org.alexcawl.todoapp.presentation.util.snackbar
 import javax.inject.Inject
 
 class TaskListFragment : Fragment() {
-    @Inject lateinit var modelFactory: TaskViewModelFactory
+    @Inject
+    lateinit var modelFactory: TaskViewModelFactory
     private val model: TaskViewModel by lazy {
         ViewModelProvider(this, modelFactory)[TaskViewModel::class.java]
     }
@@ -51,10 +53,28 @@ class TaskListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val navigationController = findNavController()
-        setupActionButton(binding.fab, navigationController)
-        setupRecyclerView(binding.recyclerView, navigationController)
-        setupVisibilityButton(binding.visibilityCollapsedButton)
-        setupUpdateButton(binding.orderCollapsedButton)
+        with(binding) {
+            setupActionButton(fab, navigationController)
+            setupRecyclerView(recyclerView, navigationController)
+            setupVisibilityButton(visibilityCollapsedButton)
+            setupDoneCounter(doneCounter)
+            setupUpdateButton(orderCollapsedButton)
+        }
+
+    }
+
+    private fun setupDoneCounter(view: AppCompatTextView) {
+        lifecycle.coroutineScope.launch(Dispatchers.IO) {
+            model.allTasks.collectLatest { state ->
+                view.text = when (state) {
+                    is UiState.Success -> resources.getString(
+                        R.string.done,
+                        state.data.filter { it.isDone }.size
+                    )
+                    else -> resources.getString(R.string.done, 0)
+                }
+            }
+        }
     }
 
     private fun setupVisibilityButton(view: AppCompatImageButton) {
@@ -148,8 +168,7 @@ class TaskListFragment : Fragment() {
         }
 
         val swipeHelper = ItemTouchHelper(
-            OnItemSwipeCallback(
-                { position -> viewAdapter.onItemSwipeLeft(position) },
+            OnItemSwipeCallback({ position -> viewAdapter.onItemSwipeLeft(position) },
                 { position -> viewAdapter.onItemSwipeRight(position) },
                 ContextCompat.getDrawable(requireContext(), R.drawable.icon_check),
                 ColorDrawable(ContextCompat.getColor(requireContext(), R.color.green)),

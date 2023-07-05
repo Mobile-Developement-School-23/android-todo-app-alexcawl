@@ -22,4 +22,5 @@
     <string name="sort_tasks">Sort tasks</string>
     <string name="hide_done_tasks">Hide done tasks</string>
     <string name="login">Login</string>
+    <string name="done">Done - %d</string>
 </resources>

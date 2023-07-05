@@ -66,17 +66,16 @@ class TaskShowFragment : Fragment() {
         lifecycleScope.launch {
             model.requireTask(uuid).collect { uiState: UiState<TaskModel> ->
                 when (uiState) {
-                    is UiState.Start -> with(binding) {
-                        setupCloseButton(taskCloseButton, navController)
-                    }
+                    is UiState.Start -> {}
                     is UiState.Error -> navController.navigateUp().also {
                         binding.root.snackbar(uiState.cause)
                     }
                     is UiState.Success -> with(binding) {
+                        setupCloseButton(taskCloseButton, navController)
                         setupTaskText(taskText, uiState.data)
                         setupTaskPriority(taskPriority, uiState.data)
                         setupTaskDeadline(deadlineBlock, taskDeadline, uiState.data)
-                        setupTaskDates(taskCreatedAt, taskCreatedAt, uiState.data)
+                        setupTaskDates(taskCreatedAt, taskChangedAt, uiState.data)
                     }
                 }
             }

@@ -73,13 +73,12 @@ class TaskEditFragment : Fragment() {
         lifecycleScope.launch {
             model.requireTask(id).collect { uiState: UiState<TaskModel> ->
                 when (uiState) {
-                    is UiState.Start -> with(binding) {
-                        setupCloseButton(taskCloseButton, navController)
-                    }
+                    is UiState.Start -> {}
                     is UiState.Error -> navController.navigateUp().also {
                         binding.root.snackbar(uiState.cause)
                     }
                     is UiState.Success -> with(binding) {
+                        setupCloseButton(taskCloseButton, navController)
                         setupSaveButton(taskSaveButton, navController, uiState.data)
                         setupTaskText(taskText, uiState.data)
                         setupTaskPriority(prioritySpinner, taskPriority, uiState.data)
