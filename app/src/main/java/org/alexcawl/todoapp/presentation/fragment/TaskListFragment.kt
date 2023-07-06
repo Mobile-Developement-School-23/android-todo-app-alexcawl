@@ -28,7 +28,7 @@ import org.alexcawl.todoapp.presentation.adapter.OnItemSwipeCallback
 import org.alexcawl.todoapp.presentation.adapter.TaskItemAdapter
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
-import org.alexcawl.todoapp.presentation.util.ToDoApplication
+import org.alexcawl.todoapp.presentation.ToDoApplication
 import org.alexcawl.todoapp.presentation.util.UiState
 import org.alexcawl.todoapp.presentation.util.snackbar
 import javax.inject.Inject

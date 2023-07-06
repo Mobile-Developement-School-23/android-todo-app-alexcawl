@@ -2,11 +2,12 @@ package org.alexcawl.todoapp.di
 
 import dagger.Binds
 import dagger.Module
-import org.alexcawl.todoapp.data.service.SynchronizeServiceImpl
-import org.alexcawl.todoapp.data.service.TaskServiceImpl
+import org.alexcawl.todoapp.data.repository.TaskRemoteRepositoryImpl
+import org.alexcawl.todoapp.data.repository.TaskLocalRepositoryImpl
 import org.alexcawl.todoapp.data.usecases.*
-import org.alexcawl.todoapp.domain.service.SynchronizeService
-import org.alexcawl.todoapp.domain.service.TaskService
+import org.alexcawl.todoapp.domain.repository.Synchronizer
+import org.alexcawl.todoapp.domain.repository.TaskRemoteRepository
+import org.alexcawl.todoapp.domain.repository.TaskLocalRepository
 import org.alexcawl.todoapp.domain.usecases.*
 
 @Module
@@ -30,8 +31,11 @@ interface DomainModule {
     fun bindSynchronizeUseCase(useCase: SynchronizeUseCaseImpl): SynchronizeUseCase
 
     @Binds
-    fun bindTaskService(service: TaskServiceImpl): TaskService
+    fun bindLocalRepository(repository: TaskLocalRepositoryImpl): TaskLocalRepository
 
     @Binds
-    fun bindSyncService(service: SynchronizeServiceImpl): SynchronizeService
+    fun bindRemoteRepository(repository: TaskRemoteRepositoryImpl): TaskRemoteRepository
+
+    @Binds
+    fun bindSynchronizer(implementation: TaskRemoteRepositoryImpl): Synchronizer
 }

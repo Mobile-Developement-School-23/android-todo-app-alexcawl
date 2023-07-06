@@ -18,22 +18,6 @@ import javax.inject.Singleton
 class DatabaseSource @Inject constructor(
     private val dao: TaskDao
 ) {
-    fun getTask(id: UUID): Flow<RoomState<TaskModel>> = flow {
-        emit(RoomState.Initial)
-        dao.getTask(id.toString()).collect { entity ->
-            when (entity) {
-                null -> emit(RoomState.Failure(DatabaseException("Item not found!")))
-                else -> emit(RoomState.Success(entity.toModel()))
-            }
-        }
-    }.catch {
-        emit(RoomState.Failure(it))
-    }
-
-    suspend fun updateTask(task: TaskModel) = dao.updateTask(task.toEntity())
-
-    suspend fun removeTask(task: TaskModel) = dao.removeTask(task.toEntity())
-
     fun getTasks(): Flow<RoomState<List<TaskModel>>> = flow {
         emit(RoomState.Initial)
         dao.getTasks().collect { list ->
@@ -44,6 +28,22 @@ class DatabaseSource @Inject constructor(
     }.catch {
         emit(RoomState.Failure(it))
     }
+
+    fun getTask(id: UUID): Flow<RoomState<TaskModel>> = flow {
+        emit(RoomState.Initial)
+        dao.getTask(id.toString()).collect {
+            when (it) {
+                null -> emit(RoomState.Failure(DatabaseException("Item not found!")))
+                else -> emit(RoomState.Success(it.toModel()))
+            }
+        }
+    }.catch {
+        emit(RoomState.Failure(it))
+    }
+
+    suspend fun updateTask(task: TaskModel) = dao.updateTask(task.toEntity())
+
+    suspend fun deleteTask(task: TaskModel) = dao.removeTask(task.toEntity())
 
     fun getTasksAsList(): List<TaskModel> = dao.getTasksAsList().map(TaskEntity::toModel)
 

@@ -19,6 +19,7 @@ import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.FragmentTaskEditBinding
 import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.domain.model.TaskModel
+import org.alexcawl.todoapp.presentation.ToDoApplication
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
 import org.alexcawl.todoapp.presentation.util.*
