@@ -12,9 +12,7 @@ import org.alexcawl.todoapp.data.util.toModel
 import org.alexcawl.todoapp.domain.model.TaskModel
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class DatabaseSource @Inject constructor(
     private val dao: TaskDao
 ) {

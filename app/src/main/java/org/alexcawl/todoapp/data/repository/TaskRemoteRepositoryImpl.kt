@@ -9,9 +9,7 @@ import org.alexcawl.todoapp.domain.model.TaskModel
 import org.alexcawl.todoapp.domain.repository.Synchronizer
 import org.alexcawl.todoapp.domain.repository.TaskRemoteRepository
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class TaskRemoteRepositoryImpl @Inject constructor(
     private val prefSource: PreferenceSource,
     private val databaseSource: DatabaseSource,

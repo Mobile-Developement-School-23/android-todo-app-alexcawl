@@ -9,13 +9,11 @@ import org.alexcawl.todoapp.data.util.ValidationException
 import org.alexcawl.todoapp.domain.model.DataState
 import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.domain.model.TaskModel
-import org.alexcawl.todoapp.domain.repository.TaskRemoteRepository
 import org.alexcawl.todoapp.domain.repository.TaskLocalRepository
+import org.alexcawl.todoapp.domain.repository.TaskRemoteRepository
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class TaskLocalRepositoryImpl @Inject constructor(
     private val databaseSource: DatabaseSource,
     private val taskRemoteRepository: TaskRemoteRepository

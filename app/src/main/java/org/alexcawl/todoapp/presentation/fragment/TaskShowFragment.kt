@@ -15,7 +15,7 @@ import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.databinding.FragmentTaskShowBinding
 import org.alexcawl.todoapp.domain.model.TaskModel
-import org.alexcawl.todoapp.presentation.ToDoApplication
+import org.alexcawl.todoapp.presentation.activity.MainActivity
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
 import org.alexcawl.todoapp.presentation.util.*
@@ -34,7 +34,7 @@ class TaskShowFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        (requireContext().applicationContext as ToDoApplication).appComponent.inject(this)
+        (activity as MainActivity).activityComponent.inject(this)
         _binding = FragmentTaskShowBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -97,7 +97,11 @@ class TaskShowFragment : Fragment() {
         textView.text = task.priority.toTextFormat()
     }
 
-    private fun setupTaskDeadline(block: LinearLayoutCompat , textView: AppCompatTextView, task: TaskModel) {
+    private fun setupTaskDeadline(
+        block: LinearLayoutCompat,
+        textView: AppCompatTextView,
+        task: TaskModel
+    ) {
         when (val deadline = task.deadline) {
             null -> block.invisible()
             else -> textView.text = deadline.toDateFormat()

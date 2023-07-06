@@ -7,9 +7,7 @@ import org.alexcawl.todoapp.domain.repository.TaskLocalRepository
 import org.alexcawl.todoapp.domain.usecases.GetTaskUseCase
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class GetTaskUseCaseImpl @Inject constructor(
     private val repository: TaskLocalRepository
 ) : GetTaskUseCase {

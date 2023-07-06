@@ -1,15 +1,21 @@
 package org.alexcawl.todoapp.di
 
-import dagger.Component
+import android.content.Context
+import dagger.BindsInstance
+import dagger.Subcomponent
 import org.alexcawl.todoapp.presentation.fragment.TaskAddFragment
 import org.alexcawl.todoapp.presentation.fragment.TaskEditFragment
 import org.alexcawl.todoapp.presentation.fragment.TaskListFragment
 import org.alexcawl.todoapp.presentation.fragment.TaskShowFragment
-import javax.inject.Singleton
 
-@Singleton
-@Component(dependencies = [], modules = [AppModule::class, DatabaseModule::class, DomainModule::class, NetworkModule::class])
-interface AppComponent {
+@MainActivityScope
+@Subcomponent(modules = [DatabaseModule::class, NetworkModule::class, UseCaseModule::class, RepositoryModule::class])
+interface MainActivityComponent {
+    @Subcomponent.Factory
+    interface Factory {
+        fun create(@BindsInstance context: Context): MainActivityComponent
+    }
+
     fun inject(fragment: TaskListFragment)
 
     fun inject(fragment: TaskAddFragment)

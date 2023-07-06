@@ -7,12 +7,10 @@ import org.alexcawl.todoapp.domain.model.DataState
 import org.alexcawl.todoapp.domain.repository.Synchronizer
 import org.alexcawl.todoapp.domain.usecases.SynchronizeUseCase
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class SynchronizeUseCaseImpl @Inject constructor(
     private val repository: Synchronizer
-): SynchronizeUseCase {
+) : SynchronizeUseCase {
     override fun invoke(): Flow<DataState<Boolean>> = flow {
         emit(DataState.Initial)
         repository.synchronize()

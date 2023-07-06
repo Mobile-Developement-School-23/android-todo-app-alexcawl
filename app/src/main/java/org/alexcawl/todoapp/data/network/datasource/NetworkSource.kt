@@ -12,9 +12,7 @@ import org.alexcawl.todoapp.data.util.toDto
 import org.alexcawl.todoapp.data.util.toModel
 import org.alexcawl.todoapp.domain.model.TaskModel
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class NetworkSource @Inject constructor(
     private val api: TaskApi
 ) {
@@ -26,13 +24,14 @@ class NetworkSource @Inject constructor(
         NetworkState.Failure(it)
     }
 
-    fun patchTasks(list: List<TaskModel>, revision: Int): Flow<NetworkState<List<TaskModel>>> = flow {
-        emit(NetworkState.Loading)
-        val response = api.patchTasks(revision, TaskListRequestDto(list.map(TaskModel::toDto)))
-        emit(NetworkState.Success(response.list.map(TaskDto::toModel), response.revision))
-    }.catch {
-        emit(NetworkState.Failure(it))
-    }
+    fun patchTasks(list: List<TaskModel>, revision: Int): Flow<NetworkState<List<TaskModel>>> =
+        flow {
+            emit(NetworkState.Loading)
+            val response = api.patchTasks(revision, TaskListRequestDto(list.map(TaskModel::toDto)))
+            emit(NetworkState.Success(response.list.map(TaskDto::toModel), response.revision))
+        }.catch {
+            emit(NetworkState.Failure(it))
+        }
 
     fun postTask(task: TaskModel, revision: Int): Flow<NetworkState<TaskModel>> = flow {
         emit(NetworkState.Loading)

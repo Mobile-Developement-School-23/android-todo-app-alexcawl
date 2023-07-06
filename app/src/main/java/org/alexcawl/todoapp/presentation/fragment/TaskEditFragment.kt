@@ -19,7 +19,7 @@ import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.FragmentTaskEditBinding
 import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.domain.model.TaskModel
-import org.alexcawl.todoapp.presentation.ToDoApplication
+import org.alexcawl.todoapp.presentation.activity.MainActivity
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
 import org.alexcawl.todoapp.presentation.util.*
@@ -39,7 +39,7 @@ class TaskEditFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        (requireContext().applicationContext as ToDoApplication).appComponent.inject(this)
+        (activity as MainActivity).activityComponent.inject(this)
         _binding = FragmentTaskEditBinding.inflate(inflater, container, false)
         return binding.root
     }

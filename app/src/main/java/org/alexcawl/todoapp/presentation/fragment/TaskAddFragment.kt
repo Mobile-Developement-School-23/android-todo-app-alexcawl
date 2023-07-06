@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.FragmentTaskAddBinding
 import org.alexcawl.todoapp.domain.model.Priority
-import org.alexcawl.todoapp.presentation.ToDoApplication
+import org.alexcawl.todoapp.presentation.activity.MainActivity
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
 import org.alexcawl.todoapp.presentation.util.*
@@ -41,7 +41,7 @@ class TaskAddFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        (requireContext().applicationContext as ToDoApplication).appComponent.inject(this)
+        (activity as MainActivity).activityComponent.inject(this)
         _binding = FragmentTaskAddBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -71,16 +71,17 @@ class TaskAddFragment : Fragment() {
     private fun setupAddButton(button: AppCompatButton, navController: NavController) {
         button.setOnClickListener {
             lifecycle.coroutineScope.launch {
-                model.addTask(textFieldValue, priorityFieldValue, deadlineFieldValue).collect { uiState ->
-                    when (uiState) {
-                        is UiState.Success -> navController.navigateUp()
-                        is UiState.Error -> {
-                            button.snackbar(uiState.cause)
-                            navController.navigateUp()
+                model.addTask(textFieldValue, priorityFieldValue, deadlineFieldValue)
+                    .collect { uiState ->
+                        when (uiState) {
+                            is UiState.Success -> navController.navigateUp()
+                            is UiState.Error -> {
+                                button.snackbar(uiState.cause)
+                                navController.navigateUp()
+                            }
+                            else -> {}
                         }
-                        else -> {}
                     }
-                }
             }
         }
     }
@@ -121,7 +122,7 @@ class TaskAddFragment : Fragment() {
     ) {
         textView.text = switch.context.getText(R.string.not_defined)
         switch.setOnCheckedChangeListener { _, isChecked ->
-            when(isChecked) {
+            when (isChecked) {
                 true -> {
                     val dateString = createDateString(Calendar.getInstance())
                     deadlineFieldValue = dateStringToTimestamp(dateString)

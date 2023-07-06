@@ -8,9 +8,7 @@ import org.alexcawl.todoapp.domain.model.TaskModel
 import org.alexcawl.todoapp.domain.repository.TaskLocalRepository
 import org.alexcawl.todoapp.domain.usecases.DeleteTaskUseCase
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class DeleteTaskUseCaseImpl @Inject constructor(
     private val repository: TaskLocalRepository
 ) : DeleteTaskUseCase {

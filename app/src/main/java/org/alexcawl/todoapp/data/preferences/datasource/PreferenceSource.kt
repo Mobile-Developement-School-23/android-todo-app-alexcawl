@@ -3,9 +3,7 @@ package org.alexcawl.todoapp.data.preferences.datasource
 import android.content.Context
 import org.alexcawl.todoapp.data.preferences.util.PreferenceConstants
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class PreferenceSource @Inject constructor(
     context: Context
 ) {

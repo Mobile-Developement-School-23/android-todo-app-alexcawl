@@ -24,11 +24,11 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.FragmentTaskListBinding
+import org.alexcawl.todoapp.presentation.activity.MainActivity
 import org.alexcawl.todoapp.presentation.adapter.OnItemSwipeCallback
 import org.alexcawl.todoapp.presentation.adapter.TaskItemAdapter
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
-import org.alexcawl.todoapp.presentation.ToDoApplication
 import org.alexcawl.todoapp.presentation.util.UiState
 import org.alexcawl.todoapp.presentation.util.snackbar
 import javax.inject.Inject
@@ -46,7 +46,7 @@ class TaskListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        (requireContext().applicationContext as ToDoApplication).appComponent.inject(this)
+        (activity as MainActivity).activityComponent.inject(this)
         _binding = FragmentTaskListBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -168,7 +168,8 @@ class TaskListFragment : Fragment() {
         }
 
         val swipeHelper = ItemTouchHelper(
-            OnItemSwipeCallback({ position -> viewAdapter.onItemSwipeLeft(position) },
+            OnItemSwipeCallback(
+                { position -> viewAdapter.onItemSwipeLeft(position) },
                 { position -> viewAdapter.onItemSwipeRight(position) },
                 ContextCompat.getDrawable(requireContext(), R.drawable.icon_check),
                 ColorDrawable(ContextCompat.getColor(requireContext(), R.color.green)),
