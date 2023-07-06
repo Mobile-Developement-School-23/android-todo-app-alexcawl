@@ -1,4 +1,4 @@
-package org.alexcawl.todoapp.di
+package org.alexcawl.todoapp.di.module
 
 import dagger.Module
 import dagger.Provides
@@ -6,6 +6,9 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import org.alexcawl.todoapp.data.network.api.TaskApi
+import org.alexcawl.todoapp.di.qualifiers.ApiUrlPath
+import org.alexcawl.todoapp.di.qualifiers.AuthToken
+import org.alexcawl.todoapp.di.scope.MainActivityScope
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

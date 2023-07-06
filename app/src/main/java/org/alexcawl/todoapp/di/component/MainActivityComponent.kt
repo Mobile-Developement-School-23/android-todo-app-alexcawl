@@ -1,8 +1,13 @@
-package org.alexcawl.todoapp.di
+package org.alexcawl.todoapp.di.component
 
 import android.content.Context
 import dagger.BindsInstance
 import dagger.Subcomponent
+import org.alexcawl.todoapp.di.module.DatabaseModule
+import org.alexcawl.todoapp.di.module.NetworkModule
+import org.alexcawl.todoapp.di.module.RepositoryModule
+import org.alexcawl.todoapp.di.module.UseCaseModule
+import org.alexcawl.todoapp.di.scope.MainActivityScope
 import org.alexcawl.todoapp.presentation.fragment.TaskAddFragment
 import org.alexcawl.todoapp.presentation.fragment.TaskEditFragment
 import org.alexcawl.todoapp.presentation.fragment.TaskListFragment

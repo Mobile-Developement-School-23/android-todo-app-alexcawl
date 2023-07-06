@@ -2,7 +2,7 @@ package org.alexcawl.todoapp.presentation.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import org.alexcawl.todoapp.di.MainActivityScope
+import org.alexcawl.todoapp.di.scope.MainActivityScope
 import org.alexcawl.todoapp.domain.usecases.*
 import javax.inject.Inject
 

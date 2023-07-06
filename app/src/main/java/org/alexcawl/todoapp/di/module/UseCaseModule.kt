@@ -1,8 +1,9 @@
-package org.alexcawl.todoapp.di
+package org.alexcawl.todoapp.di.module
 
 import dagger.Binds
 import dagger.Module
 import org.alexcawl.todoapp.data.usecases.*
+import org.alexcawl.todoapp.di.scope.MainActivityScope
 import org.alexcawl.todoapp.domain.usecases.*
 
 @Module

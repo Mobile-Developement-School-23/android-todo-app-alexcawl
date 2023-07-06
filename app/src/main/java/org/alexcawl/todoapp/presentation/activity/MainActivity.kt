@@ -6,7 +6,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.ActivityMainBinding
-import org.alexcawl.todoapp.di.MainActivityComponent
+import org.alexcawl.todoapp.di.component.MainActivityComponent
 import org.alexcawl.todoapp.presentation.ToDoApplication
 
 class MainActivity : AppCompatActivity() {

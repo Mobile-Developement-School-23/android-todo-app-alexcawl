@@ -1,6 +1,7 @@
-package org.alexcawl.todoapp.di
+package org.alexcawl.todoapp.di.component
 
 import dagger.Component
+import org.alexcawl.todoapp.di.scope.ApplicationScope
 
 @ApplicationScope
 @Component

@@ -1,7 +1,7 @@
 package org.alexcawl.todoapp.presentation
 
 import android.app.Application
-import org.alexcawl.todoapp.di.ApplicationComponent
+import org.alexcawl.todoapp.di.component.ApplicationComponent
 import org.alexcawl.todoapp.di.DaggerApplicationComponent
 
 class ToDoApplication : Application() {

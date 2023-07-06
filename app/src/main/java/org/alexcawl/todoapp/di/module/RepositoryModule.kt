@@ -1,9 +1,10 @@
-package org.alexcawl.todoapp.di
+package org.alexcawl.todoapp.di.module
 
 import dagger.Binds
 import dagger.Module
 import org.alexcawl.todoapp.data.repository.TaskLocalRepositoryImpl
 import org.alexcawl.todoapp.data.repository.TaskRemoteRepositoryImpl
+import org.alexcawl.todoapp.di.scope.MainActivityScope
 import org.alexcawl.todoapp.domain.repository.Synchronizer
 import org.alexcawl.todoapp.domain.repository.TaskLocalRepository
 import org.alexcawl.todoapp.domain.repository.TaskRemoteRepository

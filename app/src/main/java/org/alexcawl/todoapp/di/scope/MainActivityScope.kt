@@ -1,4 +1,4 @@
-package org.alexcawl.todoapp.di
+package org.alexcawl.todoapp.di.scope
 
 import javax.inject.Scope
 
