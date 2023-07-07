@@ -3,13 +3,21 @@ package org.alexcawl.todoapp.data.repository
 import org.alexcawl.todoapp.data.database.datasource.DatabaseSource
 import org.alexcawl.todoapp.data.network.datasource.NetworkSource
 import org.alexcawl.todoapp.data.network.util.NetworkState
-import org.alexcawl.todoapp.data.preferences.datasource.PreferenceSource
+import org.alexcawl.todoapp.data.preferences.PreferenceSource
 import org.alexcawl.todoapp.data.util.NetworkException
 import org.alexcawl.todoapp.domain.model.TaskModel
 import org.alexcawl.todoapp.domain.repository.ISynchronizer
 import org.alexcawl.todoapp.domain.repository.ITaskRemoteRepository
 import javax.inject.Inject
 
+/**
+ * Remote repository implementation with synchronization ability
+ * @param prefSource Shared preferences data source
+ * @param databaseSource Room data source
+ * @param networkSource Retrofit data source
+ * @see ITaskRemoteRepository
+ * @see ISynchronizer
+ * */
 class TaskRemoteRepository @Inject constructor(
     private val prefSource: PreferenceSource,
     private val databaseSource: DatabaseSource,

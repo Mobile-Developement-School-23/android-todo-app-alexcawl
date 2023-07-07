@@ -13,6 +13,11 @@ import org.alexcawl.todoapp.domain.model.TaskModel
 import java.util.*
 import javax.inject.Inject
 
+/**
+ * Room data source
+ * @param dao Room DAO
+ * @see TaskDao
+ * */
 class DatabaseSource @Inject constructor(
     private val dao: TaskDao
 ) {

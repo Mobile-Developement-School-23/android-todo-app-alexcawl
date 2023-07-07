@@ -14,6 +14,12 @@ import org.alexcawl.todoapp.domain.repository.ITaskRemoteRepository
 import java.util.*
 import javax.inject.Inject
 
+/**
+ * Local repository implementation
+ * @param databaseSource Room data source
+ * @param remoteRepository Remote repository with background synchronization
+ * @see ITaskLocalRepository
+ * */
 class TaskLocalRepository @Inject constructor(
     private val databaseSource: DatabaseSource,
     private val remoteRepository: ITaskRemoteRepository

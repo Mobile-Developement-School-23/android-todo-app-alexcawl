@@ -22,6 +22,10 @@ import org.alexcawl.todoapp.presentation.util.*
 import java.util.*
 import javax.inject.Inject
 
+/**
+ * Single task info without editing screen
+ * @see TaskViewModel
+ * */
 class TaskShowFragment : Fragment() {
     @Inject
     lateinit var modelFactory: TaskViewModelFactory

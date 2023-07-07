@@ -23,6 +23,10 @@ import org.alexcawl.todoapp.presentation.util.*
 import java.util.*
 import javax.inject.Inject
 
+/**
+ * Task adding screen
+ * @see TaskViewModel
+ * */
 class TaskAddFragment : Fragment() {
     @Inject
     lateinit var modelFactory: TaskViewModelFactory

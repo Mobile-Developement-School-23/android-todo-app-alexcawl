@@ -15,6 +15,17 @@ import org.alexcawl.todoapp.domain.usecases.*
 import org.alexcawl.todoapp.presentation.util.UiState
 import java.util.*
 
+/**
+ * Main ViewModel in application
+ * @param updateCase Task update use case
+ * @param deleteCase Task remove use case
+ * @param addCase Task add use case
+ * @param getAllCase Tasks get all use case
+ * @param getSingleCase Task get single use case
+ * @param syncCase Task synchronizing use case
+ * @see ViewModel
+ * @see TaskViewModelFactory
+ * */
 class TaskViewModel(
     private val updateCase: IUpdateTaskUseCase,
     private val getAllCase: IGetTasksUseCase,

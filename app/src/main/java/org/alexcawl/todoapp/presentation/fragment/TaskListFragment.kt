@@ -33,6 +33,10 @@ import org.alexcawl.todoapp.presentation.util.UiState
 import org.alexcawl.todoapp.presentation.util.snackbar
 import javax.inject.Inject
 
+/**
+ * Application main screen with tasks list
+ * @see TaskViewModel
+ * */
 class TaskListFragment : Fragment() {
     @Inject
     lateinit var modelFactory: TaskViewModelFactory

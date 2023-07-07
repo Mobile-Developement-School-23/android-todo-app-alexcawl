@@ -9,6 +9,13 @@ import dagger.assisted.AssistedInject
 import org.alexcawl.todoapp.data.util.NetworkException
 import org.alexcawl.todoapp.domain.repository.ISynchronizer
 
+/**
+ * Coroutine Worker, used for background synchronizing
+ * @param context Application context
+ * @param workerParameters Worker job parameters
+ * @param synchronizer Interface, which implementation used to sync tasks between local storage and remote server
+ * @see WorkerFactory
+ * */
 class SyncWorker @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted private val workerParameters: WorkerParameters,

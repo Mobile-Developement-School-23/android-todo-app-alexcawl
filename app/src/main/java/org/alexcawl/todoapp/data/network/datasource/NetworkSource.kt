@@ -13,6 +13,11 @@ import org.alexcawl.todoapp.data.util.toModel
 import org.alexcawl.todoapp.domain.model.TaskModel
 import javax.inject.Inject
 
+/**
+ * Retrofit data source
+ * @param api Retrofit API
+ * @see TaskApi
+ * */
 class NetworkSource @Inject constructor(
     private val api: TaskApi
 ) {
