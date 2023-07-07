@@ -54,6 +54,7 @@ class TaskListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val navigationController = findNavController()
         with(binding) {
+            syncWhenCreated(binding.root)
             setupActionButton(fab, navigationController)
             setupRecyclerView(recyclerView, navigationController)
             setupVisibilityButton(visibilityCollapsedButton)
@@ -62,13 +63,28 @@ class TaskListFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun syncWhenCreated(view: View) {
+        lifecycle.coroutineScope.launch(Dispatchers.IO) {
+            model.synchronize().collect {
+                when (it) {
+                    is UiState.Error -> view.snackbar(it.cause)
+                    else -> {}
+                }
+            }
+        }
+    }
+
     private fun setupDoneCounter(view: AppCompatTextView) {
         lifecycle.coroutineScope.launch(Dispatchers.IO) {
             model.allTasks.collectLatest { state ->
                 view.text = when (state) {
                     is UiState.Success -> resources.getString(
-                        R.string.done,
-                        state.data.filter { it.isDone }.size
+                        R.string.done, state.data.filter { it.isDone }.size
                     )
                     else -> resources.getString(R.string.done, 0)
                 }
@@ -183,10 +199,5 @@ class TaskListFragment : Fragment() {
             adapter = viewAdapter
             swipeHelper.attachToRecyclerView(view)
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
