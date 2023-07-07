@@ -3,6 +3,7 @@
         <item name="green">@color/green</item>
         <item name="red">@color/red</item>
         <item name="blue">@color/blue</item>
+        <item name="gray">@color/gray</item>
         <item name="white">@color/white</item>
 
         <!-- Accent colors -->
@@ -36,7 +37,7 @@
         <item name="colorOverlay">@color/dt_support_overlay</item>
 
         <!-- Theme settings -->
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <attr name="green" format="reference|color" />

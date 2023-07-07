@@ -13,13 +13,13 @@
         android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/YandexToDoApplicationTheme"
-        tools:targetApi="31">
+        tools:targetApi="33">
 
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
-            android:exported="false"
-            android:enabled="false"/>
+            android:enabled="false"
+            android:exported="false" />
 
         <activity
             android:name=".presentation.activity.MainActivity"

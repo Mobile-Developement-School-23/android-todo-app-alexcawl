@@ -1,7 +1,6 @@
 package org.alexcawl.todoapp.presentation.worker
 
 import android.content.Context
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
@@ -17,7 +16,6 @@ class SyncWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, workerParameters) {
     override suspend fun doWork(): Result {
         return try {
-            Log.d("WORKER-HERE", "hey bro I'm working!")
             synchronizer.synchronize()
             Result.success()
         } catch (exception: NetworkException) {

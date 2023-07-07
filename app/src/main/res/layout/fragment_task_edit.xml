@@ -237,7 +237,8 @@
                         android:layout_weight="1"
                         android:text="@string/created"
                         android:textAlignment="textStart"
-                        android:textAppearance="@style/Body" />
+                        android:textAppearance="@style/Body"
+                        android:textColor="?attr/colorOnPrimary" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/task_created_at"
@@ -263,7 +264,8 @@
                         android:layout_weight="1"
                         android:text="@string/modified"
                         android:textAlignment="textStart"
-                        android:textAppearance="@style/Body" />
+                        android:textAppearance="@style/Body"
+                        android:textColor="?attr/colorOnPrimary" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/task_changed_at"
