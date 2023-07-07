@@ -2,24 +2,24 @@ package org.alexcawl.todoapp.di.module
 
 import dagger.Binds
 import dagger.Module
-import org.alexcawl.todoapp.data.repository.TaskLocalRepositoryImpl
-import org.alexcawl.todoapp.data.repository.TaskRemoteRepositoryImpl
-import org.alexcawl.todoapp.di.scope.MainActivityScope
-import org.alexcawl.todoapp.domain.repository.Synchronizer
-import org.alexcawl.todoapp.domain.repository.TaskLocalRepository
-import org.alexcawl.todoapp.domain.repository.TaskRemoteRepository
+import org.alexcawl.todoapp.data.repository.TaskLocalRepository
+import org.alexcawl.todoapp.data.repository.TaskRemoteRepository
+import org.alexcawl.todoapp.di.scope.ApplicationScope
+import org.alexcawl.todoapp.domain.repository.ISynchronizer
+import org.alexcawl.todoapp.domain.repository.ITaskLocalRepository
+import org.alexcawl.todoapp.domain.repository.ITaskRemoteRepository
 
 @Module
 interface RepositoryModule {
     @Binds
-    @MainActivityScope
-    fun bindLocalRepository(repository: TaskLocalRepositoryImpl): TaskLocalRepository
+    @ApplicationScope
+    fun bindLocalRepository(repository: TaskLocalRepository): ITaskLocalRepository
 
     @Binds
-    @MainActivityScope
-    fun bindRemoteRepository(repository: TaskRemoteRepositoryImpl): TaskRemoteRepository
+    @ApplicationScope
+    fun bindRemoteRepository(repository: TaskRemoteRepository): ITaskRemoteRepository
 
     @Binds
-    @MainActivityScope
-    fun bindSynchronizer(implementation: TaskRemoteRepositoryImpl): Synchronizer
+    @ApplicationScope
+    fun bindSynchronizer(implementation: TaskRemoteRepository): ISynchronizer
 }

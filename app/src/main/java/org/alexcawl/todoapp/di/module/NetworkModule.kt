@@ -8,6 +8,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.alexcawl.todoapp.data.network.api.TaskApi
 import org.alexcawl.todoapp.di.qualifiers.ApiUrlPath
 import org.alexcawl.todoapp.di.qualifiers.AuthToken
+import org.alexcawl.todoapp.di.scope.ApplicationScope
 import org.alexcawl.todoapp.di.scope.MainActivityScope
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -17,20 +18,20 @@ interface NetworkModule {
     companion object {
         @Provides
         @ApiUrlPath
-        @MainActivityScope
+        @ApplicationScope
         fun provideApiUrl(): String = "https://beta.mrdekk.ru/todobackend/"
 
         @Provides
         @AuthToken
-        @MainActivityScope
+        @ApplicationScope
         fun provideAuthToken(): String = "debamboozle"
 
         @Provides
-        @MainActivityScope
+        @ApplicationScope
         fun provideConverterFactory(): GsonConverterFactory = GsonConverterFactory.create()
 
         @Provides
-        @MainActivityScope
+        @ApplicationScope
         fun provideNetworkClient(
             @AuthToken token: String
         ): OkHttpClient = OkHttpClient.Builder().addInterceptor { chain ->
@@ -44,7 +45,7 @@ interface NetworkModule {
         }).build()
 
         @Provides
-        @MainActivityScope
+        @ApplicationScope
         fun provideRetrofit(
             @ApiUrlPath url: String,
             factory: GsonConverterFactory,
@@ -56,7 +57,7 @@ interface NetworkModule {
             .build()
 
         @Provides
-        @MainActivityScope
+        @ApplicationScope
         fun provideApi(retrofit: Retrofit): TaskApi = retrofit.create(TaskApi::class.java)
     }
 }

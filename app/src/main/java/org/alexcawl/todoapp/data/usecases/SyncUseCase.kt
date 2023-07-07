@@ -4,13 +4,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import org.alexcawl.todoapp.domain.model.DataState
-import org.alexcawl.todoapp.domain.repository.Synchronizer
-import org.alexcawl.todoapp.domain.usecases.SynchronizeUseCase
+import org.alexcawl.todoapp.domain.repository.ISynchronizer
+import org.alexcawl.todoapp.domain.usecases.ISyncUseCase
 import javax.inject.Inject
 
-class SynchronizeUseCaseImpl @Inject constructor(
-    private val repository: Synchronizer
-) : SynchronizeUseCase {
+class SyncUseCase @Inject constructor(
+    private val repository: ISynchronizer
+) : ISyncUseCase {
     override fun invoke(): Flow<DataState<Boolean>> = flow {
         emit(DataState.Initial)
         repository.synchronize()

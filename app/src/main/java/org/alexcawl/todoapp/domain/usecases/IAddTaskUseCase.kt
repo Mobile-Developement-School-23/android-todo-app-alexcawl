@@ -4,6 +4,6 @@ import kotlinx.coroutines.flow.Flow
 import org.alexcawl.todoapp.domain.model.DataState
 import org.alexcawl.todoapp.domain.model.Priority
 
-interface AddTaskUseCase {
+interface IAddTaskUseCase {
     suspend operator fun invoke(text: String, priority: Priority, deadline: Long?): Flow<DataState<Boolean>>
 }

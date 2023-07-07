@@ -6,15 +6,15 @@ import org.alexcawl.todoapp.data.network.util.NetworkState
 import org.alexcawl.todoapp.data.preferences.datasource.PreferenceSource
 import org.alexcawl.todoapp.data.util.NetworkException
 import org.alexcawl.todoapp.domain.model.TaskModel
-import org.alexcawl.todoapp.domain.repository.Synchronizer
-import org.alexcawl.todoapp.domain.repository.TaskRemoteRepository
+import org.alexcawl.todoapp.domain.repository.ISynchronizer
+import org.alexcawl.todoapp.domain.repository.ITaskRemoteRepository
 import javax.inject.Inject
 
-class TaskRemoteRepositoryImpl @Inject constructor(
+class TaskRemoteRepository @Inject constructor(
     private val prefSource: PreferenceSource,
     private val databaseSource: DatabaseSource,
     private val networkSource: NetworkSource,
-) : TaskRemoteRepository, Synchronizer {
+) : ITaskRemoteRepository, ISynchronizer {
     @Throws(NetworkException::class)
     override suspend fun addTask(task: TaskModel) {
         networkSource.postTask(task, prefSource.getRevision()).collect {

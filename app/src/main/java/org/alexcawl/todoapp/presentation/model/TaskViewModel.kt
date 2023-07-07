@@ -16,12 +16,12 @@ import org.alexcawl.todoapp.presentation.util.UiState
 import java.util.*
 
 class TaskViewModel(
-    private val updateCase: UpdateTaskUseCase,
-    private val getAllCase: GetTasksUseCase,
-    private val getSingleCase: GetTaskUseCase,
-    private val deleteCase: DeleteTaskUseCase,
-    private val addCase: AddTaskUseCase,
-    private val syncCase: SynchronizeUseCase
+    private val updateCase: IUpdateTaskUseCase,
+    private val getAllCase: IGetTasksUseCase,
+    private val getSingleCase: IGetTaskUseCase,
+    private val deleteCase: IDeleteTaskUseCase,
+    private val addCase: IAddTaskUseCase,
+    private val syncCase: ISyncUseCase
 ) : ViewModel() {
     private var job: Job? = null
 

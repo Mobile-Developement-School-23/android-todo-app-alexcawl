@@ -60,7 +60,6 @@ class TaskListFragment : Fragment() {
             setupDoneCounter(doneCounter)
             setupUpdateButton(orderCollapsedButton)
         }
-
     }
 
     private fun setupDoneCounter(view: AppCompatTextView) {
@@ -166,7 +165,6 @@ class TaskListFragment : Fragment() {
                 }
             }
         }
-
         val swipeHelper = ItemTouchHelper(
             OnItemSwipeCallback(
                 { position -> viewAdapter.onItemSwipeLeft(position) },
@@ -180,7 +178,6 @@ class TaskListFragment : Fragment() {
                 20
             )
         )
-
         with(view) {
             layoutManager = viewManager
             adapter = viewAdapter

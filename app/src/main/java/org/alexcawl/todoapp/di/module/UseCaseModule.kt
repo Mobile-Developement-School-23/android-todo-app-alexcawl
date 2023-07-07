@@ -10,25 +10,25 @@ import org.alexcawl.todoapp.domain.usecases.*
 interface UseCaseModule {
     @Binds
     @MainActivityScope
-    fun bindTaskGetAllUseCase(useCase: GetTasksUseCaseImpl): GetTasksUseCase
+    fun bindTaskGetAllUseCase(useCase: GetTasksUseCase): IGetTasksUseCase
 
     @Binds
     @MainActivityScope
-    fun bindTaskGetByIdUseCase(useCase: GetTaskUseCaseImpl): GetTaskUseCase
+    fun bindTaskGetByIdUseCase(useCase: GetTaskUseCase): IGetTaskUseCase
 
     @Binds
     @MainActivityScope
-    fun bindTaskRemoveUseCase(useCase: DeleteTaskUseCaseImpl): DeleteTaskUseCase
+    fun bindTaskRemoveUseCase(useCase: DeleteTaskUseCase): IDeleteTaskUseCase
 
     @Binds
     @MainActivityScope
-    fun bindTaskUpdateUseCase(useCase: UpdateTaskUseCaseImpl): UpdateTaskUseCase
+    fun bindTaskUpdateUseCase(useCase: UpdateTaskUseCase): IUpdateTaskUseCase
 
     @Binds
     @MainActivityScope
-    fun bindTaskAddUseCase(useCase: AddTaskUseCaseImpl): AddTaskUseCase
+    fun bindTaskAddUseCase(useCase: AddTaskUseCase): IAddTaskUseCase
 
     @Binds
     @MainActivityScope
-    fun bindSynchronizeUseCase(useCase: SynchronizeUseCaseImpl): SynchronizeUseCase
+    fun bindSynchronizeUseCase(useCase: SyncUseCase): ISyncUseCase
 }

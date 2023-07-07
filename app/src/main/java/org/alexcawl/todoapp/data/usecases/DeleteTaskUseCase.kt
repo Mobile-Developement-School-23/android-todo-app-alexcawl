@@ -5,16 +5,16 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import org.alexcawl.todoapp.domain.model.DataState
 import org.alexcawl.todoapp.domain.model.TaskModel
-import org.alexcawl.todoapp.domain.repository.TaskLocalRepository
-import org.alexcawl.todoapp.domain.usecases.UpdateTaskUseCase
+import org.alexcawl.todoapp.domain.repository.ITaskLocalRepository
+import org.alexcawl.todoapp.domain.usecases.IDeleteTaskUseCase
 import javax.inject.Inject
 
-class UpdateTaskUseCaseImpl @Inject constructor(
-    private val repository: TaskLocalRepository
-) : UpdateTaskUseCase {
+class DeleteTaskUseCase @Inject constructor(
+    private val repository: ITaskLocalRepository
+) : IDeleteTaskUseCase {
     override suspend operator fun invoke(task: TaskModel): Flow<DataState<Boolean>> = flow {
         emit(DataState.Initial)
-        repository.updateTask(task)
+        repository.deleteTask(task)
         emit(DataState.Result(true))
     }.catch {
         emit(DataState.Exception(it))

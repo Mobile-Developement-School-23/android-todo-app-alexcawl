@@ -9,15 +9,15 @@ import org.alexcawl.todoapp.data.util.ValidationException
 import org.alexcawl.todoapp.domain.model.DataState
 import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.domain.model.TaskModel
-import org.alexcawl.todoapp.domain.repository.TaskLocalRepository
-import org.alexcawl.todoapp.domain.repository.TaskRemoteRepository
+import org.alexcawl.todoapp.domain.repository.ITaskLocalRepository
+import org.alexcawl.todoapp.domain.repository.ITaskRemoteRepository
 import java.util.*
 import javax.inject.Inject
 
-class TaskLocalRepositoryImpl @Inject constructor(
+class TaskLocalRepository @Inject constructor(
     private val databaseSource: DatabaseSource,
-    private val taskRemoteRepository: TaskRemoteRepository
-) : TaskLocalRepository {
+    private val remoteRepository: ITaskRemoteRepository
+) : ITaskLocalRepository {
     override fun getTasks(): Flow<DataState<List<TaskModel>>> = flow {
         databaseSource.getTasks().collect {
             when (it) {
@@ -45,20 +45,20 @@ class TaskLocalRepositoryImpl @Inject constructor(
         validateTask(text, deadline)
         val task = buildTaskModel(text, priority, deadline)
         databaseSource.updateTask(task)
-        taskRemoteRepository.addTask(task)
+        remoteRepository.addTask(task)
     }
 
     @Throws(NetworkException::class)
     override suspend fun deleteTask(task: TaskModel) {
         databaseSource.deleteTask(task)
-        taskRemoteRepository.deleteTask(task)
+        remoteRepository.deleteTask(task)
     }
 
     @Throws(ValidationException::class, NetworkException::class)
     override suspend fun updateTask(task: TaskModel) {
         validateTask(task.text, task.deadline)
         databaseSource.updateTask(task.copy(modifyingTime = System.currentTimeMillis()))
-        taskRemoteRepository.updateTask(task)
+        remoteRepository.updateTask(task)
     }
 
     @Throws(ValidationException::class)

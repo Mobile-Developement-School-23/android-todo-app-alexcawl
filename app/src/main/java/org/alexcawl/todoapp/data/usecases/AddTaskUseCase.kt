@@ -5,13 +5,13 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import org.alexcawl.todoapp.domain.model.DataState
 import org.alexcawl.todoapp.domain.model.Priority
-import org.alexcawl.todoapp.domain.repository.TaskLocalRepository
-import org.alexcawl.todoapp.domain.usecases.AddTaskUseCase
+import org.alexcawl.todoapp.domain.repository.ITaskLocalRepository
+import org.alexcawl.todoapp.domain.usecases.IAddTaskUseCase
 import javax.inject.Inject
 
-class AddTaskUseCaseImpl @Inject constructor(
-    private val repository: TaskLocalRepository
-) : AddTaskUseCase {
+class AddTaskUseCase @Inject constructor(
+    private val repository: ITaskLocalRepository
+) : IAddTaskUseCase {
     override suspend fun invoke(
         text: String,
         priority: Priority,

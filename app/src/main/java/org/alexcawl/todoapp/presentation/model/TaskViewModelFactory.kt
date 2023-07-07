@@ -8,12 +8,12 @@ import javax.inject.Inject
 
 @MainActivityScope
 class TaskViewModelFactory @Inject constructor(
-    private val updateCase: UpdateTaskUseCase,
-    private val getAllCase: GetTasksUseCase,
-    private val getSingleCase: GetTaskUseCase,
-    private val removeCase: DeleteTaskUseCase,
-    private val addCase: AddTaskUseCase,
-    private val syncCase: SynchronizeUseCase
+    private val updateCase: IUpdateTaskUseCase,
+    private val getAllCase: IGetTasksUseCase,
+    private val getSingleCase: IGetTaskUseCase,
+    private val removeCase: IDeleteTaskUseCase,
+    private val addCase: IAddTaskUseCase,
+    private val syncCase: ISyncUseCase
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T = TaskViewModel(
         updateCase = updateCase,

@@ -7,7 +7,9 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
 import org.alexcawl.todoapp.R
+import org.alexcawl.todoapp.di.component.ApplicationComponent
 import org.alexcawl.todoapp.domain.model.Priority
+import org.alexcawl.todoapp.presentation.ToDoApplication
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDateTime
@@ -62,3 +64,9 @@ fun dateStringToTimestamp(dateString: String): Long {
     val date = dateFormat.parse(dateString)
     return date?.time ?: 0L
 }
+
+val Context.applicationComponent: ApplicationComponent
+    get() = when (this) {
+        is ToDoApplication -> applicationComponent
+        else -> (applicationContext as ToDoApplication).applicationComponent
+    }

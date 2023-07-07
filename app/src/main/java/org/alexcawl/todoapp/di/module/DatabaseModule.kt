@@ -6,13 +6,14 @@ import dagger.Module
 import dagger.Provides
 import org.alexcawl.todoapp.data.database.dao.TaskDao
 import org.alexcawl.todoapp.data.database.db.ApplicationDatabase
+import org.alexcawl.todoapp.di.scope.ApplicationScope
 import org.alexcawl.todoapp.di.scope.MainActivityScope
 
 @Module
 interface DatabaseModule {
     companion object {
         @Provides
-        @MainActivityScope
+        @ApplicationScope
         fun provideDatabase(context: Context): ApplicationDatabase = Room
             .databaseBuilder(
                 context,
@@ -21,7 +22,7 @@ interface DatabaseModule {
             ).build()
 
         @Provides
-        @MainActivityScope
+        @ApplicationScope
         fun provideTaskDao(database: ApplicationDatabase): TaskDao = database.taskDao()
     }
 }

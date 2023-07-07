@@ -7,7 +7,7 @@ import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.domain.model.TaskModel
 import java.util.UUID
 
-interface TaskLocalRepository {
+interface ITaskLocalRepository {
     fun getTasks(): Flow<DataState<List<TaskModel>>>
 
     fun getTask(id: UUID): Flow<DataState<TaskModel>>
