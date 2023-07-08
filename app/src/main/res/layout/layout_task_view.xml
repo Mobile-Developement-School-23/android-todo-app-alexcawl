@@ -37,7 +37,7 @@
             android:drawablePadding="5dp"
             android:ellipsize="end"
             android:maxLines="3"
-            android:text="@string/your_tasks"
+            android:text="@string/my_tasks"
             android:textAppearance="@style/Body"
             android:textColor="?attr/colorOnPrimary" />
 
@@ -48,7 +48,7 @@
             android:layout_marginTop="8dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@string/your_tasks"
+            android:text="@string/my_tasks"
             android:textAppearance="@style/Body"
             android:textColor="?attr/colorOnTertiary" />
     </LinearLayout>

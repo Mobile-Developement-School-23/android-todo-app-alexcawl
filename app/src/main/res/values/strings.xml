@@ -1,5 +1,5 @@
 <resources>
-    <string name="your_tasks">Your tasks</string>
+    <string name="my_tasks">My tasks</string>
     <string name="add_task">Add task</string>
     <string name="edit_task">Edit task</string>
     <string name="enter_text">Enter text…</string>

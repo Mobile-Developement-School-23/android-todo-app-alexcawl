@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="my_tasks">Мои задачи</string>
+    <string name="add_task">Добавить</string>
+    <string name="edit_task">Изменить</string>
+    <string name="enter_text">Введите текст…</string>
+    <string name="status">Статус</string>
+    <string name="deadline">Сделать до</string>
+    <string name="created">Создано</string>
+    <string name="modified">Изменено</string>
+    <string name="task_is_done">Дело сделано</string>
+    <string name="priority">Важность</string>
+    <string name="delete">Удалить</string>
+    <string name="save">Сохранить</string>
+    <string name="not_defined">Не определено</string>
+    <string name="sort_tasks">Сортировать</string>
+    <string name="hide_done_tasks">Скрыть</string>
+    <string name="login">Логин</string>
+    <string name="done">Сделано - %d</string>
+
+    <string-array name="priority_type">
+        <item>Нет</item>
+        <item>Низкая</item>
+        <item>Важная</item>
+    </string-array>
+</resources>
