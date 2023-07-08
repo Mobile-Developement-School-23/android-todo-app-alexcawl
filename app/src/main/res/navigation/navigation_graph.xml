@@ -7,7 +7,6 @@
     <fragment
         android:id="@+id/taskListFragment"
         android:name="org.alexcawl.todoapp.presentation.fragment.TaskListFragment"
-        android:label="fragment_task_list"
         tools:layout="@layout/fragment_task_list">
         <action
             android:id="@+id/taskAddAction"
@@ -30,11 +29,17 @@
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left"
             app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/setupSettingsAction"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/from_top"
+            app:exitAnim="@anim/to_bottom"
+            app:popEnterAnim="@anim/from_bottom"
+            app:popExitAnim="@anim/to_top" />
     </fragment>
     <fragment
         android:id="@+id/taskEditFragment"
         android:name="org.alexcawl.todoapp.presentation.fragment.TaskEditFragment"
-        android:label="fragment_task_modify"
         tools:layout="@layout/fragment_task_edit">
         <argument
             android:name="UUID"
@@ -42,15 +47,17 @@
     </fragment>
     <fragment
         android:id="@+id/taskAddFragment"
-        android:name="org.alexcawl.todoapp.presentation.fragment.TaskAddFragment"
-        android:label="TaskAddFragment" />
+        android:name="org.alexcawl.todoapp.presentation.fragment.TaskAddFragment" />
     <fragment
         android:id="@+id/taskShowFragment"
         android:name="org.alexcawl.todoapp.presentation.fragment.TaskShowFragment"
-        android:label="fragment_task_show"
         tools:layout="@layout/fragment_task_show">
         <argument
             android:name="UUID"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="org.alexcawl.todoapp.presentation.fragment.SettingsFragment"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

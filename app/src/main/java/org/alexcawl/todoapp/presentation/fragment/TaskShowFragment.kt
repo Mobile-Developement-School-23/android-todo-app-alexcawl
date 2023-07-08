@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -79,7 +78,7 @@ class TaskShowFragment : Fragment() {
                         setupCloseButton(taskCloseButton, navController)
                         setupTaskText(taskText, uiState.data)
                         setupTaskPriority(taskPriority, uiState.data)
-                        setupTaskDeadline(deadlineBlock, taskDeadline, uiState.data)
+                        setupTaskDeadline(taskDeadline, uiState.data)
                         setupTaskDates(taskCreatedAt, taskChangedAt, uiState.data)
                     }
                 }
@@ -102,13 +101,12 @@ class TaskShowFragment : Fragment() {
     }
 
     private fun setupTaskDeadline(
-        block: LinearLayoutCompat,
         textView: AppCompatTextView,
         task: TaskModel
     ) {
-        when (val deadline = task.deadline) {
-            null -> block.invisible()
-            else -> textView.text = deadline.toDateFormat()
+        val deadline = task.deadline
+        if (deadline != null) {
+            textView.text = deadline.toDateFormat()
         }
     }
 

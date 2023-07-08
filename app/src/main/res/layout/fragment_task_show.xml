@@ -66,8 +66,6 @@
                 android:minLines="3"
                 android:padding="15dp"
                 android:textAppearance="@style/Body"
-                android:textColor="?attr/colorOnPrimary"
-                android:textColorHint="?attr/colorOnSecondary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -90,16 +88,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/priority"
-                    android:textAppearance="@style/Body"
-                    android:textColor="?attr/colorOnPrimary" />
+                    android:textAppearance="@style/Body" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/task_priority"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/priority"
-                    android:textAppearance="@style/Subhead"
-                    android:textColor="?attr/colorOnTertiary" />
+                    android:textAppearance="@style/Subhead" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <com.google.android.material.divider.MaterialDivider
@@ -132,14 +128,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/deadline"
-                    android:textAppearance="@style/Body"
-                    android:textColor="?attr/colorOnPrimary" />
+                    android:textAppearance="@style/Body" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/task_deadline"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/deadline"
+                    android:text="@string/not_defined"
                     android:textAppearance="@style/Subhead"
                     android:textColor="?attr/blue" />
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -182,8 +177,7 @@
                         android:layout_weight="1"
                         android:text="@string/created"
                         android:textAlignment="textStart"
-                        android:textAppearance="@style/Body"
-                        android:textColor="?attr/colorOnPrimary" />
+                        android:textAppearance="@style/Body" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/task_created_at"
@@ -209,8 +203,7 @@
                         android:layout_weight="1"
                         android:text="@string/modified"
                         android:textAlignment="textStart"
-                        android:textAppearance="@style/Body"
-                        android:textColor="?attr/colorOnPrimary" />
+                        android:textAppearance="@style/Body" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/task_changed_at"

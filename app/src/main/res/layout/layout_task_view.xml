@@ -38,8 +38,7 @@
             android:ellipsize="end"
             android:maxLines="3"
             android:text="@string/my_tasks"
-            android:textAppearance="@style/Body"
-            android:textColor="?attr/colorOnPrimary" />
+            android:textAppearance="@style/Body"  />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/task_deadline"
@@ -49,8 +48,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@string/my_tasks"
-            android:textAppearance="@style/Body"
-            android:textColor="?attr/colorOnTertiary" />
+            android:textAppearance="@style/Subhead"  />
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatImageButton

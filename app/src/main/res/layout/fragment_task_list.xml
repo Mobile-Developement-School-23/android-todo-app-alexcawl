@@ -33,6 +33,7 @@
                     android:paddingHorizontal="10dp">
 
                     <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/settings_button"
                         android:layout_width="48dp"
                         android:layout_height="0dp"
                         android:layout_marginStart="8dp"
@@ -60,7 +61,6 @@
                     android:layout_marginStart="64dp"
                     android:text="@string/my_tasks"
                     android:textAppearance="@style/LargeTitle"
-                    android:textColor="?attr/colorOnPrimary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +73,6 @@
                     android:layout_marginTop="8dp"
                     android:text="@string/done"
                     android:textAppearance="@style/Subhead"
-                    android:textColor="?attr/colorOnTertiary"
                     app:layout_constraintEnd_toEndOf="@id/textview"
                     app:layout_constraintStart_toStartOf="@id/textview"
                     app:layout_constraintTop_toBottomOf="@id/textview" />

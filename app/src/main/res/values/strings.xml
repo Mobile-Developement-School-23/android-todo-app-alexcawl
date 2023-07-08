@@ -23,4 +23,7 @@
     <string name="hide_done_tasks">Hide done tasks</string>
     <string name="login">Login</string>
     <string name="done">Done - %d</string>
+    <string name="username">Username…</string>
+    <string name="token">Token…</string>
+    <string name="theme">Theme</string>
 </resources>

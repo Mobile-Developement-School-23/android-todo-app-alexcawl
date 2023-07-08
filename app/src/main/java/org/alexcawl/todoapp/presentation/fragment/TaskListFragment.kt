@@ -60,6 +60,7 @@ class TaskListFragment : Fragment() {
         with(binding) {
             syncWhenCreated(binding.root)
             setupActionButton(fab, navigationController)
+            setupSettingsButton(settingsButton, navigationController)
             setupRecyclerView(recyclerView, navigationController)
             setupVisibilityButton(visibilityCollapsedButton)
             setupDoneCounter(doneCounter)
@@ -132,6 +133,12 @@ class TaskListFragment : Fragment() {
     private fun setupActionButton(view: FloatingActionButton, navController: NavController) {
         view.setOnClickListener {
             navController.navigate(R.id.taskAddAction)
+        }
+    }
+
+    private fun setupSettingsButton(view: AppCompatImageButton, navController: NavController) {
+        view.setOnClickListener {
+            navController.navigate(R.id.setupSettingsAction)
         }
     }
 

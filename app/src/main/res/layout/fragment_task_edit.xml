@@ -4,19 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="?attr/colorPrimary"
     tools:context=".presentation.fragment.TaskEditFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
         android:elevation="10dp">
 
         <Toolbar
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="?attr/colorPrimary"
             android:contentInsetStart="0dp"
             android:elevation="5dp"
             android:gravity="center">
@@ -59,13 +57,11 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/colorPrimary"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary">
+            android:layout_height="wrap_content" >
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/task_text"
@@ -82,8 +78,6 @@
                 android:minLines="3"
                 android:padding="15dp"
                 android:textAppearance="@style/Body"
-                android:textColor="?attr/colorOnPrimary"
-                android:textColorHint="?attr/colorOnSecondary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -112,16 +106,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/priority"
-                        android:textAppearance="@style/Body"
-                        android:textColor="?attr/colorOnPrimary" />
+                        android:textAppearance="@style/Body" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/task_priority"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/priority"
-                        android:textAppearance="@style/Subhead"
-                        android:textColor="?attr/colorOnTertiary" />
+                        android:textAppearance="@style/Subhead" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <FrameLayout
@@ -137,7 +129,7 @@
                         android:backgroundTint="?attr/blue"
                         android:entries="@array/priority_type"
                         android:gravity="center"
-                        android:spinnerMode="dialog"
+                        android:spinnerMode="dropdown"
                         android:textAlignment="center" />
                 </FrameLayout>
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -179,8 +171,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/deadline"
-                        android:textAppearance="@style/Body"
-                        android:textColor="?attr/colorOnPrimary" />
+                        android:textAppearance="@style/Body" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/task_deadline"
@@ -237,8 +228,7 @@
                         android:layout_weight="1"
                         android:text="@string/created"
                         android:textAlignment="textStart"
-                        android:textAppearance="@style/Body"
-                        android:textColor="?attr/colorOnPrimary" />
+                        android:textAppearance="@style/Body" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/task_created_at"
@@ -264,8 +254,7 @@
                         android:layout_weight="1"
                         android:text="@string/modified"
                         android:textAlignment="textStart"
-                        android:textAppearance="@style/Body"
-                        android:textColor="?attr/colorOnPrimary" />
+                        android:textAppearance="@style/Body" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/task_changed_at"
