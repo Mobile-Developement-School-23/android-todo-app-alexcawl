@@ -23,4 +23,7 @@
         <item>Низкая</item>
         <item>Важная</item>
     </string-array>
+    <string name="username">Логин</string>
+    <string name="token">Пароль</string>
+    <string name="theme">Тема</string>
 </resources>
