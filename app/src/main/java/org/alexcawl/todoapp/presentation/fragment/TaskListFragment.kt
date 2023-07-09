@@ -1,5 +1,6 @@
 package org.alexcawl.todoapp.presentation.fragment
 
+import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -30,6 +31,7 @@ import org.alexcawl.todoapp.presentation.adapter.TaskItemAdapter
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
 import org.alexcawl.todoapp.presentation.util.UiState
+import org.alexcawl.todoapp.presentation.util.invisible
 import org.alexcawl.todoapp.presentation.util.snackbar
 import javax.inject.Inject
 
@@ -117,16 +119,23 @@ class TaskListFragment : Fragment() {
     }
 
     private fun setupUpdateButton(view: AppCompatImageButton) {
-        view.setOnClickListener {
-            lifecycle.coroutineScope.launch(Dispatchers.IO) {
-                model.synchronize().collect {
-                    when (it) {
-                        is UiState.Start -> view.snackbar("Loading...")
-                        is UiState.Success -> view.snackbar("Synchronized!")
-                        is UiState.Error -> view.snackbar(it.cause)
+        val isEnabled = view.context
+            .getSharedPreferences("ToDoPrefs", Context.MODE_PRIVATE)
+            .getBoolean("SERVER_ENABLED", false)
+        if (isEnabled) {
+            view.setOnClickListener {
+                lifecycle.coroutineScope.launch(Dispatchers.IO) {
+                    model.synchronize().collect {
+                        when (it) {
+                            is UiState.Start -> view.snackbar("Loading...")
+                            is UiState.Success -> view.snackbar("Synchronized!")
+                            is UiState.Error -> view.snackbar(it.cause)
+                        }
                     }
                 }
             }
+        } else {
+            view.invisible()
         }
     }
 

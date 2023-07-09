@@ -22,24 +22,19 @@ class SettingsRepository @Inject constructor(
         const val REVISION: String = "REVISION"
         const val REVISION_DEFAULT: Int = 0
 
-        const val VISIBILITY: String = "VISIBILITY"
-        const val VISIBILITY_DEFAULT: Boolean = true
-
         const val USERNAME: String = "USERNAME"
-        const val USERNAME_DEFAULT: String = ""
+        const val USERNAME_DEFAULT: String = "Mick-Android"
 
         const val TOKEN: String = "TOKEN"
-        const val TOKEN_DEFAULT: String = ""
+        const val TOKEN_DEFAULT: String = "debamboozle"
     }
 
     private val source: SharedPreferences = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
 
-    override fun getVisibility(): Boolean {
-        TODO("Not yet implemented")
-    }
+    override fun getServerEnabled(): Boolean = source.getBoolean(SERVER_ENABLED, SERVER_ENABLED_DEFAULT)
 
-    override fun setVisibility(mode: Boolean) {
-        TODO("Not yet implemented")
+    override fun setServerEnabled(mode: Boolean) {
+        source.edit().putBoolean(SERVER_ENABLED, mode).apply()
     }
 
     override fun getRevision(): Int = source.getInt(REVISION, REVISION_DEFAULT)
@@ -48,19 +43,15 @@ class SettingsRepository @Inject constructor(
         source.edit().putInt(REVISION, revision).apply()
     }
 
-    override fun getUsername(): String {
-        TODO("Not yet implemented")
-    }
+    override fun getUsername(): String = source.getString(USERNAME, USERNAME_DEFAULT) ?: USERNAME_DEFAULT
 
     override fun setUsername(username: String) {
-        TODO("Not yet implemented")
+        source.edit().putString(USERNAME, username).apply()
     }
 
-    override fun getToken(): String {
-        TODO("Not yet implemented")
-    }
+    override fun getToken(): String = source.getString(TOKEN, TOKEN_DEFAULT) ?: TOKEN_DEFAULT
 
     override fun setToken(token: String) {
-        TODO("Not yet implemented")
+        source.edit().putString(TOKEN, token).apply()
     }
 }

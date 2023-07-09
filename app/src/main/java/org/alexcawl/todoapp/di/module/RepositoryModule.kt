@@ -25,8 +25,4 @@ interface RepositoryModule {
     @Binds
     @ApplicationScope
     fun bindSettingsRepository(repository: SettingsRepository): ISettingsRepository
-
-    @Binds
-    @ApplicationScope
-    fun bindRevisionRepository(repository: SettingsRepository): IRevisionRepository
 }

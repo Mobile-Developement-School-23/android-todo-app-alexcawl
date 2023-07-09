@@ -14,7 +14,7 @@ fun TaskModel.toEntity(): TaskEntity = TaskEntity(
     id.toString(), text, priority, isDone, creationTime, modifyingTime, deadline
 )
 
-fun TaskModel.toDto(): TaskDto = TaskDto(
+fun TaskModel.toDto(login: String): TaskDto = TaskDto(
     id,
     text,
     priority.toString(),
@@ -23,7 +23,7 @@ fun TaskModel.toDto(): TaskDto = TaskDto(
     null,
     creationTime,
     modifyingTime,
-    "Mick-Android"
+    login
 )
 
 fun TaskDto.toModel(): TaskModel = TaskModel(
@@ -35,3 +35,5 @@ fun TaskDto.toModel(): TaskModel = TaskModel(
     changedAt,
     deadline
 )
+
+fun String.toToken(): String = "Bearer $this"

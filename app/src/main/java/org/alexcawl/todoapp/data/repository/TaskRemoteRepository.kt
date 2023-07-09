@@ -1,65 +1,90 @@
 package org.alexcawl.todoapp.data.repository
 
-import org.alexcawl.todoapp.data.network.util.NetworkState
 import org.alexcawl.todoapp.data.network.util.NetworkException
+import org.alexcawl.todoapp.data.network.util.NetworkState
 import org.alexcawl.todoapp.domain.model.TaskModel
+import org.alexcawl.todoapp.domain.repository.ISettingsRepository
 import org.alexcawl.todoapp.domain.repository.ISynchronizer
 import org.alexcawl.todoapp.domain.repository.ITaskRemoteRepository
 import org.alexcawl.todoapp.domain.source.IDatabaseSource
 import org.alexcawl.todoapp.domain.source.INetworkSource
-import org.alexcawl.todoapp.domain.repository.IRevisionRepository
 import javax.inject.Inject
 
 /**
  * Remote repository implementation with synchronization ability
- * @param revisionSource Shared preferences data source
+ * @param settingsSource Shared preferences data source
  * @param databaseSource Room data source
  * @param networkSource Retrofit data source
  * @see ITaskRemoteRepository
  * @see ISynchronizer
  * */
 class TaskRemoteRepository @Inject constructor(
-    private val revisionSource: IRevisionRepository,
+    private val settingsSource: ISettingsRepository,
     private val databaseSource: IDatabaseSource,
     private val networkSource: INetworkSource,
 ) : ITaskRemoteRepository, ISynchronizer {
     @Throws(NetworkException::class)
     override suspend fun addTask(task: TaskModel) {
-        networkSource.addTask(task, revisionSource.getRevision()).collect {
-            when (it) {
-                is NetworkState.Failure -> synchronize()
-                else -> {}
+        if (settingsSource.getServerEnabled()) {
+            networkSource.addTask(
+                task,
+                settingsSource.getRevision(),
+                settingsSource.getToken(),
+                settingsSource.getUsername()
+            ).collect {
+                when (it) {
+                    is NetworkState.Failure -> synchronize()
+                    is NetworkState.OK -> settingsSource.setRevision(it.revision)
+                    else -> {}
+                }
             }
         }
     }
 
     @Throws(NetworkException::class)
     override suspend fun updateTask(task: TaskModel) {
-        networkSource.updateTask(task, revisionSource.getRevision()).collect {
-            when (it) {
-                is NetworkState.Failure -> synchronize()
-                else -> {}
+        if (settingsSource.getServerEnabled()) {
+            networkSource.updateTask(
+                task,
+                settingsSource.getRevision(),
+                settingsSource.getToken(),
+                settingsSource.getUsername()
+            ).collect {
+                when (it) {
+                    is NetworkState.Failure -> synchronize()
+                    is NetworkState.OK -> settingsSource.setRevision(it.revision)
+                    else -> {}
+                }
             }
         }
     }
 
     @Throws(NetworkException::class)
     override suspend fun deleteTask(task: TaskModel) {
-        networkSource.deleteTask(task, revisionSource.getRevision()).collect {
-            when (it) {
-                is NetworkState.Failure -> synchronize()
-                else -> {}
+        if (settingsSource.getServerEnabled()) {
+            networkSource.deleteTask(
+                task.id,
+                settingsSource.getRevision(),
+                settingsSource.getToken()
+            ).collect {
+                when (it) {
+                    is NetworkState.Failure -> synchronize()
+                    is NetworkState.OK -> settingsSource.setRevision(it.revision)
+                    else -> {}
+                }
             }
         }
     }
 
     @Throws(NetworkException::class)
     override suspend fun synchronize() {
-        networkSource.getTasks().collect { state ->
-            when (state) {
-                is NetworkState.Loading -> {}
-                is NetworkState.Failure -> throw NetworkException("Internet is not available!")
-                is NetworkState.Success -> merge(state.revision, state.data)
+        if (settingsSource.getServerEnabled()) {
+            networkSource.getTasks(settingsSource.getToken()).collect { state ->
+                when (state) {
+                    is NetworkState.Failure -> throw NetworkException("Internet is not available!")
+                    is NetworkState.Success -> merge(state.revision, state.data)
+                    else -> {}
+                }
             }
         }
     }
@@ -69,17 +94,22 @@ class TaskRemoteRepository @Inject constructor(
         serverRevision: Int,
         serverData: List<TaskModel>
     ) {
-        val localRevision: Int = revisionSource.getRevision()
+        val localRevision: Int = settingsSource.getRevision()
         val localData: List<TaskModel> = databaseSource.getTasksAsList()
         val data: List<TaskModel> = mergeData(localRevision, localData, serverRevision, serverData)
-        networkSource.updateTasks(data, localRevision).collect { state ->
+        networkSource.updateTasks(
+            data,
+            settingsSource.getRevision(),
+            settingsSource.getToken(),
+            settingsSource.getUsername()
+        ).collect { state ->
             when (state) {
-                is NetworkState.Loading -> {}
                 is NetworkState.Failure -> throw NetworkException("Internet is not available!")
                 is NetworkState.Success -> {
                     databaseSource.overwrite(state.data)
-                    revisionSource.setRevision(state.revision)
+                    settingsSource.setRevision(state.revision)
                 }
+                else -> {}
             }
         }
     }
