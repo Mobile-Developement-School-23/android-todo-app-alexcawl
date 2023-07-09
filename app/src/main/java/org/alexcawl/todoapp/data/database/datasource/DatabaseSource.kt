@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.flow
 import org.alexcawl.todoapp.data.database.dao.TaskDao
 import org.alexcawl.todoapp.data.database.entity.TaskEntity
 import org.alexcawl.todoapp.data.database.util.RoomState
-import org.alexcawl.todoapp.data.util.DatabaseException
+import org.alexcawl.todoapp.data.database.util.DatabaseException
 import org.alexcawl.todoapp.data.util.toEntity
 import org.alexcawl.todoapp.data.util.toModel
 import org.alexcawl.todoapp.domain.model.TaskModel

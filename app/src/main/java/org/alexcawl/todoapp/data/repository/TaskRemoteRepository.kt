@@ -1,7 +1,7 @@
 package org.alexcawl.todoapp.data.repository
 
 import org.alexcawl.todoapp.data.network.util.NetworkState
-import org.alexcawl.todoapp.data.util.NetworkException
+import org.alexcawl.todoapp.data.network.util.NetworkException
 import org.alexcawl.todoapp.domain.model.TaskModel
 import org.alexcawl.todoapp.domain.repository.ISynchronizer
 import org.alexcawl.todoapp.domain.repository.ITaskRemoteRepository

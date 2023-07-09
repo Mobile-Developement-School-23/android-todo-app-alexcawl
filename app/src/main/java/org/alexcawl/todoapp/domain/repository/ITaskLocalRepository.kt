@@ -1,7 +1,7 @@
 package org.alexcawl.todoapp.domain.repository
 
 import kotlinx.coroutines.flow.Flow
-import org.alexcawl.todoapp.data.util.ValidationException
+import org.alexcawl.todoapp.domain.model.ValidationException
 import org.alexcawl.todoapp.domain.model.DataState
 import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.domain.model.TaskModel

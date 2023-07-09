@@ -3,8 +3,8 @@ package org.alexcawl.todoapp.data.repository
 import kotlinx.coroutines.flow.*
 import org.alexcawl.todoapp.data.database.util.RoomState
 import org.alexcawl.todoapp.data.usecases.*
-import org.alexcawl.todoapp.data.util.NetworkException
-import org.alexcawl.todoapp.data.util.ValidationException
+import org.alexcawl.todoapp.data.network.util.NetworkException
+import org.alexcawl.todoapp.domain.model.ValidationException
 import org.alexcawl.todoapp.domain.model.DataState
 import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.domain.model.TaskModel

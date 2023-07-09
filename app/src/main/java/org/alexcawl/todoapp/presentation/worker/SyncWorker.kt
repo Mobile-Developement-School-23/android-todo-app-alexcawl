@@ -6,7 +6,7 @@ import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import org.alexcawl.todoapp.data.util.NetworkException
+import org.alexcawl.todoapp.data.network.util.NetworkException
 import org.alexcawl.todoapp.domain.repository.ISynchronizer
 
 /**
