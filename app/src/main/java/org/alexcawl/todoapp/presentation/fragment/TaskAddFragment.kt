@@ -58,8 +58,8 @@ class TaskAddFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val navController = findNavController()
         with(binding) {
-            setupCloseButton(taskCloseButton, navController)
-            setupAddButton(taskSaveButton, navController)
+            setupCloseButton(closeButton, navController)
+            setupAddButton(saveButton, navController)
             setupContentScriber(taskText)
             setupPriorityPicker(prioritySpinner, taskPriority)
             setupDeadlinePicker(deadlineSwitch, taskDeadline, deadlinePicker)

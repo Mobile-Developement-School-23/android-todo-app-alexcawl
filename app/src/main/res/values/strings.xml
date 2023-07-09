@@ -26,4 +26,5 @@
     <string name="username">Username…</string>
     <string name="token">Token…</string>
     <string name="theme">Theme</string>
+    <string name="server">Server synchronization enabled</string>
 </resources>

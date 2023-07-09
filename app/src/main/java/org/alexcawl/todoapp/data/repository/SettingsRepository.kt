@@ -14,7 +14,7 @@ class SettingsRepository @Inject constructor(
     context: Context
 ): ISettingsRepository {
     private companion object {
-        const val NAME: String = "ToDoPref"
+        const val NAME: String = "ToDoPrefs"
 
         const val SERVER_ENABLED: String = "SERVER_ENABLED"
         const val SERVER_ENABLED_DEFAULT: Boolean = false

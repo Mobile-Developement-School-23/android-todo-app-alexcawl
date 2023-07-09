@@ -1,6 +1,5 @@
 package org.alexcawl.todoapp.presentation.fragment
 
-import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -119,9 +118,7 @@ class TaskListFragment : Fragment() {
     }
 
     private fun setupUpdateButton(view: AppCompatImageButton) {
-        val isEnabled = view.context
-            .getSharedPreferences("ToDoPrefs", Context.MODE_PRIVATE)
-            .getBoolean("SERVER_ENABLED", false)
+        val isEnabled = model.getSettingsController().getServerEnabled()
         if (isEnabled) {
             view.setOnClickListener {
                 lifecycle.coroutineScope.launch(Dispatchers.IO) {

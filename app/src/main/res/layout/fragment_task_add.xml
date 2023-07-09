@@ -24,7 +24,7 @@
                 android:layout_height="match_parent">
 
                 <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/task_close_button"
+                    android:id="@+id/close_button"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_marginStart="8dp"
@@ -38,7 +38,7 @@
                     app:tint="?attr/colorOnPrimary" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/task_save_button"
+                    android:id="@+id/save_button"
                     style="@style/YandexToDoApplicationTheme.ButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"

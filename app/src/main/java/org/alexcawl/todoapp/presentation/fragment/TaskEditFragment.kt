@@ -83,8 +83,8 @@ class TaskEditFragment : Fragment() {
                         binding.root.snackbar(uiState.cause)
                     }
                     is UiState.Success -> with(binding) {
-                        setupCloseButton(taskCloseButton, navController)
-                        setupSaveButton(taskSaveButton, navController, uiState.data)
+                        setupCloseButton(closeButton, navController)
+                        setupSaveButton(saveButton, navController, uiState.data)
                         setupTaskText(taskText, uiState.data)
                         setupTaskPriority(prioritySpinner, taskPriority, uiState.data)
                         setupTaskDeadline(

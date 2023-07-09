@@ -75,7 +75,7 @@ class TaskShowFragment : Fragment() {
                         binding.root.snackbar(uiState.cause)
                     }
                     is UiState.Success -> with(binding) {
-                        setupCloseButton(taskCloseButton, navController)
+                        setupCloseButton(closeButton, navController)
                         setupTaskText(taskText, uiState.data)
                         setupTaskPriority(taskPriority, uiState.data)
                         setupTaskDeadline(taskDeadline, uiState.data)

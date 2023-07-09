@@ -31,4 +31,8 @@ interface UseCaseModule {
     @Binds
     @MainActivityScope
     fun bindSynchronizeUseCase(useCase: SyncUseCase): ISyncUseCase
+
+    @Binds
+    @MainActivityScope
+    fun bindSettingsOperateUseCase(useCase: SettingsOperateUseCase): ISettingsOperateUseCase
 }

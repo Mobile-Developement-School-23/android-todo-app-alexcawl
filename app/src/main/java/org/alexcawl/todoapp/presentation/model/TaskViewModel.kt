@@ -32,7 +32,8 @@ class TaskViewModel(
     private val getSingleCase: IGetTaskUseCase,
     private val deleteCase: IDeleteTaskUseCase,
     private val addCase: IAddTaskUseCase,
-    private val syncCase: ISyncUseCase
+    private val syncCase: ISyncUseCase,
+    private val settingsUseCase: ISettingsOperateUseCase
 ) : ViewModel() {
     private var job: Job? = null
 
@@ -115,6 +116,8 @@ class TaskViewModel(
             }
         }
     }
+
+    fun getSettingsController(): ISettingsOperateUseCase = settingsUseCase
 
     fun invertVisibilityState() {
         _visibility.value = _visibility.value.not()

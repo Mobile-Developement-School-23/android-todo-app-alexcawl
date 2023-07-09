@@ -25,7 +25,8 @@ class TaskViewModelFactory @Inject constructor(
     private val getSingleCase: IGetTaskUseCase,
     private val deleteCase: IDeleteTaskUseCase,
     private val addCase: IAddTaskUseCase,
-    private val syncCase: ISyncUseCase
+    private val syncCase: ISyncUseCase,
+    private val settingsUseCase: ISettingsOperateUseCase
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T = TaskViewModel(
@@ -34,6 +35,7 @@ class TaskViewModelFactory @Inject constructor(
         getSingleCase = getSingleCase,
         deleteCase = deleteCase,
         addCase = addCase,
-        syncCase = syncCase
+        syncCase = syncCase,
+        settingsUseCase = settingsUseCase
     ) as T
 }

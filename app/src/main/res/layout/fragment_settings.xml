@@ -24,7 +24,7 @@
                 android:layout_height="match_parent">
 
                 <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/task_close_button"
+                    android:id="@+id/close_button"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_marginStart="8dp"
@@ -38,7 +38,7 @@
                     app:tint="?attr/colorOnPrimary" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/task_save_button"
+                    android:id="@+id/save_button"
                     style="@style/YandexToDoApplicationTheme.ButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
@@ -64,112 +64,60 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/username_block"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/server_sync_switch"
+                android:textAppearance="@style/Body"
+                android:padding="8dp"
+                android:text="@string/server"
+                android:background="@drawable/selector_responsive_edit_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                app:boxStrokeColor="?attr/blue"
-                app:hintTextColor="?attr/blue"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/username_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:maxLines="1"
-                    android:textAppearance="@style/Body"
-                    android:hint="@string/username" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/token_block"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="0dp"
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/login_text"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                app:boxStrokeColor="?attr/blue"
-                app:hintTextColor="?attr/blue"
+                android:background="@drawable/selector_responsive_edit_text"
+                android:elevation="4dp"
+                android:gravity="start"
+                android:hint="@string/username"
+                android:inputType="text"
+                android:minLines="1"
+                android:padding="15dp"
+                android:textAppearance="@style/Body"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/username_block">
+                app:layout_constraintTop_toBottomOf="@id/server_sync_switch" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/token_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:maxLines="1"
-                    android:textAppearance="@style/Body"
-                    android:hint="@string/token" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/token_text"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                android:weightSum="2"
-                android:gravity="center"
+                android:background="@drawable/selector_responsive_edit_text"
+                android:elevation="4dp"
+                android:gravity="start"
+                android:hint="@string/token"
+                android:inputType="text"
+                android:minLines="1"
+                android:padding="15dp"
+                android:textAppearance="@style/Body"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/token_block">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/Body"
-                    android:text="@string/theme"
-                    android:layout_weight="1" />
-
-                <com.google.android.material.button.MaterialButtonToggleGroup
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:weightSum="3"
-                    style="@style/Widget.Material3.MaterialButtonToggleGroup"
-                    android:gravity="center"
-                    app:singleSelection="true"
-                    app:selectionRequired="true"
-                    android:layout_weight="1">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/night_theme_button"
-                        style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-                        android:layout_width="0dp"
-                        app:iconGravity="textEnd"
-                        android:layout_height="wrap_content"
-                        app:icon="@drawable/icon_night"
-                        android:layout_weight="1"/>
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/default_theme_button"
-                        style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        app:iconGravity="textEnd"
-                        app:icon="@drawable/icon_default_theme"
-                        android:layout_weight="1"/>
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/light_theme_button"
-                        style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-                        android:layout_width="0dp"
-                        app:iconGravity="textEnd"
-                        android:layout_height="wrap_content"
-                        app:icon="@drawable/icon_day"
-                        android:layout_weight="1"/>
-
-                </com.google.android.material.button.MaterialButtonToggleGroup>
-            </LinearLayout>
+                app:layout_constraintTop_toBottomOf="@id/login_text" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
