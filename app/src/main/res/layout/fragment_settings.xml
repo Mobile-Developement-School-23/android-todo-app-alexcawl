@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/colorPrimary"
     tools:context=".presentation.fragment.SettingsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
+        android:background="?attr/colorPrimary"
         android:layout_height="wrap_content"
-        android:elevation="10dp">
+        android:elevation="8dp">
 
         <Toolbar
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:background="?attr/colorPrimary"
             android:contentInsetStart="0dp"
-            android:elevation="5dp"
             android:gravity="center">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -43,9 +44,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_marginEnd="8dp"
+                    android:gravity="center"
                     android:text="@string/save"
                     android:textAllCaps="true"
-                    android:gravity="center"
                     android:textAppearance="@style/Button"
                     android:textColor="?attr/blue"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -62,19 +63,19 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/server_sync_switch"
-                android:textAppearance="@style/Body"
-                android:padding="8dp"
-                android:text="@string/server"
-                android:background="@drawable/selector_responsive_edit_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:background="@drawable/selector_responsive_edit_text"
+                android:padding="8dp"
+                android:text="@string/server"
+                android:textAppearance="@style/Body"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

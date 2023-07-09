@@ -10,14 +10,14 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary">
+        android:background="?attr/colorPrimary"
+        android:elevation="8dp">
 
         <Toolbar
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="?attr/colorPrimary"
             android:contentInsetStart="0dp"
-            android:elevation="5dp"
             android:gravity="center">
 
             <androidx.constraintlayout.widget.ConstraintLayout
