@@ -1,15 +1,17 @@
 package org.alexcawl.todoapp.di.module
 
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import org.alexcawl.todoapp.data.network.api.TaskApi
+import org.alexcawl.todoapp.data.network.datasource.NetworkSource
 import org.alexcawl.todoapp.di.qualifiers.ApiUrlPath
 import org.alexcawl.todoapp.di.qualifiers.AuthToken
 import org.alexcawl.todoapp.di.scope.ApplicationScope
-import org.alexcawl.todoapp.di.scope.MainActivityScope
+import org.alexcawl.todoapp.domain.source.INetworkSource
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -60,4 +62,8 @@ interface NetworkModule {
         @ApplicationScope
         fun provideApi(retrofit: Retrofit): TaskApi = retrofit.create(TaskApi::class.java)
     }
+
+    @Binds
+    @ApplicationScope
+    fun bindNetworkSource(source: NetworkSource): INetworkSource
 }

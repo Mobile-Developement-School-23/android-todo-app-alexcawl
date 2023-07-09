@@ -1,7 +1,6 @@
 package org.alexcawl.todoapp.data.repository
 
 import kotlinx.coroutines.flow.*
-import org.alexcawl.todoapp.data.database.datasource.DatabaseSource
 import org.alexcawl.todoapp.data.database.util.RoomState
 import org.alexcawl.todoapp.data.usecases.*
 import org.alexcawl.todoapp.data.util.NetworkException
@@ -11,6 +10,7 @@ import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.domain.model.TaskModel
 import org.alexcawl.todoapp.domain.repository.ITaskLocalRepository
 import org.alexcawl.todoapp.domain.repository.ITaskRemoteRepository
+import org.alexcawl.todoapp.domain.source.IDatabaseSource
 import java.util.*
 import javax.inject.Inject
 
@@ -21,7 +21,7 @@ import javax.inject.Inject
  * @see ITaskLocalRepository
  * */
 class TaskLocalRepository @Inject constructor(
-    private val databaseSource: DatabaseSource,
+    private val databaseSource: IDatabaseSource,
     private val remoteRepository: ITaskRemoteRepository
 ) : ITaskLocalRepository {
     override fun getTasks(): Flow<DataState<List<TaskModel>>> = flow {
@@ -50,7 +50,7 @@ class TaskLocalRepository @Inject constructor(
     override suspend fun addTask(text: String, priority: Priority, deadline: Long?) {
         validateTask(text, deadline)
         val task = buildTaskModel(text, priority, deadline)
-        databaseSource.updateTask(task)
+        databaseSource.addTask(task)
         remoteRepository.addTask(task)
     }
 
@@ -63,7 +63,7 @@ class TaskLocalRepository @Inject constructor(
     @Throws(ValidationException::class, NetworkException::class)
     override suspend fun updateTask(task: TaskModel) {
         validateTask(task.text, task.deadline)
-        databaseSource.updateTask(task.copy(modifyingTime = System.currentTimeMillis()))
+        databaseSource.addTask(task.copy(modifyingTime = System.currentTimeMillis()))
         remoteRepository.updateTask(task)
     }
 

@@ -1,31 +1,31 @@
 package org.alexcawl.todoapp.data.repository
 
-import org.alexcawl.todoapp.data.database.datasource.DatabaseSource
-import org.alexcawl.todoapp.data.network.datasource.NetworkSource
 import org.alexcawl.todoapp.data.network.util.NetworkState
-import org.alexcawl.todoapp.data.preferences.PreferenceSource
 import org.alexcawl.todoapp.data.util.NetworkException
 import org.alexcawl.todoapp.domain.model.TaskModel
 import org.alexcawl.todoapp.domain.repository.ISynchronizer
 import org.alexcawl.todoapp.domain.repository.ITaskRemoteRepository
+import org.alexcawl.todoapp.domain.source.IDatabaseSource
+import org.alexcawl.todoapp.domain.source.INetworkSource
+import org.alexcawl.todoapp.domain.repository.IRevisionRepository
 import javax.inject.Inject
 
 /**
  * Remote repository implementation with synchronization ability
- * @param prefSource Shared preferences data source
+ * @param revisionSource Shared preferences data source
  * @param databaseSource Room data source
  * @param networkSource Retrofit data source
  * @see ITaskRemoteRepository
  * @see ISynchronizer
  * */
 class TaskRemoteRepository @Inject constructor(
-    private val prefSource: PreferenceSource,
-    private val databaseSource: DatabaseSource,
-    private val networkSource: NetworkSource,
+    private val revisionSource: IRevisionRepository,
+    private val databaseSource: IDatabaseSource,
+    private val networkSource: INetworkSource,
 ) : ITaskRemoteRepository, ISynchronizer {
     @Throws(NetworkException::class)
     override suspend fun addTask(task: TaskModel) {
-        networkSource.postTask(task, prefSource.getRevision()).collect {
+        networkSource.addTask(task, revisionSource.getRevision()).collect {
             when (it) {
                 is NetworkState.Failure -> synchronize()
                 else -> {}
@@ -35,7 +35,7 @@ class TaskRemoteRepository @Inject constructor(
 
     @Throws(NetworkException::class)
     override suspend fun updateTask(task: TaskModel) {
-        networkSource.putTask(task, prefSource.getRevision()).collect {
+        networkSource.updateTask(task, revisionSource.getRevision()).collect {
             when (it) {
                 is NetworkState.Failure -> synchronize()
                 else -> {}
@@ -45,7 +45,7 @@ class TaskRemoteRepository @Inject constructor(
 
     @Throws(NetworkException::class)
     override suspend fun deleteTask(task: TaskModel) {
-        networkSource.deleteTask(task, prefSource.getRevision()).collect {
+        networkSource.deleteTask(task, revisionSource.getRevision()).collect {
             when (it) {
                 is NetworkState.Failure -> synchronize()
                 else -> {}
@@ -69,16 +69,16 @@ class TaskRemoteRepository @Inject constructor(
         serverRevision: Int,
         serverData: List<TaskModel>
     ) {
-        val localRevision: Int = prefSource.getRevision()
+        val localRevision: Int = revisionSource.getRevision()
         val localData: List<TaskModel> = databaseSource.getTasksAsList()
         val data: List<TaskModel> = mergeData(localRevision, localData, serverRevision, serverData)
-        networkSource.patchTasks(data, localRevision).collect { state ->
+        networkSource.updateTasks(data, localRevision).collect { state ->
             when (state) {
                 is NetworkState.Loading -> {}
                 is NetworkState.Failure -> throw NetworkException("Internet is not available!")
                 is NetworkState.Success -> {
-                    databaseSource.overwriteDatabase(state.data)
-                    prefSource.setRevision(state.revision)
+                    databaseSource.overwrite(state.data)
+                    revisionSource.setRevision(state.revision)
                 }
             }
         }

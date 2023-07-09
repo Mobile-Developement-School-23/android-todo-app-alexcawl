@@ -10,6 +10,7 @@ import org.alexcawl.todoapp.data.util.DatabaseException
 import org.alexcawl.todoapp.data.util.toEntity
 import org.alexcawl.todoapp.data.util.toModel
 import org.alexcawl.todoapp.domain.model.TaskModel
+import org.alexcawl.todoapp.domain.source.IDatabaseSource
 import java.util.*
 import javax.inject.Inject
 
@@ -20,8 +21,8 @@ import javax.inject.Inject
  * */
 class DatabaseSource @Inject constructor(
     private val dao: TaskDao
-) {
-    fun getTasks(): Flow<RoomState<List<TaskModel>>> = flow {
+): IDatabaseSource {
+    override fun getTasks(): Flow<RoomState<List<TaskModel>>> = flow {
         emit(RoomState.Initial)
         dao.getTasks().collect { list ->
             list.map(TaskEntity::toModel)
@@ -32,9 +33,9 @@ class DatabaseSource @Inject constructor(
         emit(RoomState.Failure(it))
     }
 
-    fun getTask(id: UUID): Flow<RoomState<TaskModel>> = flow {
+    override fun getTask(uuid: UUID): Flow<RoomState<TaskModel>> = flow {
         emit(RoomState.Initial)
-        dao.getTask(id.toString()).collect {
+        dao.getTask(uuid.toString()).collect {
             when (it) {
                 null -> emit(RoomState.Failure(DatabaseException("Item not found!")))
                 else -> emit(RoomState.Success(it.toModel()))
@@ -44,14 +45,14 @@ class DatabaseSource @Inject constructor(
         emit(RoomState.Failure(it))
     }
 
-    suspend fun updateTask(task: TaskModel) = dao.updateTask(task.toEntity())
+    override suspend fun addTask(task: TaskModel) = dao.addTask(task.toEntity())
 
-    suspend fun deleteTask(task: TaskModel) = dao.removeTask(task.toEntity())
+    override suspend fun deleteTask(task: TaskModel) = dao.removeTask(task.toEntity())
 
-    fun getTasksAsList(): List<TaskModel> = dao.getTasksAsList().map(TaskEntity::toModel)
+    override fun getTasksAsList(): List<TaskModel> = dao.getTasksAsList().map(TaskEntity::toModel)
 
-    fun overwriteDatabase(list: List<TaskModel>) {
+    override fun overwrite(tasks: List<TaskModel>) {
         dao.removeTasks()
-        dao.updateTasks(list.map(TaskModel::toEntity))
+        dao.addTasks(tasks.map(TaskModel::toEntity))
     }
 }

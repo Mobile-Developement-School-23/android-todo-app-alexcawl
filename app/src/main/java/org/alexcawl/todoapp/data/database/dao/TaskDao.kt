@@ -10,7 +10,7 @@ interface TaskDao {
     fun getTask(id: String): Flow<TaskEntity?>
 
     @Insert(entity = TaskEntity::class, onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updateTask(task: TaskEntity)
+    suspend fun addTask(task: TaskEntity)
 
     @Delete(entity = TaskEntity::class)
     suspend fun removeTask(task: TaskEntity)
@@ -19,7 +19,7 @@ interface TaskDao {
     fun getTasks(): Flow<List<TaskEntity>>
 
     @Insert(entity = TaskEntity::class, onConflict = OnConflictStrategy.REPLACE)
-    fun updateTasks(tasks: List<TaskEntity>)
+    fun addTasks(tasks: List<TaskEntity>)
 
     @Query("DELETE FROM tasks")
     fun removeTasks()
