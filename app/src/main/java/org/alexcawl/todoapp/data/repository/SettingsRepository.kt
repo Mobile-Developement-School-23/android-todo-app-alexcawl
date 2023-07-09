@@ -23,10 +23,10 @@ class SettingsRepository @Inject constructor(
         const val REVISION_DEFAULT: Int = 0
 
         const val USERNAME: String = "USERNAME"
-        const val USERNAME_DEFAULT: String = "Mick-Android"
+        const val USERNAME_DEFAULT: String = ""
 
         const val TOKEN: String = "TOKEN"
-        const val TOKEN_DEFAULT: String = "debamboozle"
+        const val TOKEN_DEFAULT: String = ""
     }
 
     private val source: SharedPreferences = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
