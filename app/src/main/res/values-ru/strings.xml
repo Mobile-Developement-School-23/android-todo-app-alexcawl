@@ -26,4 +26,5 @@
     <string name="username">Логин</string>
     <string name="token">Пароль</string>
     <string name="theme">Тема</string>
+    <string name="server">Синхронизация с сервером</string>
 </resources>
