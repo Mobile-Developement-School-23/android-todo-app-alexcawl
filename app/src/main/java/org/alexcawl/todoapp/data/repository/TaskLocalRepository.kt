@@ -8,6 +8,7 @@ import org.alexcawl.todoapp.domain.model.ValidationException
 import org.alexcawl.todoapp.domain.model.DataState
 import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.domain.model.TaskModel
+import org.alexcawl.todoapp.domain.repository.IAlarmScheduler
 import org.alexcawl.todoapp.domain.repository.ITaskLocalRepository
 import org.alexcawl.todoapp.domain.repository.ITaskRemoteRepository
 import org.alexcawl.todoapp.domain.source.IDatabaseSource
@@ -22,7 +23,8 @@ import javax.inject.Inject
  * */
 class TaskLocalRepository @Inject constructor(
     private val databaseSource: IDatabaseSource,
-    private val remoteRepository: ITaskRemoteRepository
+    private val remoteRepository: ITaskRemoteRepository,
+    private val scheduler: IAlarmScheduler
 ) : ITaskLocalRepository {
     override fun getTasks(): Flow<DataState<List<TaskModel>>> = flow {
         databaseSource.getTasks().collect {
@@ -52,12 +54,14 @@ class TaskLocalRepository @Inject constructor(
         val task = buildTaskModel(text, priority, deadline)
         databaseSource.addTask(task)
         remoteRepository.addTask(task)
+        scheduler.scheduleNotification(task)
     }
 
     @Throws(NetworkException::class)
     override suspend fun deleteTask(task: TaskModel) {
         databaseSource.deleteTask(task)
         remoteRepository.deleteTask(task)
+        scheduler.cancelNotification(task)
     }
 
     @Throws(ValidationException::class, NetworkException::class)
@@ -65,6 +69,7 @@ class TaskLocalRepository @Inject constructor(
         validateTask(task.text, task.deadline)
         databaseSource.addTask(task.copy(modifyingTime = System.currentTimeMillis()))
         remoteRepository.updateTask(task)
+        scheduler.scheduleNotification(task)
     }
 
     @Throws(ValidationException::class)
@@ -76,6 +81,8 @@ class TaskLocalRepository @Inject constructor(
             throw ValidationException("Deadline: $deadline is not valid!")
         }
     }
+
+    suspend fun getTaskAsModel(id: UUID): TaskModel? = databaseSource.getTaskAsEntity(id)
 
     private fun getUUID(): UUID = UUID.randomUUID()
 

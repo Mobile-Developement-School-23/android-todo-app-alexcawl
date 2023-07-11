@@ -2,6 +2,7 @@ package org.alexcawl.todoapp.presentation.util
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.util.Log
 import android.view.View
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -17,6 +18,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 
+
 fun View.invisible() {
     isVisible = false
 }
@@ -25,13 +27,10 @@ fun View.gone() {
     isGone = true
 }
 
-fun View.disable() {
-    isEnabled = false
-}
-
 fun View.snackbar(
     message: String, duration: Int = Snackbar.LENGTH_LONG
 ) {
+    Log.d("SNACKBAR", message)
     Snackbar.make(this, message, duration).show()
 }
 
@@ -70,3 +69,5 @@ val Context.applicationComponent: ApplicationComponent
         is ToDoApplication -> applicationComponent
         else -> (applicationContext as ToDoApplication).applicationComponent
     }
+
+fun UUID.convertToInt(): Int = this.hashCode()

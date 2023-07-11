@@ -25,5 +25,8 @@ interface TaskDao {
     fun removeTasks()
 
     @Query("SELECT * FROM tasks")
-    fun getTasksAsList(): List<TaskEntity>
+    fun getTasksAsEntity(): List<TaskEntity>
+
+    @Query("SELECT * FROM tasks WHERE id = :id")
+    fun getTaskAsEntity(id: String): TaskEntity?
 }

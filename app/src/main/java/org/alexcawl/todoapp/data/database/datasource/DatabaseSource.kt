@@ -49,7 +49,9 @@ class DatabaseSource @Inject constructor(
 
     override suspend fun deleteTask(task: TaskModel) = dao.removeTask(task.toEntity())
 
-    override fun getTasksAsList(): List<TaskModel> = dao.getTasksAsList().map(TaskEntity::toModel)
+    override suspend fun getTasksAsList(): List<TaskModel> = dao.getTasksAsEntity().map(TaskEntity::toModel)
+
+    override suspend fun getTaskAsEntity(uuid: UUID): TaskModel? = dao.getTaskAsEntity(uuid.toString())?.toModel()
 
     override fun overwrite(tasks: List<TaskModel>) {
         dao.removeTasks()

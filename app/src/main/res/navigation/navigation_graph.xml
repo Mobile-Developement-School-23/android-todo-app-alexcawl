@@ -44,6 +44,9 @@
         <argument
             android:name="UUID"
             app:argType="string" />
+        <deepLink
+            android:id="@+id/deepLinkEditTask"
+            app:uri="app://todoapp/edit/{UUID}" />
     </fragment>
     <fragment
         android:id="@+id/taskAddFragment"
@@ -55,6 +58,9 @@
         <argument
             android:name="UUID"
             app:argType="string" />
+        <deepLink
+            android:id="@+id/deepLinkShowTask"
+            app:uri="app://todoapp/show/{UUID}" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"

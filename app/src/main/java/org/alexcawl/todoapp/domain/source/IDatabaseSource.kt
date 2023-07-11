@@ -17,7 +17,9 @@ interface IDatabaseSource {
     /*
     * Synchronous method in order not to cycle in Flow data
     * */
-    fun getTasksAsList(): List<TaskModel>
+    suspend fun getTasksAsList(): List<TaskModel>
+
+    suspend fun getTaskAsEntity(uuid: UUID): TaskModel?
 
     /*
     * Synchronous overwriting database

@@ -3,6 +3,7 @@ package org.alexcawl.todoapp.data.repository
 import org.alexcawl.todoapp.data.network.util.NetworkException
 import org.alexcawl.todoapp.data.network.util.NetworkState
 import org.alexcawl.todoapp.domain.model.TaskModel
+import org.alexcawl.todoapp.domain.repository.IAlarmScheduler
 import org.alexcawl.todoapp.domain.repository.ISettingsRepository
 import org.alexcawl.todoapp.domain.repository.ISynchronizer
 import org.alexcawl.todoapp.domain.repository.ITaskRemoteRepository
@@ -22,6 +23,7 @@ class TaskRemoteRepository @Inject constructor(
     private val settingsSource: ISettingsRepository,
     private val databaseSource: IDatabaseSource,
     private val networkSource: INetworkSource,
+    private val scheduler: IAlarmScheduler
 ) : ITaskRemoteRepository, ISynchronizer {
     @Throws(NetworkException::class)
     override suspend fun addTask(task: TaskModel) {
@@ -108,6 +110,8 @@ class TaskRemoteRepository @Inject constructor(
                 is NetworkState.Success -> {
                     databaseSource.overwrite(state.data)
                     settingsSource.setRevision(state.revision)
+                    localData.forEach(scheduler::cancelNotification)
+                    state.data.forEach(scheduler::scheduleNotification)
                 }
                 else -> {}
             }
