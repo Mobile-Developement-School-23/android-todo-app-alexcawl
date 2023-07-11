@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/taskListFragment">
+    <fragment
+        android:id="@+id/taskListFragment"
+        android:name="org.alexcawl.todoapp.presentation.fragment.TaskListFragment"
+        android:label="fragment_task_list"
+        tools:layout="@layout/fragment_task_list">
+        <action
+            android:id="@+id/taskAddAction"
+            app:destination="@id/taskAddFragment"
+            app:enterAnim="@anim/from_bottom"
+            app:exitAnim="@anim/to_top"
+            app:popEnterAnim="@anim/from_top"
+            app:popExitAnim="@anim/to_bottom" />
+        <action
+            android:id="@+id/taskEditAction"
+            app:destination="@id/taskEditFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/taskShowAction"
+            app:destination="@id/taskShowFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/taskEditFragment"
+        android:name="org.alexcawl.todoapp.presentation.fragment.TaskEditFragment"
+        android:label="fragment_task_modify"
+        tools:layout="@layout/fragment_task_edit">
+        <argument
+            android:name="UUID"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/taskAddFragment"
+        android:name="org.alexcawl.todoapp.presentation.fragment.TaskAddFragment"
+        android:label="TaskAddFragment" />
+    <fragment
+        android:id="@+id/taskShowFragment"
+        android:name="org.alexcawl.todoapp.presentation.fragment.TaskShowFragment"
+        android:label="fragment_task_show"
+        tools:layout="@layout/fragment_task_show">
+        <argument
+            android:name="UUID"
+            app:argType="string" />
+    </fragment>
+</navigation>

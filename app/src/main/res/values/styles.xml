@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Widget styles -->
+    <style name="YandexToDoApplicationTheme.SwitchStyle" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="trackTint">?attr/colorOverlay</item>
+        <item name="thumbTint">@color/selector_switch_thumb_tint</item>
+    </style>
+
+    <style name="YandexToDoApplicationTheme.ButtonStyle" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textAppearance">@style/Button</item>
+        <item name="android:gravity">start|center_vertical</item>
+    </style>
+
+    <style name="YandexToDoApplicationTheme.ImageButtonStyle" parent="Widget.AppCompat.ImageButton">
+        <item name="tint">?attr/blue</item>
+    </style>
+
+    <style name="DatePickerDialogTheme" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="colorAccent">?attr/blue</item>
+        <item name="android:textColorPrimary">?attr/colorOnPrimary</item>
+        <item name="android:datePickerStyle">@style/DatePickerStyle</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/DialogPositiveButtonStyle</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/DialogNegativeButtonStyle</item>
+    </style>
+
+    <style name="DatePickerStyle" parent="@android:style/Widget.Material.Light.DatePicker">
+        <item name="android:headerBackground">?attr/blue</item>
+    </style>
+
+    <style name="DialogPositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="DialogNegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+    </style>
+</resources>
