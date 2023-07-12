@@ -32,4 +32,8 @@
     <string name="network_options">Network options</string>
     <string name="time">Time</string>
     <string name="date">Date</string>
+    <string name="low">Low</string>
+    <string name="basic">Basic</string>
+    <string name="high">High</string>
+    <string name="select">Select</string>
 </resources>

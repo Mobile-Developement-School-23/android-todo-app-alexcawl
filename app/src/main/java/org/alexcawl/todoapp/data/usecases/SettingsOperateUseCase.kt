@@ -2,6 +2,7 @@ package org.alexcawl.todoapp.data.usecases
 
 import org.alexcawl.todoapp.domain.repository.ISettingsRepository
 import org.alexcawl.todoapp.domain.usecases.ISettingsOperateUseCase
+import org.alexcawl.todoapp.presentation.util.ThemeState
 import javax.inject.Inject
 
 class SettingsOperateUseCase @Inject constructor(
@@ -18,4 +19,8 @@ class SettingsOperateUseCase @Inject constructor(
     override fun getToken(): String = repository.getToken()
 
     override fun setToken(token: String) = repository.setToken(token)
+
+    override fun getTheme(): ThemeState = repository.getTheme()
+
+    override fun setTheme(theme: ThemeState) = repository.setTheme(theme)
 }

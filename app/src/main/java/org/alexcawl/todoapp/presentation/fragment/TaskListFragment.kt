@@ -24,11 +24,14 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.FragmentTaskListBinding
+import org.alexcawl.todoapp.domain.model.TaskModel
 import org.alexcawl.todoapp.presentation.activity.MainActivity
 import org.alexcawl.todoapp.presentation.adapter.OnItemSwipeCallback
 import org.alexcawl.todoapp.presentation.adapter.TaskItemAdapter
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
-import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
+import org.alexcawl.todoapp.presentation.model.MainViewModel
+import org.alexcawl.todoapp.presentation.model.SettingsViewModel
+import org.alexcawl.todoapp.presentation.model.ViewModelFactory
 import org.alexcawl.todoapp.presentation.util.UiState
 import org.alexcawl.todoapp.presentation.util.invisible
 import org.alexcawl.todoapp.presentation.util.snackbar
@@ -36,17 +39,21 @@ import javax.inject.Inject
 
 /**
  * Application main screen with tasks list
+ * @see MainViewModel
  * @see TaskViewModel
+ * @see SettingsViewModel
  * */
 class TaskListFragment : Fragment() {
     @Inject
-    lateinit var modelFactory: TaskViewModelFactory
-    private val model: TaskViewModel by lazy {
-        ViewModelProvider(this, modelFactory)[TaskViewModel::class.java]
+    lateinit var modelFactory: ViewModelFactory
+    private val model: MainViewModel by lazy {
+        ViewModelProvider(this, modelFactory)[MainViewModel::class.java]
     }
-    private val visibility: StateFlow<Boolean> by lazy { model.visibility }
+
     private var _binding: FragmentTaskListBinding? = null
     private val binding: FragmentTaskListBinding get() = _binding!!
+
+    private val visibility: StateFlow<Boolean> by lazy { model.visibility }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -118,7 +125,7 @@ class TaskListFragment : Fragment() {
     }
 
     private fun setupUpdateButton(view: AppCompatImageButton) {
-        val isEnabled = model.getSettingsController().getServerEnabled()
+        val isEnabled = model.isServerEnabled()
         if (isEnabled) {
             view.setOnClickListener {
                 lifecycle.coroutineScope.launch(Dispatchers.IO) {
@@ -156,7 +163,7 @@ class TaskListFragment : Fragment() {
             navController.navigate(R.id.taskShowAction, bundleOf("UUID" to it.id.toString()))
         }, onTaskSwipeLeft = {
             lifecycle.coroutineScope.launch(Dispatchers.IO) {
-                model.removeTask(it).collect { uiState ->
+                model.deleteTask(it).collect { uiState ->
                     when (uiState) {
                         is UiState.Error -> view.snackbar(uiState.cause)
                         else -> {}
@@ -165,7 +172,7 @@ class TaskListFragment : Fragment() {
             }
         }, onTaskSwipeRight = {
             lifecycle.coroutineScope.launch(Dispatchers.IO) {
-                model.setTask(it).collect { uiState ->
+                model.updateTask(it).collect { uiState ->
                     when (uiState) {
                         is UiState.Error -> view.snackbar(uiState.cause)
                         else -> {}

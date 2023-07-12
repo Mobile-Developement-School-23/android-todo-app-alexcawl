@@ -92,47 +92,23 @@
                 android:layout_marginEnd="16dp"
                 android:gravity="center_vertical"
                 android:minHeight="48dp"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/task_text">
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="0dp"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:text="@string/priority"
+                    android:textAppearance="@style/Body" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/priority"
-                        android:textAppearance="@style/Body" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/task_priority"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/priority"
-                        android:textAppearance="@style/Subhead" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <FrameLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/shape_rounded_corners">
-
-                    <androidx.appcompat.widget.AppCompatSpinner
-                        android:id="@+id/priority_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:backgroundTint="?attr/blue"
-                        android:entries="@array/priority_type"
-                        android:gravity="center"
-                        android:spinnerMode="dropdown"
-                        android:textAlignment="center" />
-                </FrameLayout>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/task_priority"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/not_defined"
+                    android:textAppearance="@style/Subhead" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <com.google.android.material.divider.MaterialDivider

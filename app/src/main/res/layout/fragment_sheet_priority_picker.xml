@@ -5,16 +5,97 @@
     android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/title"
+        android:id="@+id/title_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/priority"
         android:textAppearance="@style/Title"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/priority_text"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/priority_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/basic"
+        android:textAlignment="center"
+        android:textAppearance="@style/Body"
+        android:textColor="?attr/blue"
+        app:layout_constraintBottom_toBottomOf="@id/title_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/title_text"
+        app:layout_constraintTop_toTopOf="@id/title_text" />
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/button_toggle_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:weightSum="3"
+        app:checkedButton="@id/default_mode_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_text"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/low_priority_button"
+            style="@style/YandexToDoApplicationTheme.ToggleButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/low"
+            android:textAppearance="@style/Button"
+            app:icon="@drawable/icon_priority_low"
+            app:iconTint="?attr/gray" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/basic_priority_button"
+            style="@style/YandexToDoApplicationTheme.ToggleButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/basic"
+            android:textAppearance="@style/Button"
+            app:icon="@drawable/icon_priority_basic" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/hight_priority_button"
+            style="@style/YandexToDoApplicationTheme.ToggleButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/high"
+            android:textAppearance="@style/Button"
+            app:icon="@drawable/icon_priority_high"
+            app:iconTint="?attr/red" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/select_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"
+        android:text="@string/select"
+        android:textAppearance="@style/Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:backgroundTint="?attr/blue"
+        android:textColor="?attr/white"
+        app:layout_constraintTop_toBottomOf="@id/button_toggle_group" />
 </androidx.constraintlayout.widget.ConstraintLayout>

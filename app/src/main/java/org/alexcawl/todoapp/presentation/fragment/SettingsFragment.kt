@@ -12,34 +12,27 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.coroutineScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButtonToggleGroup
+import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.FragmentSettingsBinding
-import org.alexcawl.todoapp.domain.repository.ISettingsRepository
 import org.alexcawl.todoapp.presentation.activity.MainActivity
-import org.alexcawl.todoapp.presentation.model.TaskViewModel
-import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
+import org.alexcawl.todoapp.presentation.model.SettingsViewModel
+import org.alexcawl.todoapp.presentation.model.ViewModelFactory
 import org.alexcawl.todoapp.presentation.util.ThemeState
 import javax.inject.Inject
 
 class SettingsFragment : Fragment() {
-
     @Inject
-    lateinit var modelFactory: TaskViewModelFactory
-    @Inject
-    lateinit var preferences: ISettingsRepository
-
-    private val model: TaskViewModel by lazy {
-        ViewModelProvider(this, modelFactory)[TaskViewModel::class.java]
+    lateinit var modelFactory: ViewModelFactory
+    private val model: SettingsViewModel by lazy {
+        ViewModelProvider(this, modelFactory)[SettingsViewModel::class.java]
     }
     private var _binding: FragmentSettingsBinding? = null
     private val binding: FragmentSettingsBinding get() = _binding!!
-
-    private var isServerEnabled: Boolean = false
-    private var username: String = ""
-    private var token: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -51,17 +44,13 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val navController = findNavController()
-        val controller = model.getSettingsController()
-        isServerEnabled = controller.getServerEnabled()
-        username = controller.getUsername()
-        token = controller.getToken()
         with(binding) {
             setupCloseButton(closeButton, navController)
             setupSaveButton(saveButton, navController)
             setupServerSwitch(serverSyncSwitch)
             setupUsernameField(loginText)
             setupTokenField(tokenText)
-            setupThemeButtons(themeButtonGroup)
+            setupThemeButtons(buttonToggleGroup)
         }
     }
 
@@ -78,37 +67,46 @@ class SettingsFragment : Fragment() {
 
     private fun setupSaveButton(button: AppCompatButton, navController: NavController) {
         button.setOnClickListener {
-            val controller = model.getSettingsController()
-            controller.setServerEnabled(isServerEnabled)
-            controller.setUsername(username)
-            controller.setToken(token)
+            model.saveSettings()
             navController.navigateUp()
         }
     }
 
     private fun setupServerSwitch(switch: SwitchCompat) {
-        switch.isChecked = isServerEnabled
+        lifecycle.coroutineScope.launch {
+            model.networkEnabled.collect {
+                switch.isChecked = it
+            }
+        }
         switch.setOnCheckedChangeListener { _, isChecked ->
-            isServerEnabled = isChecked
+            model.setServerEnabled(isChecked)
         }
     }
 
     private fun setupUsernameField(text: AppCompatEditText) {
-        text.setText(username)
+        lifecycle.coroutineScope.launch {
+            model.username.collect {
+                text.setText(it)
+            }
+        }
         text.addTextChangedListener {
-            username = (it ?: "").toString()
+            model.setUsername((it ?: "").toString())
         }
     }
 
     private fun setupTokenField(text: AppCompatEditText) {
-        text.setText(token)
+        lifecycle.coroutineScope.launch {
+            model.token.collect {
+                text.setText(it)
+            }
+        }
         text.addTextChangedListener {
-            token = (it ?: "").toString()
+            model.setToken((it ?: "").toString())
         }
     }
 
     private fun setupThemeButtons(toggle: MaterialButtonToggleGroup) {
-        when(preferences.getTheme()) {
+        when(model.getTheme()) {
             ThemeState.DEFAULT -> toggle.check(R.id.default_mode_button)
             ThemeState.DARK -> toggle.check(R.id.dark_mode_button)
             ThemeState.LIGHT -> toggle.check(R.id.light_mode_button)
@@ -117,15 +115,15 @@ class SettingsFragment : Fragment() {
             if (isChecked) {
                 when (checkedButton) {
                     R.id.dark_mode_button -> {
-                        preferences.setTheme(ThemeState.DARK)
+                        model.setTheme(ThemeState.DARK)
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                     }
                     R.id.light_mode_button -> {
-                        preferences.setTheme(ThemeState.LIGHT)
+                        model.setTheme(ThemeState.LIGHT)
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                     }
                     else -> {
-                        preferences.setTheme(ThemeState.DEFAULT)
+                        model.setTheme(ThemeState.DEFAULT)
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                     }
                 }

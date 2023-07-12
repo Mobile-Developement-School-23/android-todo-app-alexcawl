@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import androidx.appcompat.widget.*
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -14,31 +13,39 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.FragmentTaskEditBinding
 import org.alexcawl.todoapp.domain.model.Priority
-import org.alexcawl.todoapp.domain.model.TaskModel
 import org.alexcawl.todoapp.presentation.activity.MainActivity
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
-import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
+import org.alexcawl.todoapp.presentation.model.MainViewModel
+import org.alexcawl.todoapp.presentation.model.ViewModelFactory
 import org.alexcawl.todoapp.presentation.util.*
 import java.util.*
 import javax.inject.Inject
 
 /**
  * Single task info with editing screen
- * @see TaskViewModel
+ * @see MainViewModel
  * */
 class TaskEditFragment : Fragment() {
     @Inject
-    lateinit var modelFactory: TaskViewModelFactory
+    lateinit var modelFactory: ViewModelFactory
     private val model: TaskViewModel by lazy {
-        ViewModelProvider(this, modelFactory)[TaskViewModel::class.java]
+        ViewModelProvider(requireActivity(), modelFactory)[TaskViewModel::class.java]
     }
     private var _binding: FragmentTaskEditBinding? = null
     private val binding: FragmentTaskEditBinding
         get() = _binding!!
+
+    private val text: StateFlow<String> by lazy { model.text }
+    private val priority: StateFlow<Priority> by lazy { model.priority }
+    private val deadline: StateFlow<Long?> by lazy { model.deadline }
+    private val createdAt: StateFlow<Long> by lazy { model.createdAt }
+    private val changedAt: StateFlow<Long> by lazy { model.changedAt }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -76,7 +83,7 @@ class TaskEditFragment : Fragment() {
 
     private fun setupLifecycleData(id: UUID, navController: NavController) {
         lifecycleScope.launch {
-            model.requireTask(id).collect { uiState: UiState<TaskModel> ->
+            model.loadTask(id).collect { uiState ->
                 when (uiState) {
                     is UiState.Start -> {}
                     is UiState.Error -> navController.navigateUp().also {
@@ -84,17 +91,12 @@ class TaskEditFragment : Fragment() {
                     }
                     is UiState.Success -> with(binding) {
                         setupCloseButton(closeButton, navController)
-                        setupSaveButton(saveButton, navController, uiState.data)
-                        setupTaskText(taskText, uiState.data)
-                        setupTaskPriority(prioritySpinner, taskPriority, uiState.data)
-                        setupTaskDeadline(
-                            deadlineSwitch,
-                            taskDeadline,
-                            deadlinePicker,
-                            uiState.data
-                        )
-                        setupTaskDates(taskCreatedAt, taskChangedAt, uiState.data)
-                        setupDeleteButton(taskDeleteButton, navController, uiState.data)
+                        setupSaveButton(saveButton, navController)
+                        setupTaskText(taskText)
+                        setupPriorityPicker(taskPriority, priorityBlock)
+                        setupTaskDeadline(deadlineSwitch, taskDeadline, deadlinePicker)
+                        setupTaskDates(taskCreatedAt, taskChangedAt)
+                        setupDeleteButton(taskDeleteButton, navController)
                     }
                 }
             }
@@ -110,11 +112,10 @@ class TaskEditFragment : Fragment() {
     private fun setupSaveButton(
         button: AppCompatButton,
         navController: NavController,
-        task: TaskModel
     ) {
         button.setOnClickListener {
             lifecycle.coroutineScope.launch {
-                model.setTask(task).collect { uiState: UiState<String> ->
+                model.update().collect { uiState: UiState<String> ->
                     when (uiState) {
                         is UiState.Start -> {}
                         is UiState.Success -> navController.navigateUp()
@@ -128,11 +129,11 @@ class TaskEditFragment : Fragment() {
     }
 
     private fun setupDeleteButton(
-        button: AppCompatButton, navController: NavController, task: TaskModel
+        button: AppCompatButton, navController: NavController
     ) {
         button.setOnClickListener {
             lifecycle.coroutineScope.launch {
-                model.removeTask(task).collect { uiState ->
+                model.delete().collect { uiState ->
                     when (uiState) {
                         is UiState.Start -> {}
                         is UiState.Success -> navController.navigateUp()
@@ -146,41 +147,24 @@ class TaskEditFragment : Fragment() {
     }
 
     private fun setupTaskText(
-        editText: AppCompatEditText, task: TaskModel
+        editText: AppCompatEditText
     ) {
-        editText.setText(task.text)
+        lifecycle.coroutineScope.launch {
+            editText.setText(text.value)
+        }
         editText.addTextChangedListener {
-            task.text = it.toString()
+            model.setTaskText(it.toString())
         }
     }
 
-    private fun setupTaskPriority(
-        spinner: AppCompatSpinner, textView: AppCompatTextView, task: TaskModel
-    ) {
-        textView.text = task.priority.toTextFormat()
-        spinner.setSelection(
-            when (task.priority) {
-                Priority.LOW -> 1
-                Priority.IMPORTANT -> 2
-                else -> 0
+    private fun setupPriorityPicker(textView: AppCompatTextView, clickableArea: View) {
+        lifecycle.coroutineScope.launch {
+            priority.collect {
+                textView.text = it.toTextFormat()
             }
-        )
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                task.priority = when (position) {
-                    0 -> Priority.BASIC
-                    1 -> Priority.LOW
-                    else -> Priority.IMPORTANT
-                }
-                textView.text = task.priority.toTextFormat()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+        clickableArea.setOnClickListener {
+            PriorityPickerDialogFragment().show(parentFragmentManager, "PRIORITY-DIALOG")
         }
     }
 
@@ -188,42 +172,45 @@ class TaskEditFragment : Fragment() {
         switch: SwitchCompat,
         textView: AppCompatTextView,
         clickableArea: View,
-        task: TaskModel
     ) {
-        switch.isChecked = task.deadline != null
-        textView.text = task.deadline?.toDateFormat()
-            ?: textView.context.getText(R.string.not_defined)
+        switch.isChecked = deadline.value != null
         switch.setOnCheckedChangeListener { _, isChecked ->
             when (isChecked) {
                 true -> {
                     val dateString = createDateString(Calendar.getInstance())
-                    task.deadline = task.deadline ?: dateStringToTimestamp(dateString)
-                    textView.text = task.deadline?.toDateFormat() ?: dateString
-                    clickableArea.isClickable = true
+                    model.setTaskDeadline(dateStringToTimestamp(dateString))
                 }
                 false -> {
-                    textView.text = switch.context.getText(R.string.not_defined)
-                    task.deadline = null
-                    clickableArea.isClickable = false
+                    model.setTaskDeadline(null)
                 }
             }
         }
         clickableArea.setOnClickListener {
             it.context.pickDateAndTime { date ->
-                val timestamp = createDateString(date)
-                textView.text = timestamp
-                task.deadline = dateStringToTimestamp(timestamp)
+                val dateString = createDateString(date)
+                textView.text = dateString
+                model.setTaskDeadline(dateStringToTimestamp(dateString))
             }
         }
-        clickableArea.isClickable = switch.isChecked
+        lifecycle.coroutineScope.launch {
+            deadline.collectLatest {
+                clickableArea.isClickable = it != null
+                textView.text = it?.toDateFormat() ?: textView.context.getText(R.string.not_defined)
+            }
+        }
     }
 
     private fun setupTaskDates(
         textViewCreatedAt: AppCompatTextView,
         textViewChangedAt: AppCompatTextView,
-        task: TaskModel
     ) {
-        textViewCreatedAt.text = task.creationTime.toDateFormat()
-        textViewChangedAt.text = task.modifyingTime.toDateFormat()
+        lifecycle.coroutineScope.launch {
+            createdAt.collectLatest {
+                textViewCreatedAt.text = it.toDateFormat()
+            }
+            changedAt.collectLatest {
+                textViewChangedAt.text = it.toDateFormat()
+            }
+        }
     }
 }

@@ -19,7 +19,7 @@ import javax.inject.Inject
  * @see ViewModelProvider.Factory
  * */
 @MainActivityScope
-class TaskViewModelFactory @Inject constructor(
+class ViewModelFactory @Inject constructor(
     private val updateCase: IUpdateTaskUseCase,
     private val getAllCase: IGetTasksUseCase,
     private val getSingleCase: IGetTaskUseCase,
@@ -29,13 +29,25 @@ class TaskViewModelFactory @Inject constructor(
     private val settingsUseCase: ISettingsOperateUseCase
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T = TaskViewModel(
-        updateCase = updateCase,
-        getAllCase = getAllCase,
-        getSingleCase = getSingleCase,
-        deleteCase = deleteCase,
-        addCase = addCase,
-        syncCase = syncCase,
-        settingsUseCase = settingsUseCase
-    ) as T
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return when(modelClass) {
+            MainViewModel::class.java -> MainViewModel(
+                getAllCase = getAllCase,
+                syncCase = syncCase,
+                settingsUseCase = settingsUseCase,
+                updateCase = updateCase,
+                deleteCase = deleteCase
+            ) as T
+            TaskViewModel::class.java -> TaskViewModel(
+                getSingleCase = getSingleCase,
+                updateCase = updateCase,
+                deleteCase = deleteCase,
+                addCase = addCase
+            ) as T
+            SettingsViewModel::class.java -> SettingsViewModel(
+                settingsUseCase = settingsUseCase
+            ) as T
+            else -> throw IllegalArgumentException("Big shit bro, wrong VM!")
+        }
+    }
 }
