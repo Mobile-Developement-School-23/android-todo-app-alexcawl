@@ -31,17 +31,16 @@ class PostponeReceiver : BroadcastReceiver() {
         try {
             coroutineScope.launch {
                 val id: UUID = getID(intent.extras)
+                val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                manager.cancel(id.convertToInt())
                 when (val task = repository.getTaskAsModel(id)) {
                     null -> {}
                     else -> {
-                        val manager =
-                            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                         when (val deadline = task.deadline) {
                             null -> {}
                             else -> {
                                 try {
                                     repository.updateTask(task.copy(deadline = deadline + DAY_IN_MILLISECONDS))
-                                    manager.cancel(task.id.convertToInt())
                                 } catch (exception: Exception) {
                                     Log.d(
                                         this::class.java.toString(),

@@ -3,6 +3,7 @@ package org.alexcawl.todoapp.data.repository
 import android.content.Context
 import android.content.SharedPreferences
 import org.alexcawl.todoapp.domain.repository.ISettingsRepository
+import org.alexcawl.todoapp.presentation.util.ThemeState
 import javax.inject.Inject
 
 /**
@@ -27,6 +28,9 @@ class SettingsRepository @Inject constructor(
 
         const val TOKEN: String = "TOKEN"
         const val TOKEN_DEFAULT: String = ""
+
+        const val THEME: String = "THEME"
+        const val THEME_DEFAULT: String = "DEFAULT"
     }
 
     private val source: SharedPreferences = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
@@ -53,5 +57,17 @@ class SettingsRepository @Inject constructor(
 
     override fun setToken(token: String) {
         source.edit().putString(TOKEN, token).apply()
+    }
+
+    override fun getTheme(): ThemeState {
+        return try {
+            ThemeState.valueOf(source.getString(THEME, THEME_DEFAULT) ?: THEME_DEFAULT)
+        } catch (exception: IllegalArgumentException) {
+            ThemeState.DEFAULT
+        }
+    }
+
+    override fun setTheme(theme: ThemeState) {
+        source.edit().putString(THEME, theme.toString()).apply()
     }
 }

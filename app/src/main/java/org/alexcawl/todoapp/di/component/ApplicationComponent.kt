@@ -6,6 +6,7 @@ import dagger.Component
 import org.alexcawl.todoapp.di.module.*
 import org.alexcawl.todoapp.di.scope.ApplicationScope
 import org.alexcawl.todoapp.presentation.ToDoApplication
+import org.alexcawl.todoapp.presentation.activity.MainActivity
 import org.alexcawl.todoapp.presentation.receiver.PostponeReceiver
 import org.alexcawl.todoapp.presentation.receiver.NotificationReceiver
 
@@ -18,6 +19,8 @@ interface ApplicationComponent {
     }
 
     fun mainActivityComponent(): MainActivityComponent
+
+    fun inject(activity: MainActivity)
 
     fun inject(application: ToDoApplication)
 

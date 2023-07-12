@@ -27,4 +27,7 @@
     <string name="token">Token…</string>
     <string name="theme">Theme</string>
     <string name="server">Server synchronization enabled</string>
+    <string name="default_mode">Default</string>
+    <string name="theme_options">Theme options</string>
+    <string name="network_options">Network options</string>
 </resources>

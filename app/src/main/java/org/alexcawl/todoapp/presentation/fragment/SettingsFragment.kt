@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageButton
@@ -13,15 +14,23 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.button.MaterialButtonToggleGroup
+import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.FragmentSettingsBinding
+import org.alexcawl.todoapp.domain.repository.ISettingsRepository
 import org.alexcawl.todoapp.presentation.activity.MainActivity
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.model.TaskViewModelFactory
+import org.alexcawl.todoapp.presentation.util.ThemeState
 import javax.inject.Inject
 
 class SettingsFragment : Fragment() {
+
     @Inject
     lateinit var modelFactory: TaskViewModelFactory
+    @Inject
+    lateinit var preferences: ISettingsRepository
+
     private val model: TaskViewModel by lazy {
         ViewModelProvider(this, modelFactory)[TaskViewModel::class.java]
     }
@@ -52,6 +61,7 @@ class SettingsFragment : Fragment() {
             setupServerSwitch(serverSyncSwitch)
             setupUsernameField(loginText)
             setupTokenField(tokenText)
+            setupThemeButtons(themeButtonGroup)
         }
     }
 
@@ -94,6 +104,32 @@ class SettingsFragment : Fragment() {
         text.setText(token)
         text.addTextChangedListener {
             token = (it ?: "").toString()
+        }
+    }
+
+    private fun setupThemeButtons(toggle: MaterialButtonToggleGroup) {
+        when(preferences.getTheme()) {
+            ThemeState.DEFAULT -> toggle.check(R.id.default_mode_button)
+            ThemeState.DARK -> toggle.check(R.id.dark_mode_button)
+            ThemeState.LIGHT -> toggle.check(R.id.light_mode_button)
+        }
+        toggle.addOnButtonCheckedListener { _, checkedButton: Int, isChecked: Boolean ->
+            if (isChecked) {
+                when (checkedButton) {
+                    R.id.dark_mode_button -> {
+                        preferences.setTheme(ThemeState.DARK)
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    }
+                    R.id.light_mode_button -> {
+                        preferences.setTheme(ThemeState.LIGHT)
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    }
+                    else -> {
+                        preferences.setTheme(ThemeState.DEFAULT)
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    }
+                }
+            }
         }
     }
 }

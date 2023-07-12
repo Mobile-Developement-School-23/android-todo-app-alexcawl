@@ -35,13 +35,10 @@
         <item name="android:textColor">?attr/colorOnPrimary</item>
     </style>
 
-    <style name="Widget.App.Button.OutlinedButton.IconOnly" parent="Widget.Material3.Button.OutlinedButton">
-        <item name="iconPadding">0dp</item>
-        <item name="android:insetTop">0dp</item>
-        <item name="android:insetBottom">0dp</item>
-        <item name="android:paddingLeft">12dp</item>
-        <item name="android:paddingRight">12dp</item>
-        <item name="android:minWidth">48dp</item>
-        <item name="android:minHeight">48dp</item>
+    <style name="YandexToDoApplicationTheme.ToggleButtonStyle" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/selector_button_border_color</item>
+        <item name="backgroundTint">@color/selector_button_tint_color</item>
+        <item name="android:textColor">@color/selector_button_content_color</item>
+        <item name="iconTint">@color/selector_button_content_color</item>
     </style>
 </resources>
