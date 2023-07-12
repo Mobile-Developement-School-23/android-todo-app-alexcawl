@@ -30,4 +30,6 @@
     <string name="default_mode">Default</string>
     <string name="theme_options">Theme options</string>
     <string name="network_options">Network options</string>
+    <string name="time">Time</string>
+    <string name="date">Date</string>
 </resources>

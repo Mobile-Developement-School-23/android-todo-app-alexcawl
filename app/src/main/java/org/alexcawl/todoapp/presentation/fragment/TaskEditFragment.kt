@@ -209,11 +209,11 @@ class TaskEditFragment : Fragment() {
             }
         }
         clickableArea.setOnClickListener {
-            it.context.createDatePicker { _, year, month, dayOfMonth ->
-                val timestamp = createDateString(dayOfMonth, month, year)
+            it.context.pickDateAndTime { date ->
+                val timestamp = createDateString(date)
                 textView.text = timestamp
                 task.deadline = dateStringToTimestamp(timestamp)
-            }.show()
+            }
         }
         clickableArea.isClickable = switch.isChecked
     }

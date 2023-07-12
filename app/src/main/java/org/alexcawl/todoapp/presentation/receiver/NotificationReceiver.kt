@@ -39,6 +39,7 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
+        println(System.currentTimeMillis())
         context.applicationComponent.inject(this)
         try {
             coroutineScope.launch {
