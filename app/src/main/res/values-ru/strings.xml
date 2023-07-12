@@ -30,4 +30,6 @@
     <string name="default_mode">Система</string>
     <string name="theme_options">Настройки внешнего вида</string>
     <string name="network_options">Настройки сети</string>
+    <string name="time">Время</string>
+    <string name="date">Дата</string>
 </resources>
