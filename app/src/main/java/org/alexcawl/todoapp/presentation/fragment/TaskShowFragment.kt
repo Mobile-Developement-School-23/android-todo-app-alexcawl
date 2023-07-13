@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -73,6 +75,7 @@ class TaskShowFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val navController = findNavController()
         try {
             val id: UUID = getID(arguments)
             lifecycleScope.launch {
@@ -80,6 +83,7 @@ class TaskShowFragment : Fragment() {
                     when (uiState) {
                         is UiState.Error -> {
                             Log.d("ERROR", uiState.cause)
+                            navController.navigateUp()
                         }
                         else -> {}
                     }
@@ -87,6 +91,7 @@ class TaskShowFragment : Fragment() {
             }
         } catch (exception: IllegalArgumentException) {
             view.snackbar("Task ID does not exists!")
+            navController.navigateUp()
         }
     }
 
@@ -103,15 +108,19 @@ class TaskShowFragment : Fragment() {
         priorityFlow: StateFlow<Priority>,
         deadlineFlow: StateFlow<Long?>,
         createdAtFlow: StateFlow<Long>,
-        changedAtFlow: StateFlow<Long>,
+        changedAtFlow: StateFlow<Long>
     ) {
         ToDoApplicationTheme {
             Scaffold(
                 backgroundColor = MaterialTheme.colors.background,
                 topBar = { Toolbar(onCloseAction) }
             ) { padding ->
+                val scrollState = rememberScrollState()
                 Column(
-                    modifier = Modifier.padding(padding).padding(16.dp),
+                    modifier = Modifier
+                        .padding(padding)
+                        .padding(16.dp)
+                        .verticalScroll(scrollState),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     TaskText(textFlow)
@@ -148,7 +157,7 @@ class TaskShowFragment : Fragment() {
     ) {
         TopAppBar(
             backgroundColor = MaterialTheme.colors.background,
-            elevation = 10.dp
+            elevation = 8.dp
         ) {
             IconButton(
                 onClick = onCloseAction
@@ -169,11 +178,13 @@ class TaskShowFragment : Fragment() {
         val text by textFlow.collectAsState()
 
         Text(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .background(
                     color = MaterialTheme.colors.surface,
                     shape = MaterialTheme.shapes.large
-                ).padding(16.dp),
+                )
+                .padding(16.dp),
             text = text,
             style = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.onPrimary)
         )
