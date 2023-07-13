@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -157,12 +158,10 @@ class TaskListFragment : Fragment() {
 
     private fun setupRecyclerView(view: RecyclerView, navController: NavController) {
         val viewManager = LinearLayoutManager(context)
-        val viewAdapter = TaskItemAdapter(
-            onEditClicked = { navigateToEdit(navController, it) },
+        val viewAdapter = TaskItemAdapter(onEditClicked = { navigateToEdit(navController, it) },
             onInfoClicked = { navigateToShow(navController, it) },
             onTaskSwipeLeft = { onTaskSwipeLeft(view, it) },
-            onTaskSwipeRight = { onTaskSwipeRight(view, it) }
-        )
+            onTaskSwipeRight = { onTaskSwipeRight(view, it) })
 
         lifecycle.coroutineScope.launch(Dispatchers.IO) {
             visibility.collectLatest { visibilityState ->
@@ -189,8 +188,7 @@ class TaskListFragment : Fragment() {
             }
         }
         val swipeHelper = ItemTouchHelper(
-            OnItemSwipeCallback(
-                { position -> viewAdapter.onItemSwipeLeft(position) },
+            OnItemSwipeCallback({ position -> viewAdapter.onItemSwipeLeft(position) },
                 { position -> viewAdapter.onItemSwipeRight(position) },
                 ContextCompat.getDrawable(requireContext(), R.drawable.icon_check),
                 ColorDrawable(ContextCompat.getColor(requireContext(), R.color.green)),
@@ -225,6 +223,16 @@ class TaskListFragment : Fragment() {
                 }
             }
         }
+        Snackbar.make(view, task.text, 5000).setAction("Undo") {
+                lifecycle.coroutineScope.launch(Dispatchers.IO) {
+                    model.updateTask(task).collect { uiState ->
+                        when (uiState) {
+                            is UiState.Error -> view.snackbar(uiState.cause)
+                            else -> {}
+                        }
+                    }
+                }
+            }.setActionTextColor(view.context.getColor(R.color.blue)).show()
     }
 
     private fun onTaskSwipeRight(view: View, task: TaskModel) {
