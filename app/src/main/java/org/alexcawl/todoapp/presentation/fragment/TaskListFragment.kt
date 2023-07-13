@@ -158,10 +158,12 @@ class TaskListFragment : Fragment() {
 
     private fun setupRecyclerView(view: RecyclerView, navController: NavController) {
         val viewManager = LinearLayoutManager(context)
-        val viewAdapter = TaskItemAdapter(onEditClicked = { navigateToEdit(navController, it) },
+        val viewAdapter = TaskItemAdapter(
+            onEditClicked = { navigateToEdit(navController, it) },
             onInfoClicked = { navigateToShow(navController, it) },
             onTaskSwipeLeft = { onTaskSwipeLeft(view, it) },
-            onTaskSwipeRight = { onTaskSwipeRight(view, it) })
+            onTaskSwipeRight = { onTaskSwipeRight(view, it) }
+        )
 
         lifecycle.coroutineScope.launch(Dispatchers.IO) {
             visibility.collectLatest { visibilityState ->
