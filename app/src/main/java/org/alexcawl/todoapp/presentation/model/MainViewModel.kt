@@ -2,7 +2,6 @@ package org.alexcawl.todoapp.presentation.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,8 +26,6 @@ class MainViewModel(
     private val updateCase: IUpdateTaskUseCase,
     private val deleteCase: IDeleteTaskUseCase
 ) : ViewModel() {
-    private var job: Job? = null
-
     private val _visibility: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val visibility: StateFlow<Boolean> get() = _visibility
 
@@ -39,7 +36,7 @@ class MainViewModel(
     val undoneTasks: StateFlow<UiState<List<TaskModel>>> get() = _undoneTasks
 
     init {
-        job = viewModelScope.launch {
+        viewModelScope.launch {
             getAllCase().collect { state ->
                 when (state) {
                     is DataState.Result -> {
@@ -59,31 +56,31 @@ class MainViewModel(
         }
     }
 
-    fun synchronize(): Flow<UiState<String>> = flow {
+    fun synchronize(): Flow<UiState<Any>> = flow {
         syncCase().collect { state ->
             when (state) {
-                is DataState.Result -> emit(UiState.Success("Synchronized!"))
+                is DataState.Result -> emit(UiState.OK)
                 is DataState.Exception -> emit(UiState.Error(state.cause.message ?: state.cause.stackTraceToString()))
                 else -> emit(UiState.Start)
             }
         }
     }
 
-    fun updateTask(task: TaskModel): Flow<UiState<String>> = flow {
+    fun updateTask(task: TaskModel): Flow<UiState<Any>> = flow {
         updateCase(task).collect { state ->
             when (state) {
                 is DataState.Initial -> emit(UiState.Start)
-                is DataState.Result -> emit(UiState.Success("Task modified!"))
+                is DataState.Result -> emit(UiState.OK)
                 is DataState.Exception -> emit(UiState.Error(state.cause.message ?: state.cause.stackTraceToString()))
             }
         }
     }
 
-    fun deleteTask(task: TaskModel): Flow<UiState<String>> = flow {
+    fun deleteTask(task: TaskModel): Flow<UiState<Any>> = flow {
         deleteCase(task).collect { state ->
             when (state) {
                 is DataState.Initial -> emit(UiState.Start)
-                is DataState.Result -> emit(UiState.Success("Task deleted!"))
+                is DataState.Result -> emit(UiState.OK)
                 is DataState.Exception -> emit(UiState.Error(state.cause.message ?: state.cause.stackTraceToString()))
             }
         }
@@ -93,9 +90,5 @@ class MainViewModel(
 
     fun invertVisibilityState() {
         _visibility.value = _visibility.value.not()
-    }
-
-    override fun onCleared() {
-        job?.cancel()
     }
 }

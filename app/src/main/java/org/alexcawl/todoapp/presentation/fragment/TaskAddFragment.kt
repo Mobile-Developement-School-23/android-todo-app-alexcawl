@@ -18,7 +18,7 @@ import org.alexcawl.todoapp.databinding.FragmentTaskAddBinding
 import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.presentation.activity.MainActivity
 import org.alexcawl.todoapp.presentation.model.MainViewModel
-import org.alexcawl.todoapp.presentation.model.TaskViewModel
+import org.alexcawl.todoapp.presentation.model.NewTaskViewModel
 import org.alexcawl.todoapp.presentation.model.ViewModelFactory
 import org.alexcawl.todoapp.presentation.util.*
 import java.util.*
@@ -28,11 +28,11 @@ import javax.inject.Inject
  * Task adding screen
  * @see MainViewModel
  * */
-class TaskAddFragment : Fragment() {
+class TaskAddFragment : Fragment(), PriorityDialogFragment.Listener {
     @Inject
     lateinit var modelFactory: ViewModelFactory
-    private val model: TaskViewModel by lazy {
-        ViewModelProvider(requireActivity(), modelFactory)[TaskViewModel::class.java]
+    private val model: NewTaskViewModel by lazy {
+        ViewModelProvider(this, modelFactory)[NewTaskViewModel::class.java]
     }
     private var _binding: FragmentTaskAddBinding? = null
     private val binding: FragmentTaskAddBinding
@@ -75,7 +75,7 @@ class TaskAddFragment : Fragment() {
             lifecycle.coroutineScope.launch {
                 model.addTask().collect { uiState ->
                     when (uiState) {
-                        is UiState.Success -> navController.navigateUp()
+                        is UiState.OK -> navController.navigateUp()
                         is UiState.Error -> {
                             button.snackbar(uiState.cause)
                             navController.navigateUp()
@@ -96,11 +96,11 @@ class TaskAddFragment : Fragment() {
     private fun setupPriorityPicker(textView: AppCompatTextView, clickableArea: View) {
         lifecycle.coroutineScope.launch {
             priority.collect {
-                textView.text = it.toTextFormat()
+                textView.text = it.toTextFormat(textView.context)
             }
         }
         clickableArea.setOnClickListener {
-            PriorityPickerDialogFragment().show(parentFragmentManager, "PRIORITY-DIALOG")
+            PriorityDialogFragment(priority.value, this).show(parentFragmentManager, "PRIORITY-DIALOG")
         }
     }
 
@@ -133,4 +133,6 @@ class TaskAddFragment : Fragment() {
         }
         clickableArea.isClickable = false
     }
+
+    override fun onSubmit(priority: Priority) = model.setTaskPriority(priority)
 }

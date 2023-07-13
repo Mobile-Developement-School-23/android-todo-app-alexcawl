@@ -28,9 +28,9 @@ import org.alexcawl.todoapp.domain.model.TaskModel
 import org.alexcawl.todoapp.presentation.activity.MainActivity
 import org.alexcawl.todoapp.presentation.adapter.OnItemSwipeCallback
 import org.alexcawl.todoapp.presentation.adapter.TaskItemAdapter
-import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.model.MainViewModel
 import org.alexcawl.todoapp.presentation.model.SettingsViewModel
+import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.model.ViewModelFactory
 import org.alexcawl.todoapp.presentation.util.UiState
 import org.alexcawl.todoapp.presentation.util.invisible
@@ -131,9 +131,9 @@ class TaskListFragment : Fragment() {
                 lifecycle.coroutineScope.launch(Dispatchers.IO) {
                     model.synchronize().collect {
                         when (it) {
-                            is UiState.Start -> view.snackbar("Loading...")
                             is UiState.Success -> view.snackbar("Synchronized!")
                             is UiState.Error -> view.snackbar(it.cause)
+                            else -> view.snackbar("Loading...")
                         }
                     }
                 }
@@ -157,29 +157,12 @@ class TaskListFragment : Fragment() {
 
     private fun setupRecyclerView(view: RecyclerView, navController: NavController) {
         val viewManager = LinearLayoutManager(context)
-        val viewAdapter = TaskItemAdapter(onEditClicked = {
-            navController.navigate(R.id.taskEditAction, bundleOf("UUID" to it.id.toString()))
-        }, onInfoClicked = {
-            navController.navigate(R.id.taskShowAction, bundleOf("UUID" to it.id.toString()))
-        }, onTaskSwipeLeft = {
-            lifecycle.coroutineScope.launch(Dispatchers.IO) {
-                model.deleteTask(it).collect { uiState ->
-                    when (uiState) {
-                        is UiState.Error -> view.snackbar(uiState.cause)
-                        else -> {}
-                    }
-                }
-            }
-        }, onTaskSwipeRight = {
-            lifecycle.coroutineScope.launch(Dispatchers.IO) {
-                model.updateTask(it).collect { uiState ->
-                    when (uiState) {
-                        is UiState.Error -> view.snackbar(uiState.cause)
-                        else -> {}
-                    }
-                }
-            }
-        })
+        val viewAdapter = TaskItemAdapter(
+            onEditClicked = { navigateToEdit(navController, it) },
+            onInfoClicked = { navigateToShow(navController, it) },
+            onTaskSwipeLeft = { onTaskSwipeLeft(view, it) },
+            onTaskSwipeRight = { onTaskSwipeRight(view, it) }
+        )
 
         lifecycle.coroutineScope.launch(Dispatchers.IO) {
             visibility.collectLatest { visibilityState ->
@@ -189,7 +172,7 @@ class TaskListFragment : Fragment() {
                             when (uiState) {
                                 is UiState.Success -> viewAdapter.submitList(uiState.data)
                                 is UiState.Error -> view.snackbar(uiState.cause)
-                                is UiState.Start -> viewAdapter.submitList(listOf())
+                                else -> viewAdapter.submitList(listOf())
                             }
                         }
                     }
@@ -198,7 +181,7 @@ class TaskListFragment : Fragment() {
                             when (uiState) {
                                 is UiState.Success -> viewAdapter.submitList(uiState.data)
                                 is UiState.Error -> view.snackbar(uiState.cause)
-                                is UiState.Start -> viewAdapter.submitList(listOf())
+                                else -> viewAdapter.submitList(listOf())
                             }
                         }
                     }
@@ -222,6 +205,36 @@ class TaskListFragment : Fragment() {
             layoutManager = viewManager
             adapter = viewAdapter
             swipeHelper.attachToRecyclerView(view)
+        }
+    }
+
+    private fun navigateToEdit(navController: NavController, task: TaskModel) {
+        navController.navigate(R.id.taskEditAction, bundleOf("UUID" to task.id.toString()))
+    }
+
+    private fun navigateToShow(navController: NavController, task: TaskModel) {
+        navController.navigate(R.id.taskShowAction, bundleOf("UUID" to task.id.toString()))
+    }
+
+    private fun onTaskSwipeLeft(view: View, task: TaskModel) {
+        lifecycle.coroutineScope.launch(Dispatchers.IO) {
+            model.deleteTask(task).collect { uiState ->
+                when (uiState) {
+                    is UiState.Error -> view.snackbar(uiState.cause)
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun onTaskSwipeRight(view: View, task: TaskModel) {
+        lifecycle.coroutineScope.launch(Dispatchers.IO) {
+            model.updateTask(task).collect { uiState ->
+                when (uiState) {
+                    is UiState.Error -> view.snackbar(uiState.cause)
+                    else -> {}
+                }
+            }
         }
     }
 }

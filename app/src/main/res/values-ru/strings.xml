@@ -17,12 +17,6 @@
     <string name="hide_done_tasks">Скрыть</string>
     <string name="login">Логин</string>
     <string name="done">Сделано - %d</string>
-
-    <string-array name="priority_type">
-        <item>Нет</item>
-        <item>Низкая</item>
-        <item>Важная</item>
-    </string-array>
     <string name="username">Логин</string>
     <string name="token">Пароль</string>
     <string name="theme">Тема</string>
@@ -32,4 +26,10 @@
     <string name="network_options">Настройки сети</string>
     <string name="time">Время</string>
     <string name="date">Дата</string>
+    <string name="low">Низкая</string>
+    <string name="basic">Обычная</string>
+    <string name="high">Высокая</string>
+    <string name="select">Выберите</string>
+    <string name="submit">Подтвердить</string>
+    <string name="postpone">Отложить на день</string>
 </resources>

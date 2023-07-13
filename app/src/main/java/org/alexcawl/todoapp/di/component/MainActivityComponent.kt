@@ -18,6 +18,4 @@ interface MainActivityComponent {
     fun inject(fragment: TaskShowFragment)
 
     fun inject(fragment: SettingsFragment)
-
-    fun inject(fragment: PriorityPickerDialogFragment)
 }

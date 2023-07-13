@@ -31,11 +31,11 @@ import javax.inject.Inject
  * Single task info with editing screen
  * @see MainViewModel
  * */
-class TaskEditFragment : Fragment() {
+class TaskEditFragment : Fragment(), PriorityDialogFragment.Listener {
     @Inject
     lateinit var modelFactory: ViewModelFactory
     private val model: TaskViewModel by lazy {
-        ViewModelProvider(requireActivity(), modelFactory)[TaskViewModel::class.java]
+        ViewModelProvider(this, modelFactory)[TaskViewModel::class.java]
     }
     private var _binding: FragmentTaskEditBinding? = null
     private val binding: FragmentTaskEditBinding
@@ -85,11 +85,10 @@ class TaskEditFragment : Fragment() {
         lifecycleScope.launch {
             model.loadTask(id).collect { uiState ->
                 when (uiState) {
-                    is UiState.Start -> {}
                     is UiState.Error -> navController.navigateUp().also {
                         binding.root.snackbar(uiState.cause)
                     }
-                    is UiState.Success -> with(binding) {
+                    is UiState.OK -> with(binding) {
                         setupCloseButton(closeButton, navController)
                         setupSaveButton(saveButton, navController)
                         setupTaskText(taskText)
@@ -98,6 +97,7 @@ class TaskEditFragment : Fragment() {
                         setupTaskDates(taskCreatedAt, taskChangedAt)
                         setupDeleteButton(taskDeleteButton, navController)
                     }
+                    else -> {}
                 }
             }
         }
@@ -115,13 +115,13 @@ class TaskEditFragment : Fragment() {
     ) {
         button.setOnClickListener {
             lifecycle.coroutineScope.launch {
-                model.update().collect { uiState: UiState<String> ->
+                model.update().collect { uiState ->
                     when (uiState) {
-                        is UiState.Start -> {}
-                        is UiState.Success -> navController.navigateUp()
+                        is UiState.OK -> navController.navigateUp()
                         is UiState.Error -> navController.navigateUp().also {
                             button.snackbar(uiState.cause)
                         }
+                        else -> {}
                     }
                 }
             }
@@ -135,11 +135,11 @@ class TaskEditFragment : Fragment() {
             lifecycle.coroutineScope.launch {
                 model.delete().collect { uiState ->
                     when (uiState) {
-                        is UiState.Start -> {}
-                        is UiState.Success -> navController.navigateUp()
+                        is UiState.OK -> navController.navigateUp()
                         is UiState.Error -> navController.navigateUp().also {
                             button.snackbar(uiState.cause)
                         }
+                        else -> {}
                     }
                 }
             }
@@ -159,12 +159,12 @@ class TaskEditFragment : Fragment() {
 
     private fun setupPriorityPicker(textView: AppCompatTextView, clickableArea: View) {
         lifecycle.coroutineScope.launch {
-            priority.collect {
-                textView.text = it.toTextFormat()
+            priority.collectLatest {
+                textView.text = it.toTextFormat(textView.context)
             }
         }
         clickableArea.setOnClickListener {
-            PriorityPickerDialogFragment().show(parentFragmentManager, "PRIORITY-DIALOG")
+            PriorityDialogFragment(priority.value, this).show(parentFragmentManager, "PRIORITY-DIALOG")
         }
     }
 
@@ -208,9 +208,13 @@ class TaskEditFragment : Fragment() {
             createdAt.collectLatest {
                 textViewCreatedAt.text = it.toDateFormat()
             }
+        }
+        lifecycle.coroutineScope.launch {
             changedAt.collectLatest {
                 textViewChangedAt.text = it.toDateFormat()
             }
         }
     }
+
+    override fun onSubmit(priority: Priority) = model.setTaskPriority(priority)
 }

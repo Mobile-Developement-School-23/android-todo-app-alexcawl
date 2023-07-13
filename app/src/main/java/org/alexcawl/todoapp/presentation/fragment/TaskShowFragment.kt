@@ -18,10 +18,9 @@ import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.databinding.FragmentTaskShowBinding
 import org.alexcawl.todoapp.domain.model.Priority
-import org.alexcawl.todoapp.domain.model.TaskModel
 import org.alexcawl.todoapp.presentation.activity.MainActivity
-import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.model.MainViewModel
+import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.model.ViewModelFactory
 import org.alexcawl.todoapp.presentation.util.*
 import java.util.*
@@ -35,7 +34,7 @@ class TaskShowFragment : Fragment() {
     @Inject
     lateinit var modelFactory: ViewModelFactory
     private val model: TaskViewModel by lazy {
-        ViewModelProvider(requireActivity(), modelFactory)[TaskViewModel::class.java]
+        ViewModelProvider(this, modelFactory)[TaskViewModel::class.java]
     }
     private var _binding: FragmentTaskShowBinding? = null
     private val binding: FragmentTaskShowBinding get() = _binding!!
@@ -82,17 +81,17 @@ class TaskShowFragment : Fragment() {
         lifecycleScope.launch {
             model.loadTask(uuid).collect { uiState ->
                 when (uiState) {
-                    is UiState.Start -> {}
                     is UiState.Error -> navController.navigateUp().also {
                         binding.root.snackbar(uiState.cause)
                     }
-                    is UiState.Success -> with(binding) {
+                    is UiState.OK -> with(binding) {
                         setupCloseButton(closeButton, navController)
                         setupTaskText(taskText)
                         setupTaskPriority(taskPriority)
                         setupTaskDeadline(taskDeadline)
                         setupTaskDates(taskCreatedAt, taskChangedAt)
                     }
+                    else -> {}
                 }
             }
         }
@@ -115,7 +114,7 @@ class TaskShowFragment : Fragment() {
     private fun setupTaskPriority(textView: AppCompatTextView) {
         lifecycle.coroutineScope.launch {
             priority.collect {
-                textView.text = it.toTextFormat()
+                textView.text = it.toTextFormat(textView.context)
             }
         }
     }
@@ -138,6 +137,8 @@ class TaskShowFragment : Fragment() {
             createdAt.collectLatest {
                 textViewCreatedAt.text = it.toDateFormat()
             }
+        }
+        lifecycle.coroutineScope.launch {
             changedAt.collectLatest {
                 textViewChangedAt.text = it.toDateFormat()
             }

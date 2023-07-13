@@ -12,13 +12,6 @@
     <string name="delete">Delete</string>
     <string name="save">Save</string>
     <string name="not_defined">Not defined</string>
-
-    <string-array name="priority_type">
-        <item>Basic</item>
-        <item>Low</item>
-        <item>Important</item>
-    </string-array>
-
     <string name="sort_tasks">Sort tasks</string>
     <string name="hide_done_tasks">Hide done tasks</string>
     <string name="login">Login</string>
@@ -36,4 +29,6 @@
     <string name="basic">Basic</string>
     <string name="high">High</string>
     <string name="select">Select</string>
+    <string name="submit">Submit</string>
+    <string name="postpone">Postpone for day</string>
 </resources>

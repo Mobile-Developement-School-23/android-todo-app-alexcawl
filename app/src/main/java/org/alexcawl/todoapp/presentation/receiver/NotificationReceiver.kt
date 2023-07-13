@@ -47,12 +47,13 @@ class NotificationReceiver : BroadcastReceiver() {
                 when (val task = repository.getTaskAsModel(id)) {
                     null -> {}
                     else -> {
-                        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                        val manager =
+                            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                         manager.createNotificationChannel(buildChannel())
                         val notification = buildNotification(
                             context,
                             R.drawable.icon_check,
-                            "Priority ${task.priority.toTextFormat()}",
+                            task.priority.toTextFormat(context),
                             "${task.text.padEnd(20, ' ').substring(0, 20).trim()}...",
                             buildNavigationIntent(context, id),
                             buildPostponeIntent(context, id)
@@ -69,26 +70,20 @@ class NotificationReceiver : BroadcastReceiver() {
 
     @Throws(IllegalArgumentException::class)
     private fun getID(arguments: Bundle?): UUID {
-        val uuid = arguments?.getString(ID)
-            ?: throw IllegalArgumentException("Null UUID!")
-        return UUID.fromString(uuid)
-            ?: throw IllegalArgumentException("Non-valid UUID: $uuid")
+        val uuid = arguments?.getString(ID) ?: throw IllegalArgumentException("Null UUID!")
+        return UUID.fromString(uuid) ?: throw IllegalArgumentException("Non-valid UUID: $uuid")
     }
 
     private fun buildNavigationIntent(context: Context, id: UUID): PendingIntent =
-        NavDeepLinkBuilder(context)
-            .setGraph(R.navigation.navigation_graph)
-            .setDestination(R.id.taskShowFragment)
-            .setArguments(bundleOf("UUID" to id.toString()))
+        NavDeepLinkBuilder(context).setGraph(R.navigation.navigation_graph)
+            .setDestination(R.id.taskShowFragment).setArguments(bundleOf("UUID" to id.toString()))
             .createPendingIntent()
 
     private fun buildPostponeIntent(context: Context, id: UUID): PendingIntent {
         return PendingIntent.getBroadcast(
-            context, id.convertToInt(),
-            Intent(context, PostponeReceiver::class.java).apply {
+            context, id.convertToInt(), Intent(context, PostponeReceiver::class.java).apply {
                 putExtra(ID, id.toString())
-            },
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            }, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
 
@@ -99,21 +94,18 @@ class NotificationReceiver : BroadcastReceiver() {
         text: String,
         contentIntent: PendingIntent,
         deferringIntent: PendingIntent
-    ): Notification = Notification.Builder(context, CHANNEL_ID)
-        .setSmallIcon(icon)
-        .setContentTitle(title)
-        .setContentText(text)
-        .setContentIntent(contentIntent)
-        .setAutoCancel(true)
-        .addAction(
-            Notification.Action.Builder(R.drawable.icon_clear, "Postpone", deferringIntent).build()
-        )
-        .build()
+    ): Notification =
+        Notification.Builder(context, CHANNEL_ID).setSmallIcon(icon).setContentTitle(title)
+            .setContentText(text).setContentIntent(contentIntent).setAutoCancel(true).addAction(
+                Notification.Action.Builder(
+                    R.drawable.icon_clear,
+                    context.getString(R.string.postpone),
+                    deferringIntent
+                ).build()
+            ).build()
 
     private fun buildChannel() = NotificationChannel(
-        CHANNEL_ID,
-        CHANNEL_NAME,
-        NotificationManager.IMPORTANCE_DEFAULT
+        CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT
     )
 }
 

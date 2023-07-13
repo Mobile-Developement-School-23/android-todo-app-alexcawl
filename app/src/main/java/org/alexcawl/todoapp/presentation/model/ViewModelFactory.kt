@@ -41,7 +41,9 @@ class ViewModelFactory @Inject constructor(
             TaskViewModel::class.java -> TaskViewModel(
                 getSingleCase = getSingleCase,
                 updateCase = updateCase,
-                deleteCase = deleteCase,
+                deleteCase = deleteCase
+            ) as T
+            NewTaskViewModel::class.java -> NewTaskViewModel(
                 addCase = addCase
             ) as T
             SettingsViewModel::class.java -> SettingsViewModel(

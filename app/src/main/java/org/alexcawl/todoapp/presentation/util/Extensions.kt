@@ -59,8 +59,11 @@ fun Long.toDateFormat(): String = run {
     localDateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy, kk:mm"))
 }
 
-fun Priority.toTextFormat(): String =
-    this.toString().lowercase().replaceFirstChar { it.uppercase() }
+fun Priority.toTextFormat(context: Context): String = when(this) {
+    Priority.LOW -> context.getString(R.string.low)
+    Priority.BASIC -> context.getString(R.string.basic)
+    Priority.IMPORTANT -> context.getString(R.string.high)
+}
 
 fun createDateString(day: Int, month: Int, year: Int, hour: Int, minute: Int): String =
     String.format("%02d.%02d.%04d, %02d:%02d", day, month + 1, year, hour, minute)
