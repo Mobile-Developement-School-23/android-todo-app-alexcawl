@@ -86,7 +86,7 @@ class TaskEditFragment : Fragment(), PriorityDialogFragment.Listener {
             model.loadTask(id).collect { uiState ->
                 when (uiState) {
                     is UiState.Error -> navController.navigateUp().also {
-                        binding.root.snackbar(uiState.cause)
+                        binding.root.snackBar(uiState.cause)
                     }
                     is UiState.OK -> with(binding) {
                         setupCloseButton(closeButton, navController)
@@ -119,7 +119,7 @@ class TaskEditFragment : Fragment(), PriorityDialogFragment.Listener {
                     when (uiState) {
                         is UiState.OK -> navController.navigateUp()
                         is UiState.Error -> navController.navigateUp().also {
-                            button.snackbar(uiState.cause)
+                            button.snackBar(uiState.cause)
                         }
                         else -> {}
                     }
@@ -137,7 +137,7 @@ class TaskEditFragment : Fragment(), PriorityDialogFragment.Listener {
                     when (uiState) {
                         is UiState.OK -> navController.navigateUp()
                         is UiState.Error -> navController.navigateUp().also {
-                            button.snackbar(uiState.cause)
+                            button.snackBar(uiState.cause)
                         }
                         else -> {}
                     }

@@ -24,20 +24,21 @@
         <item name="colorOutlineVariant">@color/dt_support_separator</item>
 
         <!-- Decoration colors -->
-        <!-- System UI bar background -->
-        <item name="colorPrimaryDark">@color/dt_back_primary</item>
+            <!-- System UI bar background -->
+            <item name="colorPrimaryDark">@color/dt_back_primary</item>
 
-        <!-- FABs & Switches main color -->
-        <item name="colorAccent">@color/blue</item>
+            <!-- FABs & Switches main color -->
+            <item name="colorAccent">@color/blue</item>
 
-        <!-- Elevation custom attribute color -->
-        <item name="colorElevated">@color/dt_back_elevated</item>
+            <!-- Elevation custom attribute color -->
+            <item name="colorElevated">@color/dt_back_elevated</item>
 
-        <!-- Overlay custom attribute color -->
-        <item name="colorOverlay">@color/dt_support_overlay</item>
+            <!-- Overlay custom attribute color -->
+            <item name="colorOverlay">@color/dt_support_overlay</item>
 
         <!-- Theme settings -->
         <item name="android:windowLightStatusBar">false</item>
+        <item name="bottomSheetDialogTheme">@style/YandexToDoApplicationTheme.BottomSheetDialog</item>
     </style>
 
     <attr name="green" format="reference|color" />

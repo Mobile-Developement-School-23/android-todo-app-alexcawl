@@ -4,7 +4,6 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.text.format.DateFormat
-import android.util.Log
 import android.view.View
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -29,11 +28,34 @@ fun View.gone() {
     isGone = true
 }
 
-fun View.snackbar(
+fun View.snackBar(
     message: String, duration: Int = Snackbar.LENGTH_LONG
 ) {
-    Log.d("SNACKBAR", message)
     Snackbar.make(this, message, duration).show()
+}
+
+fun View.snackBar(
+    message: String,
+    duration: Int = Snackbar.LENGTH_INDEFINITE,
+    actionMessage: String,
+    actionColor: Int,
+    onActionClick: (View) -> Unit
+) {
+    Snackbar.make(this, message, duration)
+        .setAction(actionMessage, onActionClick)
+        .setActionTextColor(actionColor)
+        .show()
+}
+
+fun String.toSnackBarUndoText(context: Context): String {
+    return "${context.getString(R.string.task)}: ${this.collapse()} -> ${context.getString(R.string.deleted)}"
+}
+
+fun String.collapse(): String {
+    return when (this.length > 20) {
+        true -> "${this.substring(0, 20).replace("\n", " ")}..."
+        false -> this
+    }
 }
 
 fun Context.pickDateAndTime(onTimeSet: (Calendar) -> Unit) {

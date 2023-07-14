@@ -17,7 +17,7 @@
 
     <style name="DatePickerDialogTheme" parent="ThemeOverlay.AppCompat.Dialog.Alert">
         <item name="colorAccent">?attr/blue</item>
-        <item name="android:textColorPrimary">?attr/colorOnPrimary</item>
+        <item name="android:textColorPrimary">@android:color/black</item>
         <item name="android:datePickerStyle">@style/DatePickerStyle</item>
         <item name="android:buttonBarPositiveButtonStyle">@style/DialogPositiveButtonStyle</item>
         <item name="android:buttonBarNegativeButtonStyle">@style/DialogNegativeButtonStyle</item>
@@ -28,11 +28,11 @@
     </style>
 
     <style name="DialogPositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textColor">?attr/blue</item>
     </style>
 
     <style name="DialogNegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textColor">?attr/blue</item>
     </style>
 
     <style name="YandexToDoApplicationTheme.ToggleButtonStyle" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
@@ -40,5 +40,21 @@
         <item name="backgroundTint">@color/selector_button_tint_color</item>
         <item name="android:textColor">@color/selector_button_content_color</item>
         <item name="iconTint">@color/selector_button_content_color</item>
+    </style>
+
+    <style name="YandexToDoApplicationTheme.BottomSheetDialog" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheet</item>
+    </style>
+
+    <style name="BottomSheet" parent="Widget.MaterialComponents.BottomSheet">
+        <item name="shapeAppearanceOverlay">@style/CustomShapeAppearanceBottomSheetDialog</item>
+    </style>
+
+    <style name="CustomShapeAppearanceBottomSheetDialog" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">16dp</item>
+        <item name="cornerSizeTopLeft">16dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
     </style>
 </resources>

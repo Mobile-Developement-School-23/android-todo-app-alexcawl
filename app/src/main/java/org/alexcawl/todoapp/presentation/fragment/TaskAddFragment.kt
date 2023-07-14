@@ -77,7 +77,7 @@ class TaskAddFragment : Fragment(), PriorityDialogFragment.Listener {
                     when (uiState) {
                         is UiState.OK -> navController.navigateUp()
                         is UiState.Error -> {
-                            button.snackbar(uiState.cause)
+                            button.snackBar(uiState.cause)
                             navController.navigateUp()
                         }
                         else -> {}

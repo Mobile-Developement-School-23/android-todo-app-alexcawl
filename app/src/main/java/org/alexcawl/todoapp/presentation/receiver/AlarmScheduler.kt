@@ -19,20 +19,23 @@ class AlarmScheduler @Inject constructor(
     }
 
     override fun scheduleNotification(task: TaskModel) {
-        when (val deadline = task.deadline) {
-            null -> {}
-            else -> {
-                val intent = Intent(context, NotificationReceiver::class.java).apply {
-                    putExtra(ID, task.id.toString())
+        when (task.isDone) {
+            true -> cancelNotification(task)
+            false -> when (val deadline = task.deadline) {
+                null -> {}
+                else -> {
+                    val intent = Intent(context, NotificationReceiver::class.java).apply {
+                        putExtra(ID, task.id.toString())
+                    }
+                    val pendingID = task.id.convertToInt()
+                    val pending = PendingIntent.getBroadcast(
+                        context,
+                        pendingID,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    )
+                    manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, deadline, pending)
                 }
-                val pendingID = task.id.convertToInt()
-                val pending = PendingIntent.getBroadcast(
-                    context,
-                    pendingID,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
-                manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, deadline, pending)
             }
         }
     }

@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -35,7 +34,8 @@ import org.alexcawl.todoapp.presentation.model.TaskViewModel
 import org.alexcawl.todoapp.presentation.model.ViewModelFactory
 import org.alexcawl.todoapp.presentation.util.UiState
 import org.alexcawl.todoapp.presentation.util.invisible
-import org.alexcawl.todoapp.presentation.util.snackbar
+import org.alexcawl.todoapp.presentation.util.snackBar
+import org.alexcawl.todoapp.presentation.util.toSnackBarUndoText
 import javax.inject.Inject
 
 /**
@@ -86,7 +86,7 @@ class TaskListFragment : Fragment() {
         lifecycle.coroutineScope.launch(Dispatchers.IO) {
             model.synchronize().collect {
                 when (it) {
-                    is UiState.Error -> view.snackbar(it.cause)
+                    is UiState.Error -> view.snackBar(it.cause)
                     else -> {}
                 }
             }
@@ -132,9 +132,9 @@ class TaskListFragment : Fragment() {
                 lifecycle.coroutineScope.launch(Dispatchers.IO) {
                     model.synchronize().collect {
                         when (it) {
-                            is UiState.Success -> view.snackbar("Synchronized!")
-                            is UiState.Error -> view.snackbar(it.cause)
-                            else -> view.snackbar("Loading...")
+                            is UiState.Success -> view.snackBar("Synchronized!")
+                            is UiState.Error -> view.snackBar(it.cause)
+                            else -> view.snackBar("Loading...")
                         }
                     }
                 }
@@ -172,7 +172,7 @@ class TaskListFragment : Fragment() {
                         model.allTasks.collectLatest { uiState ->
                             when (uiState) {
                                 is UiState.Success -> viewAdapter.submitList(uiState.data)
-                                is UiState.Error -> view.snackbar(uiState.cause)
+                                is UiState.Error -> view.snackBar(uiState.cause)
                                 else -> viewAdapter.submitList(listOf())
                             }
                         }
@@ -181,7 +181,7 @@ class TaskListFragment : Fragment() {
                         model.undoneTasks.collectLatest { uiState ->
                             when (uiState) {
                                 is UiState.Success -> viewAdapter.submitList(uiState.data)
-                                is UiState.Error -> view.snackbar(uiState.cause)
+                                is UiState.Error -> view.snackBar(uiState.cause)
                                 else -> viewAdapter.submitList(listOf())
                             }
                         }
@@ -220,28 +220,33 @@ class TaskListFragment : Fragment() {
         lifecycle.coroutineScope.launch(Dispatchers.IO) {
             model.deleteTask(task).collect { uiState ->
                 when (uiState) {
-                    is UiState.Error -> view.snackbar(uiState.cause)
+                    is UiState.Error -> view.snackBar(uiState.cause)
                     else -> {}
                 }
             }
         }
-        Snackbar.make(view, task.text, 5000).setAction("Undo") {
-                lifecycle.coroutineScope.launch(Dispatchers.IO) {
-                    model.updateTask(task).collect { uiState ->
-                        when (uiState) {
-                            is UiState.Error -> view.snackbar(uiState.cause)
-                            else -> {}
-                        }
+        view.snackBar(
+            task.text.toSnackBarUndoText(view.context),
+            5000,
+            view.context.getString(R.string.undo),
+            view.context.getColor(R.color.blue)
+        ) {
+            lifecycle.coroutineScope.launch(Dispatchers.IO) {
+                model.updateTask(task).collect { uiState ->
+                    when (uiState) {
+                        is UiState.Error -> view.snackBar(uiState.cause)
+                        else -> {}
                     }
                 }
-            }.setActionTextColor(view.context.getColor(R.color.blue)).show()
+            }
+        }
     }
 
     private fun onTaskSwipeRight(view: View, task: TaskModel) {
         lifecycle.coroutineScope.launch(Dispatchers.IO) {
             model.updateTask(task).collect { uiState ->
                 when (uiState) {
-                    is UiState.Error -> view.snackbar(uiState.cause)
+                    is UiState.Error -> view.snackBar(uiState.cause)
                     else -> {}
                 }
             }

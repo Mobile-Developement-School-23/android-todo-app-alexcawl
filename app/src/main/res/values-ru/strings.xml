@@ -32,4 +32,7 @@
     <string name="select">Выберите</string>
     <string name="submit">Подтвердить</string>
     <string name="postpone">Отложить на день</string>
+    <string name="task">Задача</string>
+    <string name="undo">Отменить</string>
+    <string name="deleted">удалена</string>
 </resources>

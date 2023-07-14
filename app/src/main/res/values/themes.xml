@@ -38,6 +38,7 @@
 
         <!-- Theme settings -->
         <item name="android:windowLightStatusBar">true</item>
+        <item name="bottomSheetDialogTheme">@style/YandexToDoApplicationTheme.BottomSheetDialog</item>
     </style>
 
     <attr name="green" format="color" />

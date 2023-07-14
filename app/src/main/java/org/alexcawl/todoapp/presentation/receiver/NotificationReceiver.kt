@@ -17,6 +17,7 @@ import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.data.repository.TaskLocalRepository
 import org.alexcawl.todoapp.domain.repository.IAlarmScheduler
 import org.alexcawl.todoapp.presentation.util.applicationComponent
+import org.alexcawl.todoapp.presentation.util.collapse
 import org.alexcawl.todoapp.presentation.util.convertToInt
 import org.alexcawl.todoapp.presentation.util.toTextFormat
 import java.util.*
@@ -54,7 +55,7 @@ class NotificationReceiver : BroadcastReceiver() {
                             context,
                             R.drawable.icon_check,
                             task.priority.toTextFormat(context),
-                            "${task.text.padEnd(20, ' ').substring(0, 20).trim()}...",
+                            task.text.collapse(),
                             buildNavigationIntent(context, id),
                             buildPostponeIntent(context, id)
                         )

@@ -31,4 +31,7 @@
     <string name="select">Select</string>
     <string name="submit">Submit</string>
     <string name="postpone">Postpone for day</string>
+    <string name="task">Task</string>
+    <string name="undo">Undo</string>
+    <string name="deleted">deleted</string>
 </resources>

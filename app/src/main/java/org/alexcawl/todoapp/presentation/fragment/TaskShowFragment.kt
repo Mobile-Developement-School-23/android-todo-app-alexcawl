@@ -59,7 +59,7 @@ class TaskShowFragment : Fragment() {
             val id: UUID = getID(arguments)
             setupLifecycleData(id, navController)
         } catch (exception: IllegalArgumentException) {
-            view.snackbar("Task ID does not exists!")
+            view.snackBar("Task ID does not exists!")
             navController.navigateUp()
         }
     }
@@ -82,7 +82,7 @@ class TaskShowFragment : Fragment() {
             model.loadTask(uuid).collect { uiState ->
                 when (uiState) {
                     is UiState.Error -> navController.navigateUp().also {
-                        binding.root.snackbar(uiState.cause)
+                        binding.root.snackBar(uiState.cause)
                     }
                     is UiState.OK -> with(binding) {
                         setupCloseButton(closeButton, navController)
