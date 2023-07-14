@@ -12,28 +12,27 @@ import org.alexcawl.todoapp.presentation.util.ThemeState
 class SettingsViewModel(
     private val settingsUseCase: ISettingsOperateUseCase
 ): ViewModel() {
-    private val _networkEnabled: MutableStateFlow<Boolean> = MutableStateFlow(
-        settingsUseCase.getServerEnabled()
-    )
+    private val _networkEnabled: MutableStateFlow<Boolean> = MutableStateFlow(settingsUseCase.getServerEnabled())
     val networkEnabled: StateFlow<Boolean> = _networkEnabled.asStateFlow()
 
-    private val _username: MutableStateFlow<String> = MutableStateFlow(
-        settingsUseCase.getUsername()
-    )
+    private val _username: MutableStateFlow<String> = MutableStateFlow(settingsUseCase.getUsername())
     val username: StateFlow<String> = _username.asStateFlow()
 
-    private val _token: MutableStateFlow<String> = MutableStateFlow(
-        settingsUseCase.getToken()
-    )
+    private val _token: MutableStateFlow<String> = MutableStateFlow(settingsUseCase.getToken())
     val token: StateFlow<String> = _token.asStateFlow()
+
+    private val _notificationEnabled: MutableStateFlow<Boolean> = MutableStateFlow(settingsUseCase.getNotificationEnabled())
+    val notificationEnabled: StateFlow<Boolean> = _notificationEnabled.asStateFlow()
 
     fun saveSettings() {
         val settingServer: Boolean = networkEnabled.value
         val settingUsername: String = username.value
         val settingToken: String = token.value
+        val settingsNotification = notificationEnabled.value
         settingsUseCase.setServerEnabled(settingServer)
         settingsUseCase.setUsername(settingUsername)
         settingsUseCase.setToken(settingToken)
+        settingsUseCase.setNotificationEnabled(settingsNotification)
     }
 
     fun setServerEnabled(mode: Boolean) {
@@ -51,6 +50,12 @@ class SettingsViewModel(
     fun setToken(token: String) {
         viewModelScope.launch {
             _token.emit(token)
+        }
+    }
+
+    fun setNotificationEnabled(mode: Boolean) {
+        viewModelScope.launch {
+            _notificationEnabled.emit(mode)
         }
     }
 

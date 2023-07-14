@@ -18,4 +18,8 @@ interface ISettingsOperateUseCase {
     fun getTheme(): ThemeState
 
     fun setTheme(theme: ThemeState)
+
+    fun getNotificationEnabled(): Boolean
+
+    fun setNotificationEnabled(mode: Boolean)
 }

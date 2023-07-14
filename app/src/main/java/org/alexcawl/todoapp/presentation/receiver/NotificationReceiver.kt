@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
 import org.alexcawl.todoapp.data.repository.TaskLocalRepository
 import org.alexcawl.todoapp.domain.repository.IAlarmScheduler
+import org.alexcawl.todoapp.domain.repository.ISettingsRepository
 import org.alexcawl.todoapp.presentation.util.applicationComponent
 import org.alexcawl.todoapp.presentation.util.collapse
 import org.alexcawl.todoapp.presentation.util.convertToInt
@@ -31,7 +32,10 @@ class NotificationReceiver : BroadcastReceiver() {
     lateinit var scheduler: IAlarmScheduler
 
     @Inject
-    lateinit var repository: TaskLocalRepository
+    lateinit var taskRepository: TaskLocalRepository
+
+    @Inject
+    lateinit var settings: ISettingsRepository
 
     private companion object {
         const val CHANNEL_ID = "TODO-NOTIFY"
@@ -40,32 +44,33 @@ class NotificationReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        println(System.currentTimeMillis())
         context.applicationComponent.inject(this)
-        try {
-            coroutineScope.launch {
-                val id: UUID = getID(intent.extras)
-                when (val task = repository.getTaskAsModel(id)) {
-                    null -> {}
-                    else -> {
-                        val manager =
-                            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                        manager.createNotificationChannel(buildChannel())
-                        val notification = buildNotification(
-                            context,
-                            R.drawable.icon_check,
-                            task.priority.toTextFormat(context),
-                            task.text.collapse(),
-                            buildNavigationIntent(context, id),
-                            buildPostponeIntent(context, id)
-                        )
-                        scheduler.cancelNotification(task)
-                        manager.notify(id.convertToInt(), notification)
+        if (settings.getNotificationEnabled()) {
+            try {
+                coroutineScope.launch {
+                    val id: UUID = getID(intent.extras)
+                    when (val task = taskRepository.getTaskAsModel(id)) {
+                        null -> {}
+                        else -> {
+                            val manager =
+                                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                            manager.createNotificationChannel(buildChannel())
+                            val notification = buildNotification(
+                                context,
+                                R.drawable.icon_check,
+                                task.priority.toTextFormat(context),
+                                task.text.collapse(),
+                                buildNavigationIntent(context, id),
+                                buildPostponeIntent(context, id)
+                            )
+                            scheduler.cancelNotification(task)
+                            manager.notify(id.convertToInt(), notification)
+                        }
                     }
                 }
+            } catch (exception: Exception) {
+                Log.d(this::class.java.toString(), exception.stackTraceToString())
             }
-        } catch (exception: Exception) {
-            Log.d(this::class.java.toString(), exception.stackTraceToString())
         }
     }
 

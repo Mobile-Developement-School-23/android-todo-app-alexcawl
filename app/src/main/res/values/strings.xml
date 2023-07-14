@@ -34,4 +34,6 @@
     <string name="task">Task</string>
     <string name="undo">Undo</string>
     <string name="deleted">deleted</string>
+    <string name="notification_options">Notification options</string>
+    <string name="notification_enabled">Notification enabled</string>
 </resources>

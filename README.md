@@ -12,6 +12,7 @@
     - Ripple effect
     - Navigation Animations
     - Collapsing toolbar
+    - UNDO snackbar action after swipe-to-delete
 - Dagger DI
 - Room Database
 - Retrofit

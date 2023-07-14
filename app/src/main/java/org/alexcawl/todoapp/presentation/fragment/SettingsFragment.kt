@@ -51,6 +51,7 @@ class SettingsFragment : Fragment() {
             setupUsernameField(loginText)
             setupTokenField(tokenText)
             setupThemeButtons(buttonToggleGroup)
+            setupNotificationSwitch(notificationSwitch)
         }
     }
 
@@ -102,6 +103,17 @@ class SettingsFragment : Fragment() {
         }
         text.addTextChangedListener {
             model.setToken((it ?: "").toString())
+        }
+    }
+
+    private fun setupNotificationSwitch(switch: SwitchCompat) {
+        lifecycle.coroutineScope.launch {
+            model.notificationEnabled.collect {
+                switch.isChecked = it
+            }
+        }
+        switch.setOnCheckedChangeListener { _, isChecked ->
+            model.setNotificationEnabled(isChecked)
         }
     }
 

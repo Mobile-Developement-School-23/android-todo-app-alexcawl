@@ -118,9 +118,7 @@ class TaskEditFragment : Fragment(), PriorityDialogFragment.Listener {
                 model.update().collect { uiState ->
                     when (uiState) {
                         is UiState.OK -> navController.navigateUp()
-                        is UiState.Error -> navController.navigateUp().also {
-                            button.snackBar(uiState.cause)
-                        }
+                        is UiState.Error -> button.snackBar(uiState.cause)
                         else -> {}
                     }
                 }

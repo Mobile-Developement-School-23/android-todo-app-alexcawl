@@ -76,10 +76,7 @@ class TaskAddFragment : Fragment(), PriorityDialogFragment.Listener {
                 model.addTask().collect { uiState ->
                     when (uiState) {
                         is UiState.OK -> navController.navigateUp()
-                        is UiState.Error -> {
-                            button.snackBar(uiState.cause)
-                            navController.navigateUp()
-                        }
+                        is UiState.Error -> button.snackBar(uiState.cause)
                         else -> {}
                     }
                 }

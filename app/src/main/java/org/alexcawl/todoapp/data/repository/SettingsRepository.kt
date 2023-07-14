@@ -31,6 +31,9 @@ class SettingsRepository @Inject constructor(
 
         const val THEME: String = "THEME"
         const val THEME_DEFAULT: String = "DEFAULT"
+
+        const val NOTIFICATION_ENABLED: String = "NOTIFICATION_ENABLED"
+        const val NOTIFICATION_ENABLED_DEFAULT: Boolean = false
     }
 
     private val source: SharedPreferences = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
@@ -69,5 +72,11 @@ class SettingsRepository @Inject constructor(
 
     override fun setTheme(theme: ThemeState) {
         source.edit().putString(THEME, theme.toString()).apply()
+    }
+
+    override fun getNotificationEnabled(): Boolean = source.getBoolean(NOTIFICATION_ENABLED, NOTIFICATION_ENABLED_DEFAULT)
+
+    override fun setNotificationEnabled(mode: Boolean) {
+        source.edit().putBoolean(NOTIFICATION_ENABLED, mode).apply()
     }
 }

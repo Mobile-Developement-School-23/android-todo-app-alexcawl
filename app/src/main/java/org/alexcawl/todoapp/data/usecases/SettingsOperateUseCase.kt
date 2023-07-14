@@ -23,4 +23,8 @@ class SettingsOperateUseCase @Inject constructor(
     override fun getTheme(): ThemeState = repository.getTheme()
 
     override fun setTheme(theme: ThemeState) = repository.setTheme(theme)
+
+    override fun getNotificationEnabled(): Boolean = repository.getNotificationEnabled()
+
+    override fun setNotificationEnabled(mode: Boolean) = repository.setNotificationEnabled(mode)
 }
