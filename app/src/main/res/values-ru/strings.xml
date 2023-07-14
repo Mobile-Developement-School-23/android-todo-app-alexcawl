@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="my_tasks">Мои задачи</string>
+    <string name="add_task">Добавить</string>
+    <string name="edit_task">Изменить</string>
+    <string name="enter_text">Введите текст…</string>
+    <string name="status">Статус</string>
+    <string name="deadline">Сделать до</string>
+    <string name="created">Создано</string>
+    <string name="modified">Изменено</string>
+    <string name="task_is_done">Дело сделано</string>
+    <string name="priority">Важность</string>
+    <string name="delete">Удалить</string>
+    <string name="save">Сохранить</string>
+    <string name="not_defined">Не определено</string>
+    <string name="sort_tasks">Сортировать</string>
+    <string name="hide_done_tasks">Скрыть</string>
+    <string name="login">Логин</string>
+    <string name="done">Сделано - %d</string>
+    <string name="username">Логин</string>
+    <string name="token">Пароль</string>
+    <string name="theme">Тема</string>
+    <string name="server">Синхронизация с сервером</string>
+    <string name="default_mode">Система</string>
+    <string name="theme_options">Настройки внешнего вида</string>
+    <string name="network_options">Настройки сети</string>
+    <string name="time">Время</string>
+    <string name="date">Дата</string>
+    <string name="low">Низкая</string>
+    <string name="basic">Обычная</string>
+    <string name="high">Высокая</string>
+    <string name="select">Выберите</string>
+    <string name="submit">Подтвердить</string>
+    <string name="postpone">Отложить на день</string>
+</resources>
