@@ -1,5 +1,6 @@
 package org.alexcawl.todoapp.presentation.fragment
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,11 +20,13 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.alexcawl.todoapp.R
@@ -99,6 +102,22 @@ class TaskShowFragment : Fragment() {
     private fun getID(arguments: Bundle?): UUID {
         val uuid = arguments?.getString("UUID") ?: throw IllegalArgumentException("Null UUID!")
         return UUID.fromString(uuid) ?: throw IllegalArgumentException("Non-valid UUID: $uuid")
+    }
+
+    @Preview(name = "Light Theme", uiMode = Configuration.UI_MODE_NIGHT_NO)
+    @Preview(name = "Dark Theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
+    @Composable
+    fun ScreenPreview() {
+        ToDoApplicationTheme {
+            Screen(
+                onCloseAction = {  },
+                textFlow = MutableStateFlow("Task text"),
+                priorityFlow = MutableStateFlow(Priority.BASIC),
+                deadlineFlow = MutableStateFlow(System.currentTimeMillis()),
+                createdAtFlow = MutableStateFlow(System.currentTimeMillis()),
+                changedAtFlow = MutableStateFlow(System.currentTimeMillis())
+            )
+        }
     }
 
     @Composable
