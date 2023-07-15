@@ -7,9 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.*
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.coroutineScope
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.*
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -148,7 +146,9 @@ class TaskEditFragment : Fragment(), PriorityDialogFragment.Listener {
         editText: AppCompatEditText
     ) {
         lifecycle.coroutineScope.launch {
-            editText.setText(text.value)
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                editText.setText(text.value)
+            }
         }
         editText.addTextChangedListener {
             model.setTaskText(it.toString())
@@ -157,8 +157,10 @@ class TaskEditFragment : Fragment(), PriorityDialogFragment.Listener {
 
     private fun setupPriorityPicker(textView: AppCompatTextView, clickableArea: View) {
         lifecycle.coroutineScope.launch {
-            priority.collectLatest {
-                textView.text = it.toTextFormat(textView.context)
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                priority.collectLatest {
+                    textView.text = it.toTextFormat(textView.context)
+                }
             }
         }
         clickableArea.setOnClickListener {
@@ -191,9 +193,12 @@ class TaskEditFragment : Fragment(), PriorityDialogFragment.Listener {
             }
         }
         lifecycle.coroutineScope.launch {
-            deadline.collectLatest {
-                clickableArea.isClickable = it != null
-                textView.text = it?.toDateFormat() ?: textView.context.getText(R.string.not_defined)
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                deadline.collectLatest {
+                    clickableArea.isClickable = it != null
+                    textView.text =
+                        it?.toDateFormat() ?: textView.context.getText(R.string.not_defined)
+                }
             }
         }
     }
@@ -203,13 +208,17 @@ class TaskEditFragment : Fragment(), PriorityDialogFragment.Listener {
         textViewChangedAt: AppCompatTextView,
     ) {
         lifecycle.coroutineScope.launch {
-            createdAt.collectLatest {
-                textViewCreatedAt.text = it.toDateFormat()
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                createdAt.collectLatest {
+                    textViewCreatedAt.text = it.toDateFormat()
+                }
             }
         }
         lifecycle.coroutineScope.launch {
-            changedAt.collectLatest {
-                textViewChangedAt.text = it.toDateFormat()
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                changedAt.collectLatest {
+                    textViewChangedAt.text = it.toDateFormat()
+                }
             }
         }
     }

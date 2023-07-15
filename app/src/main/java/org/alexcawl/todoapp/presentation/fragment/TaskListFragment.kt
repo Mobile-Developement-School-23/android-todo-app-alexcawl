@@ -10,15 +10,16 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -83,7 +84,7 @@ class TaskListFragment : Fragment() {
     }
 
     private fun syncWhenCreated(view: View) {
-        lifecycle.coroutineScope.launch(Dispatchers.IO) {
+        lifecycle.coroutineScope.launch {
             model.synchronize().collect {
                 when (it) {
                     is UiState.Error -> view.snackBar(it.cause)
@@ -94,7 +95,7 @@ class TaskListFragment : Fragment() {
     }
 
     private fun setupDoneCounter(view: AppCompatTextView) {
-        lifecycle.coroutineScope.launch(Dispatchers.IO) {
+        lifecycle.coroutineScope.launch {
             model.allTasks.collectLatest { state ->
                 view.text = when (state) {
                     is UiState.Success -> resources.getString(
@@ -129,7 +130,7 @@ class TaskListFragment : Fragment() {
         val isEnabled = model.isServerEnabled()
         if (isEnabled) {
             view.setOnClickListener {
-                lifecycle.coroutineScope.launch(Dispatchers.IO) {
+                lifecycle.coroutineScope.launch {
                     model.synchronize().collect {
                         when (it) {
                             is UiState.Success -> view.snackBar("Synchronized!")
@@ -165,24 +166,26 @@ class TaskListFragment : Fragment() {
             onTaskSwipeRight = { onTaskSwipeRight(view, it) }
         )
 
-        lifecycle.coroutineScope.launch(Dispatchers.IO) {
-            visibility.collectLatest { visibilityState ->
-                when (visibilityState) {
-                    true -> {
-                        model.allTasks.collectLatest { uiState ->
-                            when (uiState) {
-                                is UiState.Success -> viewAdapter.submitList(uiState.data)
-                                is UiState.Error -> view.snackBar(uiState.cause)
-                                else -> viewAdapter.submitList(listOf())
+        lifecycle.coroutineScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                visibility.collectLatest { visibilityState ->
+                    when (visibilityState) {
+                        true -> {
+                            model.allTasks.collectLatest { uiState ->
+                                when (uiState) {
+                                    is UiState.Success -> viewAdapter.submitList(uiState.data)
+                                    is UiState.Error -> view.snackBar(uiState.cause)
+                                    else -> viewAdapter.submitList(listOf())
+                                }
                             }
                         }
-                    }
-                    false -> {
-                        model.undoneTasks.collectLatest { uiState ->
-                            when (uiState) {
-                                is UiState.Success -> viewAdapter.submitList(uiState.data)
-                                is UiState.Error -> view.snackBar(uiState.cause)
-                                else -> viewAdapter.submitList(listOf())
+                        false -> {
+                            model.undoneTasks.collectLatest { uiState ->
+                                when (uiState) {
+                                    is UiState.Success -> viewAdapter.submitList(uiState.data)
+                                    is UiState.Error -> view.snackBar(uiState.cause)
+                                    else -> viewAdapter.submitList(listOf())
+                                }
                             }
                         }
                     }
@@ -217,7 +220,7 @@ class TaskListFragment : Fragment() {
     }
 
     private fun onTaskSwipeLeft(view: View, task: TaskModel) {
-        lifecycle.coroutineScope.launch(Dispatchers.IO) {
+        lifecycle.coroutineScope.launch {
             model.deleteTask(task).collect { uiState ->
                 when (uiState) {
                     is UiState.Error -> view.snackBar(uiState.cause)
@@ -231,7 +234,7 @@ class TaskListFragment : Fragment() {
             view.context.getString(R.string.undo),
             view.context.getColor(R.color.blue)
         ) {
-            lifecycle.coroutineScope.launch(Dispatchers.IO) {
+            lifecycle.coroutineScope.launch {
                 model.updateTask(task).collect { uiState ->
                     when (uiState) {
                         is UiState.Error -> view.snackBar(uiState.cause)
@@ -243,7 +246,7 @@ class TaskListFragment : Fragment() {
     }
 
     private fun onTaskSwipeRight(view: View, task: TaskModel) {
-        lifecycle.coroutineScope.launch(Dispatchers.IO) {
+        lifecycle.coroutineScope.launch {
             model.updateTask(task).collect { uiState ->
                 when (uiState) {
                     is UiState.Error -> view.snackBar(uiState.cause)

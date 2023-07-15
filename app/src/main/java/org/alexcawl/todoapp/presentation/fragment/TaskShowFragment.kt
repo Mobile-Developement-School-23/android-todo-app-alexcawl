@@ -7,9 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.coroutineScope
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.*
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.flow.StateFlow
@@ -105,16 +103,20 @@ class TaskShowFragment : Fragment() {
 
     private fun setupTaskText(textView: AppCompatTextView) {
         lifecycle.coroutineScope.launch {
-            text.collect {
-                textView.text = it
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                text.collect {
+                    textView.text = it
+                }
             }
         }
     }
 
     private fun setupTaskPriority(textView: AppCompatTextView) {
         lifecycle.coroutineScope.launch {
-            priority.collect {
-                textView.text = it.toTextFormat(textView.context)
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                priority.collect {
+                    textView.text = it.toTextFormat(textView.context)
+                }
             }
         }
     }
@@ -123,8 +125,11 @@ class TaskShowFragment : Fragment() {
         textView: AppCompatTextView,
     ) {
         lifecycle.coroutineScope.launch {
-            deadline.collectLatest {
-                textView.text = it?.toDateFormat() ?: textView.context.getText(R.string.not_defined)
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                deadline.collectLatest {
+                    textView.text =
+                        it?.toDateFormat() ?: textView.context.getText(R.string.not_defined)
+                }
             }
         }
     }
@@ -134,13 +139,17 @@ class TaskShowFragment : Fragment() {
         textViewChangedAt: AppCompatTextView,
     ) {
         lifecycle.coroutineScope.launch {
-            createdAt.collectLatest {
-                textViewCreatedAt.text = it.toDateFormat()
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                createdAt.collectLatest {
+                    textViewCreatedAt.text = it.toDateFormat()
+                }
             }
         }
         lifecycle.coroutineScope.launch {
-            changedAt.collectLatest {
-                textViewChangedAt.text = it.toDateFormat()
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                changedAt.collectLatest {
+                    textViewChangedAt.text = it.toDateFormat()
+                }
             }
         }
     }

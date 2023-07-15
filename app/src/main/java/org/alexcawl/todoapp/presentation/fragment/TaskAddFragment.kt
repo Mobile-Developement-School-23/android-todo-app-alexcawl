@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.*
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.flow.StateFlow
@@ -92,8 +94,10 @@ class TaskAddFragment : Fragment(), PriorityDialogFragment.Listener {
 
     private fun setupPriorityPicker(textView: AppCompatTextView, clickableArea: View) {
         lifecycle.coroutineScope.launch {
-            priority.collect {
-                textView.text = it.toTextFormat(textView.context)
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                priority.collect {
+                    textView.text = it.toTextFormat(textView.context)
+                }
             }
         }
         clickableArea.setOnClickListener {

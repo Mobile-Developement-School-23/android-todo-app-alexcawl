@@ -11,8 +11,10 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButtonToggleGroup
@@ -75,8 +77,10 @@ class SettingsFragment : Fragment() {
 
     private fun setupServerSwitch(switch: SwitchCompat) {
         lifecycle.coroutineScope.launch {
-            model.networkEnabled.collect {
-                switch.isChecked = it
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                model.networkEnabled.collect {
+                    switch.isChecked = it
+                }
             }
         }
         switch.setOnCheckedChangeListener { _, isChecked ->
@@ -85,22 +89,14 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setupUsernameField(text: AppCompatEditText) {
-        lifecycle.coroutineScope.launch {
-            model.username.collect {
-                text.setText(it)
-            }
-        }
+        text.setText(model.username.value)
         text.addTextChangedListener {
             model.setUsername((it ?: "").toString())
         }
     }
 
     private fun setupTokenField(text: AppCompatEditText) {
-        lifecycle.coroutineScope.launch {
-            model.token.collect {
-                text.setText(it)
-            }
-        }
+        text.setText(model.token.value)
         text.addTextChangedListener {
             model.setToken((it ?: "").toString())
         }
@@ -108,8 +104,10 @@ class SettingsFragment : Fragment() {
 
     private fun setupNotificationSwitch(switch: SwitchCompat) {
         lifecycle.coroutineScope.launch {
-            model.notificationEnabled.collect {
-                switch.isChecked = it
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                model.notificationEnabled.collect {
+                    switch.isChecked = it
+                }
             }
         }
         switch.setOnCheckedChangeListener { _, isChecked ->
