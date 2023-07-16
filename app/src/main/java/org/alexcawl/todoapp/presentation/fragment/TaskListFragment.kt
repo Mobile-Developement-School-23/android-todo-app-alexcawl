@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -84,7 +85,7 @@ class TaskListFragment : Fragment() {
     }
 
     private fun syncWhenCreated(view: View) {
-        lifecycle.coroutineScope.launch {
+        lifecycle.coroutineScope.launch(Dispatchers.IO) {
             model.synchronize().collect {
                 when (it) {
                     is UiState.Error -> view.snackBar(it.cause)
@@ -130,7 +131,7 @@ class TaskListFragment : Fragment() {
         val isEnabled = model.isServerEnabled()
         if (isEnabled) {
             view.setOnClickListener {
-                lifecycle.coroutineScope.launch {
+                lifecycle.coroutineScope.launch(Dispatchers.IO) {
                     model.synchronize().collect {
                         when (it) {
                             is UiState.Success -> view.snackBar("Synchronized!")

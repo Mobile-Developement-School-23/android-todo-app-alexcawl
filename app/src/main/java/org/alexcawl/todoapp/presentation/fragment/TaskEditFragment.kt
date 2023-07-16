@@ -19,7 +19,6 @@ import org.alexcawl.todoapp.databinding.FragmentTaskEditBinding
 import org.alexcawl.todoapp.domain.model.Priority
 import org.alexcawl.todoapp.presentation.activity.MainActivity
 import org.alexcawl.todoapp.presentation.model.TaskViewModel
-import org.alexcawl.todoapp.presentation.model.MainViewModel
 import org.alexcawl.todoapp.presentation.model.ViewModelFactory
 import org.alexcawl.todoapp.presentation.util.*
 import java.util.*
@@ -27,7 +26,7 @@ import javax.inject.Inject
 
 /**
  * Single task info with editing screen
- * @see MainViewModel
+ * @see TaskViewModel
  * */
 class TaskEditFragment : Fragment(), PriorityDialogFragment.Listener {
     @Inject
